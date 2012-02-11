@@ -1,33 +1,22 @@
 <?php
-/*                                                                        *
- * This script is part of the TypoGento project 						  *
- *                                                                        *
- * TypoGento is free software; you can redistribute it and/or modify it   *
- * under the terms of the GNU General Public License version 2 as         *
- * published by the Free Software Foundation.                             *
- *                                                                        *
- * This script is distributed in the hope that it will be useful, but     *
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHAN-    *
- * TABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General      *
- * Public License for more details.                                       *
- *                                                                        */
 
 /**
  * TypoGento navigation
  *
+ * @todo Use TypoGento router
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
-class user_tx_fbmagento_navigation extends tx_fbmagento_navigation {
+class user_tx_weetypogento_navigation extends tx_weetypogento_navigation {
 }
 
-class tx_fbmagento_navigation {
+class tx_weetypogento_navigation {
 
 	protected $_categoryTree = array();
 	protected $_get = null;
 
 	public function __construct() {
 		if(!is_array($this->_get)) {
-			$this->_get = t3lib_div :: _GET('tx_fbmagento');
+			$this->_get = t3lib_div :: _GET('tx_weetypogento');
 		}
 	}
 
@@ -97,12 +86,13 @@ class tx_fbmagento_navigation {
 	/**
 	 * creates HMENU Items Array
 	 *
+	 * @todo use router
 	 * @param int $category
 	 * @param int $level
 	 * @param boolan $last
 	 * @return array
 	 */
-	protected function createMenuArrayItem($category, $level = 0, $last = false, $parent = null) {
+	protected function _createMenuArrayItem($category, $level = 0, $last = false, $parent = null) {
 		$menuArray = array ();
 
 		if (!$category->getIsActive()) {
@@ -121,7 +111,8 @@ class tx_fbmagento_navigation {
 			'action' =>'view'
 		);
 
-		$menuArray['_OVERRIDE_HREF'] = $GLOBALS['TSFE']->cObj->getTypoLink_URL($this->conf['pid'], array('tx_fbmagento' => array('shop' => $params)));;
+		// 
+		$menuArray['_OVERRIDE_HREF'] = $GLOBALS['TSFE']->cObj->getTypoLink_URL($this->conf['pid'], array('tx_weetypogento' => $params));;
 
 		if ($category->getAct()) {
 			$menuArray['ITEM_STATE'] = 'ACT';
@@ -130,7 +121,7 @@ class tx_fbmagento_navigation {
 				$j = 0;
 				foreach ($children as $child) {
 					if ($child->getIsActive()) {
-						$menuArray['_SUB_MENU'][] = $this->createMenuArrayItem($child, $level + 1, ++ $j >= 0);
+						$menuArray['_SUB_MENU'][] = $this->_createMenuArrayItem($child, $level + 1, ++ $j >= 0);
 					}
 				}
 			} else {
@@ -152,15 +143,15 @@ class tx_fbmagento_navigation {
 	 */
 	public function categories($content, $conf) {
 
-		$this->emConf = tx_fbmagento_tools::getExtConfig();
+		$this->emConf = tx_weetypogento_tools::getExtConfig();
 		$this->conf = $conf;
-		$this->mage = t3lib_div::makeInstance('tx_fbmagento_interface', $this->emConf );
+		$this->mage = t3lib_div::makeInstance('tx_weetypogento_interface', $this->emConf );
 
 		$categories = $this->getStoreCategories($this->conf['startcategory']);
 
 		$menu = array();
 		foreach ($categories as $category) {
-			$item = $this->createMenuArrayItem($category);
+			$item = $this->_createMenuArrayItem($category);
 			if (!$item) {
 				continue;
 			}
@@ -214,14 +205,14 @@ class tx_fbmagento_navigation {
 	 */
 	protected function _parseNodes($nodes) {
 		foreach($nodes as $node) {
-			if(isset($this->_get['shop']['category'])){
-				if($node->getId() == intval($this->_get['shop']['category'])
+			if(isset($this->_get['category'])){
+				if($node->getId() == intval($this->_get['category'])
 					|| ($node->getChildren() && $this->_parseNodes($node->getChildren()))) {
 							$node->setAct(true);
 							return true;
 				}
 			} else {
-				if($node->getId() == intval($this->_get['shop']['id'])
+				if($node->getId() == intval($this->_get['id'])
 					|| ($node->getChildren() && $this->_parseNodes($node->getChildren()))) {
 						$node->setAct(true);
 						return true;
@@ -231,8 +222,8 @@ class tx_fbmagento_navigation {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fb_magento/lib/class.tx_fbmagento_navigation.php']) {
-	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fb_magento/lib/class.tx_fbmagento_navigation.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/wee_typogento/lib/class.tx_weetypogento_navigation.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/wee_typogento/lib/class.tx_weetypogento_navigation.php']);
 }
 
 ?>

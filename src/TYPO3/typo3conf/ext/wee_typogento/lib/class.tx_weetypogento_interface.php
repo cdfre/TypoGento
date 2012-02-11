@@ -1,169 +1,190 @@
-<?php
-/*                                                                        *
- * This script is part of the TypoGento project 						  *
- *                                                                        *
- * TypoGento is free software; you can redistribute it and/or modify it   *
- * under the terms of the GNU General Public License version 2 as         *
- * published by the Free Software Foundation.                             *
- *                                                                        *
- * This script is distributed in the hope that it will be useful, but     *
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHAN-    *
- * TABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General      *
- * Public License for more details.                                       *
- *                                                                        */
+<?php 
 
 /**
- * TypoGento Interface
+ * TypoGento frontend interface
  *
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
-class tx_fbmagento_interface implements t3lib_Singleton {
-
-	/**
-	 * allready dispatched?
-	 *
-	 * @var boolean
-	 */
-	protected $allreadyDispatched = false;
-
-	/**
-	 * instance of Flagbit_Typo3connect
-	 *
-	 * @var Flagbit_Typo3connect
-	 */
-	public $connector = null;
-
-	/**
-	 * enable or disable debug Mode
-	 */
-	public $debug = true;
+class tx_weetypogento_interface implements t3lib_Singleton {
+	
+	protected $_environment = null;
+	
+	protected $_target = null;
 	
 	/**
-	 * constructor for tx_fbmagento_interface
+	 * Constructor
 	 * 
-	 * @param array emConf
+	 * Initializes the application and processes the frontend request. 
+	 * 
+	 * @remarks Requires a fully loaded TypoScript template.
 	 */
-	public function __construct($config) {
-		// init Config Array
-		$this->config = $config;
-
-		// include Mage
-		if (!class_exists('Mage', false)) {
-			require_once($this->config ['path'] . 'app/Mage.php');
+	public function __construct() {
+		// init magento if it's not already done
+		t3lib_div::makeInstance('tx_weetypogento_autoloader');
+		//
+		$this->_target = $this->_getTarget();
+		//
+		$this->_environment = $this->_getEnvironment($this->_target);
+		//
+		$this->_environment->initialize();
+		try {
+			//
+			$this->_initialize();
+			//
+			$this->_dispatch();
+		} catch(Exception $e) {
+			$this->_environment->deinitialize();
+			throw $e;
 		}
-
-		// disable Notices
-		error_reporting ( E_ALL & ~ E_NOTICE );
-
-		// Init Mage
-		$store = tx_fbmagento_tools::getFELangStoreCode();
-		Mage::app()->setCurrentStore(Mage::app()->getStore($store));
-		restore_error_handler();
-
-		if ($GLOBALS['TSFE']->cObj instanceof tslib_cObj) {
-			$cObj = $GLOBALS['TSFE']->cObj;
-			$baseUrl = $cObj->getTypoLink_URL($GLOBALS['TSFE']->id);
-
-			// get rid of trailing html because of Real URL
-			$pos = strrpos($baseUrl, '.');
-			$extension = substr($baseUrl, $pos);
-
-			if (strpos($extension, '/') === false) {
-				$baseUrl = substr($baseUrl, 0, $pos);
-			}
-		}
-
-		// Init Typo3connect
-		$params = array('enabled' => true);
-		if ('' != $baseUrl) {
-			$params['_typo3BaseUrl'] = t3lib_div::locationHeaderUrl($baseUrl);
-		}
-		$this->connector = Mage::getSingleton('Flagbit_Typo3connect/Core', $params);
-
-		if (null !== $cObj) {
-			$this->connector->setcObj($cObj);
+		$this->_environment->deinitialize();
+	}
+	
+	/**
+	 * Get the Magento target for the current frontend request
+	 * 
+	 * @throws Exception If routing fails
+	 */
+	protected function _getTarget() {
+		// lookup magento action for the current typo3 page
+		try {
+			$router = t3lib_div::makeInstance('tx_weetypogento_router');
+			$target = t3lib_div::makeInstance('tx_weetypogento_routeEnvironment');
+			$target->register('getVars', $_GET);
+			//$target->register('postVars', $_POST);
+			$target->register('queryString', $_SERVER['QUERY_STRING']);
+			$target->getVars = isset($_GET['tx_weetypogento'])?$_GET['tx_weetypogento']:array();
+			//$target->postVars = isset($_POST['tx_weetypogento'])?$_POST['tx_weetypogento']:array();
+			$target->queryString = t3lib_div::implodeArrayForUrl('', $target->getVars, '', false, true);
+			// lookup for matching typogento route
+			return $router->lookup(tx_weetypogento_router::ROUTE_SECTION_DISPATCH, null, $target);
+		} catch (Exception $e) {
+			throw new Exception(sprintf('Routing failed on page \'%s\': %s', $GLOBALS['TSFE']->id, $e->getMessage()), E_ERROR, $e);
 		}
 	}
 
 	/**
-	 * start Mage dispatch process with injected params
-	 *
-	 * @param array $params
+	 * Get environment for the the Magento target
+	 * 
+	 * @param string $url
+	 */
+	protected function _getEnvironment($url) {
+		// get url components path and query
+		$components = parse_url($url);
+		$path = $components['path'];
+		parse_str($components['query'], $query);
+		// 
+		$environment = t3lib_div::makeInstance('tx_weetypogento_routeEnvironment');
+		$environment->register('getVars', $_GET);
+		//$environment->register('postVars', $_POST);
+		$environment->register('queryString', $_SERVER['QUERY_STRING']);
+		$environment->register('requestUri', $_SERVER['REQUEST_URI']);
+		$environment->getVars = isset($query)?$query:array();
+		//$environment->postVars = isset($_POST['tx_weetypogento'])?$_POST['tx_weetypogento']:array();
+		$environment->queryString = t3lib_div::implodeArrayForUrl('', $environment->getVars, '', false, true);
+		$environment->requestUri = $path.'?'.trim($environment->queryString, '&');
+		return $environment;
+	}
+	/**
+	 * Process the frontend request
+	 * 
 	 * @return boolan
 	 */
-	public function dispatch($params) {
-
-		if (!$this->allreadyDispatched) {
-			$this->connector->dispatch($params);
+	protected function _dispatch() {
+		
+		// dispatching current typo3 page
+		try {
+			// get magento application
+			$app = Mage::app();
+			// get front controller
+			$front = Mage::app()->getFrontController();
+			// check response type
+			$response = $app->getResponse();
+			
+			// get current store code
+			$code = tx_weetypogento_tools::getFELangStoreCode();
+			// get store by its code
+			$store = $app->getStore($code);
+			// activate current store
+			$app->setCurrentStore($store);
+			// create magento router
+			//$router = new Wee_Typogento_Controller_Router();
+			// set routes for the magento router
+			//$router->collectRoutes('frontend', 'standard');
+			// add magento router to the front controller
+			//$front->addRouter('standard', $router);
+			// run dispatch
+			$front->dispatch();
+		} catch(Exception $e) {
+			
+			throw new Exception(sprintf('Dispatching request failed on page \'%s\': %s', $GLOBALS['TSFE']->id, $e->getMessage()), E_ERROR, $e);
 		}
-
-		$this->allreadyDispatched = true;
-
-		return true;
 	}
-
+	
 	/**
-	 * get an Magento Content Block by Name
+	 * Initialize the frontend application
+	 *
+	 * @param unknown_type $code
+	 * @param unknown_type $type
+	 * @param unknown_type $options
+	 */
+	protected function _initialize($code = '', $type = 'store', $options = array()) {
+		
+		try {
+			// reset magento if initialized before
+			Mage::reset();
+			// create magento application
+			$app = new Wee_Typogento_Model_App();
+			// load reflection api for property injection
+			$class = new ReflectionClass('Mage');
+			// inject typogento application
+			$property = $class->getProperty('_app');
+			$property->setAccessible(true);
+			$property->setValue($app);
+			// set magento application root
+			Mage::setRoot();
+			// inject additional stuff :/
+			$events = new Varien_Event_Collection();
+			$property = $class->getProperty('_events');
+			$property->setAccessible(true);
+			$property->setValue($events);
+			$config = new Mage_Core_Model_Config($options);
+			$property = $class->getProperty('_config');
+			$property->setAccessible(true);
+			$property->setValue($config);
+			// init magento application
+			Varien_Profiler::start('self::app::init');
+			$app->init($code, $type, $options);
+			Varien_Profiler::stop('self::app::init');
+			// ...
+			$app->loadAreaPart(Mage_Core_Model_App_Area::AREA_GLOBAL, Mage_Core_Model_App_Area::PART_EVENTS);
+			//self::$isInitialized = true;
+		} catch(Exception $e) {
+			throw new Exception(sprintf('Initializing failed on page \'%s\': %s', $GLOBALS['TSFE']->id, $e->getMessage()), E_ERROR, $e);
+		}
+	}
+	
+	/**
+	 * Get Magento layout block by its name
 	 *
 	 * @param string $identifier
-	 * @return string HTML Code
+	 * @return Mage_Core_Block_Abstract
 	 */
-	public function getBlock($identifier) {
-
-		$block = $this->connector->getBlock($identifier);
-
+	public function getBlock($name) {
+		//
+		$layout = Mage::app()->getLayout();
+		
+		$block = $layout->getBlock($name);
+	
 		if ($block instanceof Mage_Core_Block_Abstract) {
-			return $this->connector->getBlock($identifier);
+			return $block;
 		} else {
 			return null;
 		}
 	}
-
-	/**
-	 * call Connector Functions directly
-	 *
-	 * @param string $name
-	 * @param array $args
-	 * @return unknown
-	 */
-	public function __call($name, $args) {
-		return call_user_func_array(array($this->connector, $name), $args);
-	}
-
-	/**
-	 * generate Headerdata from Shopsystem
-	 *
-	 * @return string
-	 */
-	public function getHeaderData() {
-
-		$objHead = $this->getBlock('head');
-		$head = array();
-
-		if ($objHead instanceof Mage_Page_Block_Html_Head) {
-
-			$head[] = '<script type="text/javascript">';
-			$head[] = '//<![CDATA[';
-			$head[] = 'var BLANK_URL = \'' . $objHead->helper('core/js')->getJsUrl('blank.html') . '\'';
-			$head[] = 'var BLANK_IMG = \'' . $objHead->helper('core/js')->getJsUrl('spacer.gif') . '\'';
-			$head[] = '//]]>';
-			$head[] = '</script>';
-			$head[] = $objHead->getCssJsHtml();
-			$head[] = $objHead->getChildHtml();
-			$head[] = $objHead->helper('core/js')->getTranslatorScript();
-
-		}
-
-		return implode("\n", $head);
-	}
-
-	public function getBodyData(){
-		return $this->connector->getResponse()->outputBody(true);
-	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fb_magento/lib/class.tx_fbmagento_interface.php']) {
-	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fb_magento/lib/class.tx_fbmagento_interface.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/wee_typogento/lib/class.tx_weetypogento_interface.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/wee_typogento/lib/class.tx_weetypogento_interface.php']);
 }
 
 ?>

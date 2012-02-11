@@ -1,23 +1,17 @@
-# cat=basic; type=text; label=path to Magento root
+# cat=basic; type=text; label=Root Directory: Full local directory path locating the Magento installation.
 path =
 
-# cat=basic; type=text; label=Frontend URL to your Shop
-url = http://www.example-shop.com/
+# cat=basic; type=text; label=Frontend URL: Absolute URL locating the Magento frontend.
+url = 
 
-# cat=basic;type=text; label=Magento User which has API access
+# cat=basic;type=text; label=API User: Service account for accessing the Magento API.
 username = 
 
-# cat=basic;type=text; label=Password of the Magento User
+# cat=basic;type=text; label=API Password: Password of the specified service account above.
 password = 
 
-# cat=basic;type=boolean; label=enable automatic Magento Header integration
-auto_header = 
-
-# cat=basic;type=boolean; label=enable Realurl Functions
-realurl = 
-
-# cat=basic;type=text; label=Namespace of the Magento Modul (community, local)
+# cat=basic;type=text; label=Modul Namespace: Namespace where the Magento module is placed (community, local).
 namespace = community
 
-# cat=basic;type=text; label=Website ID (default is 1)
+# cat=basic;type=text; label=Website ID: Identifier of the Magento store website to connect with.
 website = 1

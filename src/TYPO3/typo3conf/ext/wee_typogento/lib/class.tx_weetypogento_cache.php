@@ -1,156 +1,94 @@
 <?php
-/*                                                                        *
- * This script is part of the TypoGento project 						  *
- *                                                                        *
- * TypoGento is free software; you can redistribute it and/or modify it   *
- * under the terms of the GNU General Public License version 2 as         *
- * published by the Free Software Foundation.                             *
- *                                                                        *
- * This script is distributed in the hope that it will be useful, but     *
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHAN-    *
- * TABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General      *
- * Public License for more details.                                       *
- *                                                                        */
 
 /**
- * TypoGento Cache
+ * TypoGento cache
  *
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
-class tx_fbmagento_cache implements t3lib_Singleton {
-	
+class tx_weetypogento_cache implements t3lib_Singleton {
+
 	/**
 	 * Cache Handler
 	 *
-	 * @var ArrayObject
+	 * @var t3lib_cache_frontend_Frontend 
 	 */
 	protected $_handler = null;
+
+	/**
+	 * Constructor
+	 *
+	 * Initializes the TYPO3 caching framework.
+	 */
+	public function __construct() {
+		$this->_initializeCache();
+	}
+
+	/**
+	 * Get Data
+	 *
+	 * @param string $key
+	 * @return mixed
+	 */
+	public function get($key) {
+		return $this->_handler->get($key);
+	}
+
+	/**
+	 * Set Data
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * @return void
+	 */
+	public function set($key, &$value, $tags = array(), $lifetime = 0) {
+		return $this->_handler->set($key, &$value, $tags, $lifetime);
+	}
+
+	/**
+	 * Has Data
+	 *
+	 * @param string $key
+	 * @return bool
+	 */
+	public function has($key) {
+		return $this->_handler->has($key);
+	}
+
+	/**
+	 * Remove Data
+	 *
+	 * @param string $key
+	 * @return bool
+	 */
+	public function remove($key) {
+		return $this->_handler->remove($key);
+	}
 	
 	/**
-	 * Setter/Getter underscore transformation cache
-	 *
-	 * @var array
-	 */
-	protected static $_underscoreCache = array();
-
-
-	/**
-	 * constructor function
+	 * Initialize cache instance to be ready to use
 	 *
 	 * @return void
 	 */
-	public function __construct($type) {
-		switch ($type) {
-			case "memory":
-				$config = tx_fbmagento_tools::getExtConfig();
-				require_once($config['path'] . 'lib/Zend/Registry.php');
-				$this->_handler = Zend_Registry::getInstance();
-				break;
+	protected function _initializeCache() {
+		//
+		t3lib_cache::initializeCachingFramework();
+		//
+		try {
+			$this->_handler = $GLOBALS['typo3CacheManager']->getCache('wee_typogento');
+		} catch (t3lib_cache_exception_NoSuchCache $e) {
+			//
+			$this->_handler = $GLOBALS['typo3CacheFactory']->create(
+				'wee_typogento',
+				$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['wee_typogento']['frontend'],
+				$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['wee_typogento']['backend'],
+				$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['wee_typogento']['options']
+			);
 		}
 	}
-
-	/**
-	 * return Handler
-	 *
-	 * @return ArrayObject
-	 */
-	private function getHandler(){
-		return $this->_handler;
-	}
-
-	/**
-	 * Set/Get attribute wrapper
-	 *
-	 * @param string $method
-	 * @param array $args
-	 * @return mixed
-	 */
-	public function __call($method, $args) {
-		switch (substr($method, 0, 3)) {
-			case 'get' :
-				$key = $this->_underscore(substr($method,3));
-				return $this->getData($key);
-
-			case 'set' :
-				$key = $this->_underscore(substr($method,3));
-				return $this->setData($key, $args[0]);
-
-			case 'uns' :
-				$key = $this->_underscore(substr($method,3));
-				return $this->unsData($key);
-
-			case 'has' :
-				$key = $this->_underscore(substr($method,3));
-				return $this->hasData($key);
-		}
-
-		tx_fbmagento_tools::throwException("Invalid method " . get_class($this) . "::" . $method . "(" . print_r($args, 1) . ")");
-	}
-
-	/**
-	 * get Data
-	 *
-	 * @param string $key
-	 * @return unknown
-	 */
-	public function getData($key) {
-		return $this->getHandler()->{$key};
-	}
-
-	/**
-	 * set Data
-	 *
-	 * @param string $key
-	 * @param unknown_type $value
-	 * @return unknown
-	 */
-	public function setData($key, $value) {
-		return $this->getHandler()->{$key} = isset($value) ? $value : null;
-	}
-
-	/**
-	 * isset Data
-	 *
-	 * @param string $key
-	 * @return unknown
-	 */
-	public function hasData($key) {
-		return isset($this->getHandler()->{$key});
-	}
-
-	/**
-	 * unset Data
-	 *
-	 * @param string $key
-	 * @return unknown
-	 */
-	public function unsData($key) {
-		unset($this->getHandler()->{$key});
-
-		return true;
-	}
-
-	/**
-	 * Converts field names for setters and geters
-	 * Uses cache to eliminate unneccessary preg_replace
-	 *
-	 * @param string $name
-	 * @return string
-	 */
-	protected function _underscore($name) {
-		if (isset(self::$_underscoreCache[$name])) {
-			return self::$_underscoreCache[$name];
-		}
-
-		$result = strtolower(preg_replace('/(.)([A-Z])/', "$1_$2", $name));
-		self::$_underscoreCache[$name] = $result;
-		return $result;
-	}
-
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fb_magento/lib/class.tx_fbmagento_cache.php']) {
-	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/fb_magento/lib/class.tx_fbmagento_cache.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/wee_typogento/lib/class.tx_weetypogento_cache.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/wee_typogento/lib/class.tx_weetypogento_cache.php']);
 }
 
 ?>

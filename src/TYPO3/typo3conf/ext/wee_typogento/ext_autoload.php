@@ -1,18 +1,36 @@
 <?php
 
-$extensionPath = t3lib_extMgm::extPath('fb_magento');
+$extensionPath = t3lib_extMgm::extPath('wee_typogento');
+
 return array(
-	'tx_fbmagento_pi1' => $extensionPath.'pi1/class.tx_fbmagento_pi1.php',
-	'tx_fbmagento_auth_sv1' => $extensionPath.'lib/class.tx_fbmagento_auth_sv1.php',
-	'tx_fbmagento_autoloader' => $extensionPath.'lib/class.tx_fbmagento_autoloader.php',
-	'tx_fbmagento_cache' => $extensionPath.'lib/class.tx_fbmagento_cache.php',
-	'tx_fbmagento_hookobserver' => $extensionPath.'lib/class.tx_fbmagento_hookobserver.php',
-	'tx_fbmagento_interface' => $extensionPath.'lib/class.tx_fbmagento_interface.php',
-	'tx_fbmagento_navigation' => $extensionPath.'lib/class.tx_fbmagento_navigation.php',
-	'tx_fbmagento_realurl' => $extensionPath.'lib/class.tx_fbmagento_realurl.php',
-	'tx_fbmagento_soapinterface' => $extensionPath.'lib/class.tx_fbmagento_soapinterface.php',
-	'tx_fbmagento_tcafields' => $extensionPath.'lib/class.tx_fbmagento_tcafields.php',
-	'tx_fbmagento_tools' => $extensionPath.'lib/class.tx_fbmagento_tools.php'
+	'tx_weetypogento_pi1' => $extensionPath.'pi1/class.tx_weetypogento_pi1.php',
+	'tx_weetypogento_auth_sv1' => $extensionPath.'lib/class.tx_weetypogento_auth_sv1.php',
+	'tx_weetypogento_cache' => $extensionPath.'lib/class.tx_weetypogento_cache.php',
+	'tx_weetypogento_interface' => $extensionPath.'lib/class.tx_weetypogento_interface.php',
+	'tx_weetypogento_navigation' => $extensionPath.'lib/class.tx_weetypogento_navigation.php',
+	'tx_weetypogento_realurl' => $extensionPath.'lib/class.tx_weetypogento_realurl.php',
+	'tx_weetypogento_soapinterface' => $extensionPath.'lib/class.tx_weetypogento_soapinterface.php',
+	'tx_weetypogento_tcafields' => $extensionPath.'lib/class.tx_weetypogento_tcafields.php',
+	'tx_weetypogento_tools' => $extensionPath.'lib/class.tx_weetypogento_tools.php',
+
+	'tx_weetypogento_header' => $extensionPath.'lib/class.tx_weetypogento_header.php',
+	'tx_weetypogento_tools' => $extensionPath.'lib/class.tx_weetypogento_tools.php',
+	'tx_weetypogento_observer' => $extensionPath.'lib/class.tx_weetypogento_observer.php',
+	'tx_weetypogento_router' => $extensionPath.'lib/routing/class.tx_weetypogento_router.php',
+	'tx_weetypogento_autoloader' => $extensionPath.'lib/class.tx_weetypogento_autoloader.php',
+	
+	'tx_weetypogento_route' => $extensionPath.'lib/routing/class.tx_weetypogento_route.php',
+	
+	'tx_weetypogento_routebuilder' => $extensionPath.'lib/routing/class.tx_weetypogento_routebuilder.php',
+	'tx_weetypogento_defaultroutebuilder' => $extensionPath.'lib/routing/class.tx_weetypogento_routebuilder.php',
+	
+	'tx_weetypogento_routefilter' => $extensionPath.'lib/routing/class.tx_weetypogento_routefilter.php',
+	'tx_weetypogento_typoscriptroutefilter' => $extensionPath.'lib/routing/class.tx_weetypogento_routefilter.php',
+	
+	'tx_weetypogento_routehandler' => $extensionPath.'lib/routing/class.tx_weetypogento_routehandler.php',
+	'tx_weetypogento_typolinkroutehandler' => $extensionPath.'lib/routing/class.tx_weetypogento_routehandler.php',
+
+	'tx_weetypogento_routeenvironment' => $extensionPath.'lib/routing/class.tx_weetypogento_routeenvironment.php'
 );
 
 ?>

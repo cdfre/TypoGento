@@ -1,169 +1,159 @@
 <?xml version="1.0"?>
-
 <config>
 	<modules>
-		<Flagbit_Typo3connect>
-			<active>true</active>
-			<version>1.0.0</version>
-		</Flagbit_Typo3connect>
+		<Wee_Typogento>
+			<version>0.3.5</version>
+		</Wee_Typogento>
 	</modules>
 	<global>
-
-	    <helpers>
-            <Flagbit_Typo3connect>
-                <class>Flagbit_Typo3connect_Helper</class>
-            </Flagbit_Typo3connect>
-        </helpers>
-		<models>
-			<core>
-				<rewrite>
-					<layout>Flagbit_Typo3connect_Model_Layout</layout>
-					<url>Flagbit_Typo3connect_Model_Url</url>
-					<store>Flagbit_Typo3connect_Model_Store</store>
-				</rewrite>
-			</core>
-
-			<catalog>
-				<rewrite>
-					<product_url>Flagbit_Typo3connect_Model_Product_Url</product_url>
-					<url>Flagbit_Typo3connect_Model_Catalog_Url</url>
-				</rewrite>
-			</catalog>
-
-			<Flagbit_Typo3connect>
-				<class>Flagbit_Typo3connect_Model</class>
-				<resourceModel>Flagbit_Typo3connect_Mysql4</resourceModel>
-			</Flagbit_Typo3connect>
-            <Flagbit_Typo3connect_Mysql4>
-                <class>Flagbit_Typo3connect_Model_Mysql4</class>
-                <entities>
-                    <typo3_frontend_user>
-                        <table>fe_users</table>                  
-                    </typo3_frontend_user>
-                	<typo3_frontend_group>
-                		<table>fe_groups</table>                  
-                	</typo3_frontend_group>                	
-                </entities>
-            </Flagbit_Typo3connect_Mysql4>
-	
-		</models>
-
-		<blocks>
-			<adminhtml>
-				<rewrite>
-					<customer_group_edit_form>Flagbit_Typo3connect_Block_Customer_Edit_Form</customer_group_edit_form>
-				</rewrite>
-			</adminhtml>
-		</blocks>		
-		
-      <resources>
-          <Flagbit_Typo3connect_setup>
-              <setup>
-                  <module>Flagbit_Typo3connect</module>
-                  <class>Mage_Eav_Model_Entity_Setup</class>
-              </setup>
-              <connection>
-                  <use>default_setup</use>
-              </connection>
-          </Flagbit_Typo3connect_setup>
-          <Flagbit_Typo3connect_read>
-              <connection>
-                  <active>1</active>
-                  <model>mysql4</model>
-                  <type>pdo_mysql</type>
-              </connection>
-
-          </Flagbit_Typo3connect_read>
-          <Flagbit_Typo3connect_write>
-              <connection>
-                  <use>Flagbit_Typo3connect_read</use>
-              </connection>
-          </Flagbit_Typo3connect_write>
-      </resources>		
-		
+		<helpers>
+			<typogento>
+				<class>Wee_Typogento_Helper</class>
+			</typogento>
+		</helpers>
 		<events>
 			<customer_save_after>
 				<observers>
-					<flagbit_typo3connect>
+					<typogento>
 						<type>singleton</type>
-						<class>Flagbit_Typo3connect/observer</class>
+						<class>Wee_Typogento_Model_Observer</class>
 						<method>customerSaveAfterEvent</method>
-					</flagbit_typo3connect>
+					</typogento>
 				</observers>
 			</customer_save_after>
 			<customer_login>
 				<observers>
-					<flagbit_typo3connect_login>
+					<typogento_login>
 						<type>model</type>
-						<class>Flagbit_Typo3connect_Helper_Login</class>
+						<class>Wee_Typogento_Model_Observer</class>
 						<method>loginEvent</method>
-					</flagbit_typo3connect_login>
+					</typogento_login>
 				</observers>
 			</customer_login>
 			<customer_logout>
 				<observers>
-					<flagbit_typo3connect_logout>
+					<typogento_logout>
 						<type>model</type>
-						<class>Flagbit_Typo3connect_Helper_Logout</class>
+						<class>Wee_Typogento_Model_Observer</class>
 						<method>logoutEvent</method>
-					</flagbit_typo3connect_logout>
+					</typogento_logout>
 				</observers>
 			</customer_logout>
 			<controller_action_predispatch>
 				<observers>
-					<flagbit_typo3connect_access_check>
+					<typogento_access_check>
 						<type>singleton</type>
-						<class>Flagbit_Typo3connect/observer</class>
+						<class>Wee_Typogento_Model_Observer</class>
 						<method>controllerActionPredispatch</method>
-					</flagbit_typo3connect_access_check>
+					</typogento_access_check>
 				</observers>
 			</controller_action_predispatch>
 			<customer_group_save_before>
 				<observers>
-					<flagbit_typo3connect_customer_group_save_before>
+					<typogento_customer_group_save_before>
 						<type>singleton</type>
-						<class>Flagbit_Typo3connect/observer</class>
+						<class>Wee_Typogento_Model_Observer</class>
 						<method>customerGroupSaveBefore</method>
-					</flagbit_typo3connect_customer_group_save_before>
-				</observers>				
+					</typogento_customer_group_save_before>
+				</observers>
 			</customer_group_save_before>
-		</events>		
+		</events>
+		<models>
+			<core>
+				<rewrite>
+					<url>Wee_Typogento_Model_Url</url>
+					<store>Wee_Typogento_Model_Store</store>
+					<layout>Wee_Typogento_Model_Layout</layout>
+				</rewrite>
+			</core>
+			<typogento>
+				<class>Wee_Typogento_Model</class>
+				<resourceModel>typogento_mysql4</resourceModel>
+			</typogento>
+			<typogento_mysql4>
+				<class>Wee_Typogento_Model_Mysql4</class>
+				<entities>
+					<typo3_frontend_user>
+						<table>fe_users</table>
+					</typo3_frontend_user>
+					<typo3_frontend_group>
+						<table>fe_groups</table>
+					</typo3_frontend_group>
+				</entities>
+			</typogento_mysql4>
+		</models>
+		<resources>
+			<typogento_setup>
+				<setup>
+					<module>typogento</module>
+					<class>Mage_Eav_Model_Entity_Setup</class>
+				</setup>
+				<connection>
+					<use>default_setup</use>
+				</connection>
+			</typogento_setup>
+			<typogento_read>
+				<connection>
+					<active>1</active>
+					<model>mysql4</model>
+					<type>pdo_mysql</type>
+				</connection>
+			</typogento_read>
+			<typogento_write>
+				<connection>
+					<use>typogento_read</use>
+				</connection>
+			</typogento_write>
+		</resources>
+		<blocks>
+			<adminhtml>
+				<rewrite>
+					<customer_group_edit_form>Wee_Typogento_Block_Customer_Edit_Form</customer_group_edit_form>
+				</rewrite>
+			</adminhtml>
+		</blocks>
 	</global>
-	
-    <adminhtml>
-        <acl>
-            <resources>
-                <admin>
-                    <children>
-                        <system>
-                            <children>
-                                <config>
-                                    <children>
-                                        <typo3connect>
-                                            <title>TYPO3 Connector</title>
-                                        </typo3connect>
-                                    </children>
-                                </config>
-                            </children>
-                        </system>
-                    </children>
-                </admin>
-            </resources>
-        </acl>
-    </adminhtml>
-    
-    <default>
-    	<web>
-    		<url>
-    			<redirect_to_base>0</redirect_to_base>
+	<frontend>
+		<routers>
+			<template>
+				<use>standard</use>
+				<args>
+					<module>Wee_Typogento</module>
+					<frontName>typogento</frontName>
+				</args>
+			</template>
+		</routers>
+		<layout>
+			<updates>
+				<template>
+					<file>wee_typogento.xml</file>
+				</template>
+			</updates>
+		</layout>
+	</frontend>
+	<adminhtml>
+		<translate>
+		<modules>
+			<typogento>
+				<files>
+					<default>Wee_Typogento.csv</default>
+				</files>
+			</typogento>
+		</modules>
+	</translate>
+	</adminhtml>
+	<default>
+		<web>
+			<url>
+				<redirect_to_base>0</redirect_to_base>
 			</url>
-    	</web>
-    	<typo3connect>
-    		<config>
-    			<direct_mage_access>1</direct_mage_access>
-    			<ua_regex></ua_regex>
-    			<redirect_url>/</redirect_url>
-    		</config>
-    	</typo3connect>
-    </default>
+		</web>
+		<typogento>
+			<config>
+				<direct_mage_access>1</direct_mage_access>
+				<ua_regex></ua_regex>
+				<redirect_url>/</redirect_url>
+			</config>
+		</typogento>
+	</default>
 </config>

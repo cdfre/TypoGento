@@ -2,10 +2,10 @@
 <T3locallang>
 	<meta type="array">
 		<type>module</type>
-		<description>Language labels for module &quot;txfbmagentoMadmin&quot;</description>
+		<description>Language labels for module &quot;txweetypogentoMadmin&quot;</description>
 	</meta>
 	<data type="array">
-		<languageKey index="default" type="array">					
+		<languageKey index="default" type="array">
 		</languageKey>
 	</data>
 </T3locallang>

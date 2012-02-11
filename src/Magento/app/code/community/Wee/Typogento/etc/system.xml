@@ -1,110 +1,143 @@
 <?xml version="1.0"?>
 <config>
-   <sections>
-        <typo3connect translate="label" module="Flagbit_Typo3connect">
-            <label>TYPO3 Connector</label>
-            <tab>service</tab>
-            <frontend_type>text</frontend_type>
-            <sort_order>101</sort_order>
-            <show_in_default>1</show_in_default>
-            <show_in_website>1</show_in_website>
-            <show_in_store>1</show_in_store>
-            <groups>
-                 <config translate="label">
-                    <label>General Settings</label>
-                    <frontend_type>text</frontend_type>
-                    <sort_order>10</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <fields>
-                        <fe_user_pid translate="label">
-                            <label>PID TYPO3 Frontend Users</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>10</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </fe_user_pid>
-                        <fe_user_group_uid translate="label">
-                            <label>Group uid TYPO3 Frontend Users</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>20</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </fe_user_group_uid>
-                        <direct_mage_access translate="label">
-                            <label>Permit direct magento access (without going through typogento)</label>
-                            <frontend_type>select</frontend_type>
+	<sections>
+		<typogento translate="label" module="typogento">
+			<label>TypoGento</label>
+			<tab>service</tab>
+			<frontend_type>text</frontend_type>
+			<sort_order>200</sort_order>
+			<show_in_default>1</show_in_default>
+			<show_in_website>1</show_in_website>
+			<show_in_store>1</show_in_store>
+			<groups>
+				<config translate="label">
+					<label>General Settings</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>10</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>1</show_in_store>
+					<fields>
+						<allow_direct_access translate="label comment">
+							<label>Permit Direct Access</label>
+							<comment>Permit direct Magento access without going through TypoGento.</comment>
+							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>30</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </direct_mage_access>
-                        <ua_regex translate="label">
-                            <label>Allow frontend direct access for user agents</label>
-                            <comment>Regular Expression</comment>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>40</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </ua_regex>
-                        <redirect_url translate="label">
-                            <label>Redirect URL if access is forbidden</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>60</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </redirect_url>
-                    </fields>
-                 </config>
-                 <typo3_db translate="label">
-                    <label>Typo3 Database</label>
-                    <frontend_type>text</frontend_type>
-                    <sort_order>20</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>0</show_in_website>
-                    <show_in_store>0</show_in_store>
-                    <fields>
-                        <host translate="label">
-                            <label>Typo3 DB Host</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>10</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </host>
-                        <username translate="label">
-                            <label>Typo3 DB Username</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>20</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </username>
-                        <password translate="label">
-                            <label>Typo3 DB Password</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>30</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </password>
-                        <dbname translate="label">
-                            <label>Typo3 DB Name</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>40</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </dbname>
-                    </fields>
-                </typo3_db>
-            </groups>
-        </typo3connect>
-    </sections>
+							<sort_order>10</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</allow_direct_access>
+						<user_agents_regex translate="label comment">
+							<label>Allowed User Agents</label>
+							<comment>Regular expression for allowed user agents if direct access is forbidden.</comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>20</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</user_agents_regex>
+						<redirect_url translate="label comment">
+							<label>Redirect URL</label>
+							<comment>Redirect to URL if direct access is forbidden.</comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>30</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</redirect_url>
+					</fields>
+				</config>
+				<typo3_db translate="label">
+					<label>TYPO3 Database</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>10</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>0</show_in_website>
+					<show_in_store>0</show_in_store>
+					<fields>
+						<host translate="label">
+							<label>Host</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>10</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</host>
+						<dbname translate="label">
+							<label>Name</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>20</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</dbname>
+						<username translate="label">
+							<label>User</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>30</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</username>
+						<password translate="label">
+							<label>Password</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>40</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</password>
+					</fields>
+				</typo3_db>
+				<typo3_fe translate="label">
+					<label>TYPO3 Frontend</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>30</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>0</show_in_website>
+					<show_in_store>0</show_in_store>
+					<fields>
+						<users_pid translate="label comment">
+							<label>Users Folder</label>
+							<comment>System folder (pid) with the TYPO3 frontend users.</comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>10</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</users_pid>
+						<group_uid translate="label comment">
+							<label>Users Group</label>
+							<comment>Group (uid) of the TYPO3 frontend users.</comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>20</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</group_uid>
+					</fields>
+				</typo3_fe>
+				<typo3_be translate="label">
+					<label>TYPO3 Backend</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>30</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>1</show_in_store>
+					<fields>
+						<base_url translate="label comment">
+							<label>Base URL</label>
+							<comment>If base URL of the TYPO3 backend deviates from Magento.</comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>10</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</base_url>
+					</fields>
+				</typo3_be>
+			</groups>
+		</typogento>
+	</sections>
 </config>

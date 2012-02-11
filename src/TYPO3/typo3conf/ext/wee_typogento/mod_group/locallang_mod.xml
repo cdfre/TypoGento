@@ -2,18 +2,18 @@
 <T3locallang>
 	<meta type="array">
 		<type>module</type>
-		<description>Language labels for module &quot;txfbmagentoMgroup&quot; - header, description</description>
+		<description>Language labels for module &quot;txweetypogentoMgroup&quot; - header, description</description>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="mlang_tabs_tab">Magento Shop</label>
-			<label index="mlang_labels_tabdescr">Magento Shop</label>
-			<label index="mlang_labels_tablabel">Magento Shop</label>
+			<label index="mlang_tabs_tab">Magento</label>
+			<label index="mlang_labels_tabdescr">Magento backend</label>
+			<label index="mlang_labels_tablabel">Magento backend</label>
 		</languageKey>
 		<languageKey index="de" type="array">
-			<label index="mlang_tabs_tab">Magento Shop</label>
-			<label index="mlang_labels_tabdescr">Magento Shop</label>
-			<label index="mlang_labels_tablabel">Magento Shop</label>
+			<label index="mlang_tabs_tab">Magento</label>
+			<label index="mlang_labels_tabdescr">Magento Backend</label>
+			<label index="mlang_labels_tablabel">Magento Backend</label>
 		</languageKey>
 	</data>
 </T3locallang>

@@ -1,16 +1,4 @@
 <?php 
-/*                                                                        *
- * This script is part of the TypoGento project 						  *
- *                                                                        *
- * TypoGento is free software; you can redistribute it and/or modify it   *
- * under the terms of the GNU General Public License version 2 as         *
- * published by the Free Software Foundation.                             *
- *                                                                        *
- * This script is distributed in the hope that it will be useful, but     *
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHAN-    *
- * TABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General      *
- * Public License for more details.                                       *
- *                                                                        */
 
 /**
  * TypoGento Installer
@@ -26,13 +14,18 @@ $installer->startSetup();
 
 $installer->addAttribute('customer', 'typo3_uid', array(
 	'type'            => 'int',
-	'label'           => 'Typo3 UID',
+	'label'           => 'TYPO3 UID',
 	'input'           => 'hidden',
 	'global'          => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_GLOBAL,
 	'required'        => false,
 	'default'         => '',
 	'user_defined'    => 0
 ));
+
+$installer->run("
+ALTER TABLE {$this->getTable('customer_group')} ADD  `typo3_group_id` INT NULL;
+ALTER TABLE  {$this->getTable('customer_group')} ADD INDEX (  `typo3_group_id` );
+");
 
 /*
 $installer->run("

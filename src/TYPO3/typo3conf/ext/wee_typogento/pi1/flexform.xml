@@ -1,19 +1,19 @@
 <T3DataStructure>
 	<meta>
-    	<langDisable>1</langDisable> 
-    	<!--  <langChildren>1</langChildren>!-->
-  	</meta>
+		<langDisable>1</langDisable> 
+		<!--  <langChildren>1</langChildren>!-->
+	</meta>
 	<sheets>
 		<main>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:fb_magento/locallang_db.xml:flexform.sheet_main</sheetTitle>
+					<sheetTitle>LLL:EXT:wee_typogento/locallang_db.xml:flexform.sheet_main</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
 					<show>
 						<TCEforms>
-							<label>LLL:EXT:fb_magento/locallang_db.xml:flexform.label_productshow</label>
+							<label>LLL:EXT:wee_typogento/locallang_db.xml:flexform.label_productshow</label>
 							<onChange>reload</onChange>
 							<config>
 								<type>select</type>
@@ -21,33 +21,32 @@
 								<size>1</size>
 								<items type="array">
 									<numIndex index="0" type="array">
-										<numIndex index="0">LLL:EXT:fb_magento/locallang_db.xml:flexform.label_productshow.0</numIndex>
+										<numIndex index="0">LLL:EXT:wee_typogento/locallang_db.xml:flexform.label_productshow.0</numIndex>
 										<numIndex index="1"></numIndex>
 									</numIndex>
 									<numIndex index="1" type="array">
-										<numIndex index="0">LLL:EXT:fb_magento/locallang_db.xml:flexform.label_productshow.1</numIndex>
+										<numIndex index="0">LLL:EXT:wee_typogento/locallang_db.xml:flexform.label_productshow.1</numIndex>
 										<numIndex index="1">SINGLEPRODUCT</numIndex>
 									</numIndex>
 									<numIndex index="2" type="array">
-										<numIndex index="0">LLL:EXT:fb_magento/locallang_db.xml:flexform.label_productshow.2</numIndex>
+										<numIndex index="0">LLL:EXT:wee_typogento/locallang_db.xml:flexform.label_productshow.2</numIndex>
 										<numIndex index="1">PRODUCTLIST</numIndex>
 									</numIndex>
 									<numIndex index="3" type="array">
-										<numIndex index="0">LLL:EXT:fb_magento/locallang_db.xml:flexform.label_productshow.3</numIndex>
+										<numIndex index="0">LLL:EXT:wee_typogento/locallang_db.xml:flexform.label_productshow.3</numIndex>
 										<numIndex index="1">USER</numIndex>
 									</numIndex>
-
-								</items>								
+								</items>
 							</config>
 						</TCEforms>
 					</show>
 					<product_id>
 						<TCEforms>
-							<label>LLL:EXT:fb_magento/locallang_db.xml:flexform.label_productlist</label>
+							<label>LLL:EXT:wee_typogento/locallang_db.xml:flexform.label_productlist</label>
 							<displayCond>FIELD:show:=:SINGLEPRODUCT</displayCond>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>EXT:fb_magento/lib/class.tx_fbmagento_tcafields.php:tx_fbmagento_tcafields->itemsProcFunc_products</itemsProcFunc>
+								<itemsProcFunc>EXT:wee_typogento/lib/class.tx_weetypogento_tcafields.php:tx_weetypogento_tcafields->itemsProcFunc_products</itemsProcFunc>
 								<maxitems>1</maxitems>
 								<size>15</size>
 							</config>
@@ -55,25 +54,24 @@
 					</product_id>
 					<category_id>
 						<TCEforms>
-							<label>LLL:EXT:fb_magento/locallang_db.xml:flexform.label_categorylist</label>
+							<label>LLL:EXT:wee_typogento/locallang_db.xml:flexform.label_categorylist</label>
 							<displayCond>FIELD:show:=:PRODUCTLIST</displayCond>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>EXT:fb_magento/lib/class.tx_fbmagento_tcafields.php:tx_fbmagento_tcafields->itemsProcFunc_categories</itemsProcFunc>
+								<itemsProcFunc>EXT:wee_typogento/lib/class.tx_weetypogento_tcafields.php:tx_weetypogento_tcafields->itemsProcFunc_categories</itemsProcFunc>
 								<maxitems>1</maxitems>
 								<size>15</size>
 							</config>
 						</TCEforms>
 					</category_id>
-					
 					<route>
 						<TCEforms>
-							<label>LLL:EXT:fb_magento/locallang_db.xml:flexform.label_route</label>
+							<label>LLL:EXT:wee_typogento/locallang_db.xml:flexform.label_route</label>
 							<displayCond>FIELD:show:=:USER</displayCond>
 							<onChange>reload</onChange>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>EXT:fb_magento/lib/class.tx_fbmagento_tcafields.php:tx_fbmagento_tcafields->itemsProcFunc_modules</itemsProcFunc>
+								<itemsProcFunc>EXT:wee_typogento/lib/class.tx_weetypogento_tcafields.php:tx_weetypogento_tcafields->itemsProcFunc_modules</itemsProcFunc>
 								<maxitems>1</maxitems>
 								<size>1</size>
 							</config>
@@ -81,12 +79,12 @@
 					</route>					
 					<controller>
 						<TCEforms>
-							<label>LLL:EXT:fb_magento/locallang_db.xml:flexform.label_controller</label>
+							<label>LLL:EXT:wee_typogento/locallang_db.xml:flexform.label_controller</label>
 							<displayCond>FIELD:show:=:USER</displayCond>
 							<onChange>reload</onChange>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>EXT:fb_magento/lib/class.tx_fbmagento_tcafields.php:tx_fbmagento_tcafields->itemsProcFunc_controllers</itemsProcFunc>
+								<itemsProcFunc>EXT:wee_typogento/lib/class.tx_weetypogento_tcafields.php:tx_weetypogento_tcafields->itemsProcFunc_controllers</itemsProcFunc>
 								<maxitems>1</maxitems>
 								<size>1</size>
 							</config>
@@ -94,18 +92,17 @@
 					</controller>
 					<action>
 						<TCEforms>
-							<label>LLL:EXT:fb_magento/locallang_db.xml:flexform.label_action</label>
+							<label>LLL:EXT:wee_typogento/locallang_db.xml:flexform.label_action</label>
 							<displayCond>FIELD:show:=:USER</displayCond>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>EXT:fb_magento/lib/class.tx_fbmagento_tcafields.php:tx_fbmagento_tcafields->itemsProcFunc_actions</itemsProcFunc>
+								<itemsProcFunc>EXT:wee_typogento/lib/class.tx_weetypogento_tcafields.php:tx_weetypogento_tcafields->itemsProcFunc_actions</itemsProcFunc>
 								<maxitems>1</maxitems>
 								<size>1</size>
 							</config>
 						</TCEforms>
-					</action>					
-					
-				</el>				
+					</action>
+				</el>
 			</ROOT>
 		</main>
 	</sheets>

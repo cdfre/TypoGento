@@ -1,1 +1,0 @@
-look at http://www.typogento.com/ for further information.
