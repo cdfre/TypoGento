@@ -6,10 +6,10 @@
 >  -- <cite>[Flagbit](https://github.com/Flagbit/TypoGento/issues/1#issuecomment-705602)</cite>
 
 This project is a fork of Flagbit's [TypoGento](http://www.typogento.com/) giving you the choice 
-to decide Magento does enough caching for you. Their are already many Magento full page cache solutions 
-for a reason. This is more than just that, licensed under the GNU General Public License (GPL-2.0)
-Version 2. See the [wiki](https://github.com/witrin/TypoGento/wiki/Overview#wiki-features) for a 
-brief description about what has changed in this fork.
+to decide whether or not Magento does enough caching for you. Their are already many Magento full 
+page cache solutions for a reason. This is more than just that, licensed under the GNU General Public 
+License (GPL-2.0) Version 2. See the [wiki](https://github.com/witrin/TypoGento/wiki/Overview#wiki-features) 
+for a brief description about what has changed.
 
 ## Prerequisites
 
