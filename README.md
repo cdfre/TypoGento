@@ -177,8 +177,8 @@ explanation of how this general works.
 
 ## Contributing
 
-Please report issues on the [Github issue tracker](https://github.com/witrin/TypoGento/issues). Patches are 
-preferred as Github pull requests.
+Please report issues on the [GitHub issue tracker](https://github.com/witrin/TypoGento/issues). Patches are 
+preferred as GitHub pull requests.
 
 ## License
 
