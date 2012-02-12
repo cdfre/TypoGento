@@ -8,7 +8,7 @@
 This project is a fork of Flagbit's [TypoGento](http://www.typogento.com/) giving you the choice 
 to decide Magento does enough caching for you. Their are already many Magento full page cache solutions 
 for a reason. This is more than just that, licensed under the GNU General Public License (GPL-2.0)
-Version 2. See the [wiki](https://github.com/witrin/TypoGento/wiki/Overview#wiki-features) gives you a 
+Version 2. See the [wiki](https://github.com/witrin/TypoGento/wiki/Overview#wiki-features) for a 
 brief description about what has changed in this fork.
 
 ## Prerequisites
@@ -28,7 +28,7 @@ The minimum requirements for a installation of this fork are:
 ## Installation
 
 The installation of this fork is very similar to Flagbit's TypoGento (see [how to install TypoGento](http://www.typogento.com/documentation/how-to-install-typogento.html)). 
-Before you start it's recommended that you're familiar with the administration of Magento and TYPO3:
+Before you start it's strongly recommended that you're familiar with the administration of Magento and TYPO3:
 
 1. [Download](https://github.com/witrin/TypoGento/zipball/develop) the package
 2. Unpack the downloaded package
@@ -43,7 +43,7 @@ Before you start it's recommended that you're familiar with the administration o
 
 ## Usage
 
-The usage of this fork is also very similiar to Flagbit's TypoGento. This means you can put any block of 
+The usage of this fork is also very similar to Flagbit's TypoGento. This means you can put any block of 
 your Magento layout on a TYPO3 page. The only restriction is that all Magento blocks you use on one TYPO3 
 page (through the TYPO3 backend or TypoScript) must be available within the Magento route path you choose 
 for the TYPO3 page. See the routing section below for more information how to link Magento route paths with 
