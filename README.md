@@ -1,20 +1,37 @@
 # TypoGento
 
 > The plug-in shall not cache at all since the views may contain highly dynamic information 
-> and Magento does a lot of caching as well.
+> and Magento does a lot of caching as well. So we need to get rid of the checkCHash [...]
 > 
 >  -- <cite>[Flagbit](https://github.com/Flagbit/TypoGento/issues/1#issuecomment-705602)</cite>
 
-This project is a fork of Flagbit's [TypoGento](http://www.typogento.com/) giving you the choice 
-to decide whether or not Magento does enough caching for you. Their are already many Magento full 
-page cache solutions for a reason. This is more than just that, licensed under the GNU General Public 
-License (GPL-2.0) Version 2. See the [wiki](https://github.com/witrin/TypoGento/wiki/Overview#wiki-features) 
-for a brief description about what has changed.
+This project is a fork of Flagbit's [TypoGento](http://www.typogento.com/) and gives you the choice 
+to decide whether or not Magento provides enough performance for you. There are already many Magento 
+full page cache solutions for a good reason. But this is more than just that, licensed under the GNU 
+General Public License (GPL-2.0) Version 2.
+
+## Features
+
+### Caching  
+Support for caching Magento blocks on TYPO3 pages. Combining this with Ajax would it also with 
+session dependend Magento blocks on every TYPO3 page possible to get a full page caching solution 
+for your online store.
+### Routing  
+Powerful TypoScript interface for mapping TYPO3 frontend requests to Magento route paths and vice 
+versa. This also makes setting up speaking URLs for your store pages much more flexible.
+### Integration  
+Beside the already available features for integrating Magento with TYPO3 this fork brings you:
+
+* Improved Magento HTML page head integration
+* Accessing Magento HTML page meta through TypoScript
+* URL rewrites for Magento products
+* Improved single sign-on to Magento backend
+* Support for the Magento compiler
 
 ## Prerequisites
 
-TypoGento is distributed as a extension package for Magento and TYPO3. As such, installing TypoGento 
-requires you to have already running Magento and TYPO3 on your server:
+TypoGento is distributed as an extension package for Magento and TYPO3. As such, installing TypoGento 
+requires you to have already a running Magento and TYPO3 on your server:
 
 * [Magento Installation Guide](http://www.magentocommerce.com/wiki/1_-_installation_and_configuration/magento_installation_guide)
 * [TYPO3 Installation Guide](http://typo3.org/documentation/document-library/installation/doc_guide_install/current/)
@@ -28,7 +45,8 @@ The minimum requirements for a installation of this fork are:
 ## Installation
 
 The installation of this fork is very similar to Flagbit's TypoGento (see [how to install TypoGento](http://www.typogento.com/documentation/how-to-install-typogento.html)). 
-Before you start it's strongly recommended that you're familiar with the administration of Magento and TYPO3:
+It is highly recommended become familiar with the administration of Magento and TYPO3 before you start 
+installing TypoGento:
 
 1. [Download](https://github.com/witrin/TypoGento/zipball/develop) the package
 2. Unpack the downloaded package
@@ -165,4 +183,4 @@ preferred as Github pull requests.
 ## License
 
 The source code for this project is distributed under the [GNU General Public License (GPL-2.0)
-Version 2](http://opensource.org/licenses/gpl-2.0.php) and is available for download at [Github](https://github.com/witrin/TypoGento/).
+Version 2](http://opensource.org/licenses/gpl-2.0.php) and is available for download at [GitHub](https://github.com/witrin/TypoGento/).
