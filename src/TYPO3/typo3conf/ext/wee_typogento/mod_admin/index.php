@@ -40,11 +40,13 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 		// force typo3 account data are set
 		if (!isset($GLOBALS['BE_USER']->user)) {
 			$this->_addMessage('Access denied', 'TYPO3 account data was not found.', t3lib_message_AbstractMessage::ERROR);
-			return;
 		}
 		// force magento group membership for the typo3 account is set
 		if (empty($GLOBALS['BE_USER']->user['tx_weetypogento_group'])) {
 			$this->_addMessage('Access denied', 'Magento group membership was not set.', t3lib_message_AbstractMessage::ERROR);
+		}
+		
+		if ($this->_hasErrors()) { 
 			return;
 		}
 		// 
@@ -65,6 +67,11 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 	 * 
 	 */
 	public function init() {
+		// init template for messages if any
+		$this->doc = t3lib_div::makeInstance('template');
+		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc->setModuleTemplate(t3lib_extMgm::extRelPath('wee_typogento') . 'mod_admin/info.html');
+		// 
 		try {
 			// init the parent
 			parent::init();
@@ -75,10 +82,6 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 			$this->_session = Mage::getSingleton('core/session', array('name' => 'adminhtml'));
 			// init magento admin session
 			$this->_session = Mage::getSingleton('admin/session');
-			// init template for messages if any
-			$this->doc = t3lib_div::makeInstance('template');
-			$this->doc->setModuleTemplate(t3lib_extMgm::extPath('wee_typogento') . 'mod_admin/info.html');
-			$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		} catch(Exception $e) {
 			// log error
 			$this->_addMessage('Initializing failed', $e->getMessage(), t3lib_message_AbstractMessage::ERROR);
@@ -91,9 +94,8 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 	 * Prints messages if redirect is not successfully.
 	 */
 	public function printContent() {
-		// build the template
-		$this->content  = $this->doc->startPage();
-		$this->content .= $this->doc->moduleBody(array(), array(), array('CONTENT' => ''));
+		$this->content  = $this->doc->startPage('TypoGento');
+		$this->content .= $this->doc->moduleBody(array(), array(), array('CONTENT' => t3lib_FlashMessageQueue::renderFlashMessages()));
 		$this->content .= $this->doc->endPage();
 		// echo the template
 		echo $this->content;
@@ -233,6 +235,18 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 		}
 	}
 	
+	protected function _hasErrors() {
+		$messages = t3lib_FlashMessageQueue::getAllMessages();
+		
+		foreach($messages as $message) {
+			if ($message->getSeverity() === t3lib_message_AbstractMessage::ERROR) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * Add message helper
 	 * 
@@ -241,7 +255,7 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 	 * @param int $severity
 	 */
 	protected function _addMessage($title = null, $message = null, $severity = t3lib_message_AbstractMessage::OK){
-		if(!isset($message)) {
+		if (!isset($message)) {
 			return;
 		}
 		$message = t3lib_div::makeInstance('t3lib_FlashMessage', $message, $title, $severity);

@@ -79,7 +79,7 @@ class tx_weetypogento_tools {
 		}
 
 		if (isset($key)) {
-			if (!array_key_exists($key, self::$extConfig)) {
+			if (!isset(self::$extConfig[$key])) {
 				throw new InvalidArgumentException(sprintf('Configuration entry \'%s\' was not found', $key));
 			}
 			return self::$extConfig[$key];
