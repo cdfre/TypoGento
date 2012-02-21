@@ -3,7 +3,7 @@
 	<modules>
 		<Wee_Typogento>
 			<active>true</active>
-			<codePool>local</codePool>
+			<codePool>community</codePool>
 		</Wee_Typogento>
 	</modules>
 </config>
