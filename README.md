@@ -50,14 +50,16 @@ installing TypoGento:
 
 1. [Download](https://github.com/witrin/TypoGento/zipball/develop) the package
 2. Unpack the downloaded package
-3. Place the content of [`src/TYPO3`](https://github.com/witrin/TypoGento/tree/develop/src/TYPO3) 
-   into your TYPO3 root directory
-4. Place the content of [`src/Magento`](https://github.com/witrin/TypoGento/tree/develop/src/Magento) 
-   into your Magento root directory
-5. Setup the Magento module in `System->Configuration->TypoGento`
-6. Setup the Magento API account in `System->Web Services->User`
-7. Setup the TYPO3 extension
-8. Setup the Magento group memberships of your TYPO3 backend accounts
+3. Install the Magento module
+ 1. Place the content of [`src/Magento`](https://github.com/witrin/TypoGento/tree/develop/src/Magento) into the Magento root directory
+ 2. If caching is enabled, clear `Configuration`, `EAV types and attributes` and `Web Services Configuration` in `System > Cache Management`
+ 3. Grant access to `TypoGento Settings` for the `Administrators` in `System > Permissions > Roles` 
+ 4. Setup the configuration in `System > Configuration > TypoGento`
+ 5. Create the Magento API account for TypoGento in `System > Web Services > User`
+4. Install the TYPO3 extension
+ 1. Place the content of [`src/TYPO3`](https://github.com/witrin/TypoGento/tree/develop/src/TYPO3) into your TYPO3 root directory
+ 2. Activate the extension in `Admin Tools > Extension Manager`, update the database and setup the configuration
+ 3. Setup the Magento role for the TYPO3 backend accounts in `Edit > Extended > Magento Role`
 
 ## Usage
 
