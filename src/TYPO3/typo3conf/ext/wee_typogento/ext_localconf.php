@@ -39,7 +39,7 @@ t3lib_extMgm::addService(
 		'quality' => 50,
 		'os' => '',
 		'exec' => '',
-		'classFile' => t3lib_extMgm::extPath($_EXTKEY).'lib/class.tx_weetypogento_auth_sv1.php',
+		'classFile' => t3lib_extMgm::extPath($_EXTKEY).'sv1/class.tx_weetypogento_auth_sv1.php',
 		'className' => 'tx_weetypogento_auth_sv1',
 	)
 );
