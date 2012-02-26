@@ -95,7 +95,6 @@ class tx_weetypogento_interface implements t3lib_Singleton {
 	 * @return boolan
 	 */
 	protected function _dispatch() {
-		
 		// dispatching current typo3 page
 		try {
 			// get magento application
@@ -106,14 +105,20 @@ class tx_weetypogento_interface implements t3lib_Singleton {
 			$response = $app->getResponse();
 			// get current store code
 			$code = tx_weetypogento_div::getFELangStoreCode();
-			// get store by its code
-			$store = $app->getStore($code);
-			// activate current store
-			$app->setCurrentStore($store);
+			try {
+				// get store by its code
+				$store = $app->getStore($code);
+				// activate current store
+				$app->setCurrentStore($store);
+			} catch (Exception $e) {
+				tx_weetypogento_div::throwException('lib_store_not_resolved_error',
+					array($code), $e
+				);
+			}
 			// run dispatch
 			$front->dispatch();
 		} catch (Exception $e) {
-			tx_weetypogento_div::throwException('lib_processing_failed_error',
+			tx_weetypogento_div::throwException('lib_request_processing_failed_error',
 				array($this->_target), $e
 			);
 		}
