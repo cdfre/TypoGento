@@ -171,27 +171,27 @@ class tx_weetypogento_tcafields {
 	}
 	
 	protected function _getSoapItems($fetch, $walk) {
-		$conf = tx_weetypogento_tools::getExtConfig();
-		
 		try {
+			// try to fetch the data with soap
 			$soap = t3lib_div::makeInstance('tx_weetypogento_soapinterface');
 			$result = $fetch($soap);
-			
+			// skip if nothing returned
 			if (!isset($result)) {
 				return;
 			}
-			
+			// transform the items
 			if (is_array($result)) {
 				return array_walk($result, $walk);
 			} else {
 				return $walk($result);
 			}
 		} catch (Exception $e) {
-			$message = t3lib_div::makeInstance('t3lib_FlashMessage', $e->getMessage(), 'SOAP Request Failed', t3lib_FlashMessage::ERROR);
+			// get error message
+			$message = t3lib_div::makeInstance('t3lib_FlashMessage', 
+				$e->getMessage(), '', t3lib_FlashMessage::ERROR
+			);
 			t3lib_FlashMessageQueue::addMessage($message);
 		}
-		
-		
 	}
 
 	/**

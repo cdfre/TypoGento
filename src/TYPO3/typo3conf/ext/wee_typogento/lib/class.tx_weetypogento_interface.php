@@ -27,14 +27,17 @@ class tx_weetypogento_interface implements t3lib_Singleton {
 		$this->_environment = $this->_getEnvironment($this->_target);
 		//
 		$this->_environment->initialize();
+		
 		try {
 			//
 			$this->_initialize();
 			//
 			$this->_dispatch();
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$this->_environment->deinitialize();
-			throw $e;
+			tx_weetypogento_tools::throwException('lib_dispatching_failed_error',
+				array($_SERVER['REQUEST_URI']), $e
+			);
 		}
 		$this->_environment->deinitialize();
 	}
@@ -58,7 +61,9 @@ class tx_weetypogento_interface implements t3lib_Singleton {
 			// lookup for matching typogento route
 			return $router->lookup(tx_weetypogento_router::ROUTE_SECTION_DISPATCH, null, $target);
 		} catch (Exception $e) {
-			throw new Exception(sprintf('Routing failed on page \'%s\': %s', $GLOBALS['TSFE']->id, $e->getMessage()), E_ERROR, $e);
+			tx_weetypogento_tools::throwException('lib_unresolved_target_url_error',
+				array(), $e
+			);
 		}
 	}
 
@@ -114,9 +119,10 @@ class tx_weetypogento_interface implements t3lib_Singleton {
 			//$front->addRouter('standard', $router);
 			// run dispatch
 			$front->dispatch();
-		} catch(Exception $e) {
-			
-			throw new Exception(sprintf('Dispatching request failed on page \'%s\': %s', $GLOBALS['TSFE']->id, $e->getMessage()), E_ERROR, $e);
+		} catch (Exception $e) {
+			tx_weetypogento_tools::throwException('lib_processing_failed_error',
+				array($this->_target), $e
+			);
 		}
 	}
 	
@@ -158,8 +164,10 @@ class tx_weetypogento_interface implements t3lib_Singleton {
 			// ...
 			$app->loadAreaPart(Mage_Core_Model_App_Area::AREA_GLOBAL, Mage_Core_Model_App_Area::PART_EVENTS);
 			//self::$isInitialized = true;
-		} catch(Exception $e) {
-			throw new Exception(sprintf('Initializing failed on page \'%s\': %s', $GLOBALS['TSFE']->id, $e->getMessage()), E_ERROR, $e);
+		} catch (Exception $e) {
+			tx_weetypogento_tools::throwException('lib_application_initializing_failed_error',
+				array(), $e
+			);
 		}
 	}
 	

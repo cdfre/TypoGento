@@ -3,7 +3,6 @@
 /**
  * TypoGento navigation
  *
- * @todo Use TypoGento router
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 class user_tx_weetypogento_navigation extends tx_weetypogento_navigation {
@@ -142,10 +141,8 @@ class tx_weetypogento_navigation {
 	 * @return array
 	 */
 	public function categories($content, $conf) {
-
-		$this->emConf = tx_weetypogento_tools::getExtConfig();
 		$this->conf = $conf;
-		$this->mage = t3lib_div::makeInstance('tx_weetypogento_interface', $this->emConf );
+		$this->mage = t3lib_div::makeInstance('tx_weetypogento_interface');
 
 		$categories = $this->getStoreCategories($this->conf['startcategory']);
 

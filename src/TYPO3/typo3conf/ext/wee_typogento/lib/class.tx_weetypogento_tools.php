@@ -8,20 +8,6 @@
 class tx_weetypogento_tools {
 
 	/**
-	 * The extension configuration array
-	 *
-	 * @var array
-	 */
-	protected static $extConfig = null;
-
-	/**
-	 * The plugin setup array
-	 *
-	 * @var array
-	 */
-	protected static $setup = null;
-
-	/**
 	 * The template configuration array
 	 *
 	 * @var array
@@ -36,24 +22,6 @@ class tx_weetypogento_tools {
 	protected static $cObj = null;
 
 	/**
-	 * Get the plugin setup
-	 *
-	 * @return array
-	 */
-	public static function &getSetup() {
-		if (!isset(self::$setup)) {
-			$setup = &$GLOBALS['TSFE']->tmpl->setup;
-			if (isset($setup['plugin.']['tx_weetypogento_pi1.'])) {
-				self::$setup = &$setup['plugin.']['tx_weetypogento_pi1.'];
-			} else {
-				throw new Exception('No TypoScript template was found');
-			}
-		}
-
-		return self::$setup;
-	}
-
-	/**
 	 * Get the template configuration array
 	 *
 	 * @return array
@@ -64,28 +32,6 @@ class tx_weetypogento_tools {
 		}
 
 		return self::$config;
-	}
-
-	/**
-	 * Get the extension configuration array
-	 *
-	 * @param string $key Key for the property if null it returns the configration array
-	 * @throws InvalidArgumentException If a given key was not found
-	 * @return mixed
-	 */
-	public static function &getExtConfig($key = null) {
-		if (!isset(self::$extConfig)) {
-			self::$extConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['wee_typogento']);
-		}
-
-		if (isset($key)) {
-			if (!isset(self::$extConfig[$key])) {
-				throw new InvalidArgumentException(sprintf('Configuration entry \'%s\' was not found', $key));
-			}
-			return self::$extConfig[$key];
-		} else {
-			return self::$extConfig;
-		}
 	}
 
 	/**
@@ -152,7 +98,9 @@ class tx_weetypogento_tools {
 			try{	// create cobj
 				return t3lib_div::makeInstance('tslib_cObj');
 			} catch(Exception $e) {
-				throw new Exception(sprintf('Creating TYPO3 cObj failed: \'%s\'', $e->getMessage()));
+				tx_weetypogento_tools::throwException('lib_content_object_initializing_failed_error', 
+					array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), $e
+				);
 			}
 		}
 	}
@@ -185,6 +133,27 @@ class tx_weetypogento_tools {
 		}
 		$GLOBALS['TYPO3_DB']->sql_free_result($res);
 		return $store;
+	}
+	
+	public static function throwException($message, $arguments = array(), Exception $previous = null) {
+		// get translation helper
+		$helper = t3lib_div::makeInstance('tx_weetypogento_languageHelper');
+		// check previous error message if set
+		if (isset($previous)) {
+			// get previous error message
+			$previousMessage = $previous->getMessage();
+			// replace message if empty
+			if (empty($previousMessage)) {
+				$previousMessage = $helper->getLabel('lib_unknown_error', $arguments);
+			}
+			// add previous message to the args
+			$arguments[] = $previousMessage;
+			//die(var_dump($previousMessage));
+		}
+		// get message translation
+		$message = $helper->getLabel($message, $arguments);
+		// throw the exception
+		throw new Exception($message, 0, $previous);
 	}
 }
 

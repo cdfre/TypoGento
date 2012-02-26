@@ -39,11 +39,15 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 	public function main() {
 		// force typo3 account data are set
 		if (!isset($GLOBALS['BE_USER']->user)) {
-			$this->_addMessage('Access denied', 'TYPO3 account data was not found.', t3lib_message_AbstractMessage::ERROR);
+			$this->_addMessage('access_denied_title', 'be_user_not_set_error', 
+				t3lib_message_AbstractMessage::ERROR
+			);
 		}
 		// force magento group membership for the typo3 account is set
 		if (empty($GLOBALS['BE_USER']->user['tx_weetypogento_group'])) {
-			$this->_addMessage('Access denied', 'Magento group membership was not set.', t3lib_message_AbstractMessage::ERROR);
+			$this->_addMessage('access_denied_title', 'account_membership_not_set_error', 
+				t3lib_message_AbstractMessage::ERROR
+			);
 		}
 		
 		if ($this->_hasErrors()) { 
@@ -84,7 +88,11 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 			$this->_session = Mage::getSingleton('admin/session');
 		} catch(Exception $e) {
 			// log error
-			$this->_addMessage('Initializing failed', $e->getMessage(), t3lib_message_AbstractMessage::ERROR);
+			$this->_addMessage(
+				'initalizing_failed_title', 
+				$e->getMessage(), 
+				t3lib_message_AbstractMessage::ERROR
+			);
 		}
 	}
 	
@@ -95,7 +103,9 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 	 */
 	public function printContent() {
 		$this->content  = $this->doc->startPage('TypoGento');
-		$this->content .= $this->doc->moduleBody(array(), array(), array('CONTENT' => t3lib_FlashMessageQueue::renderFlashMessages()));
+		$this->content .= $this->doc->moduleBody(array(), array(), 
+				array('CONTENT' => t3lib_FlashMessageQueue::renderFlashMessages())
+		);
 		$this->content .= $this->doc->endPage();
 		// echo the template
 		echo $this->content;
@@ -121,13 +131,12 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 				return;
 			}
 			// copy typo3 account data otherwise
-			$this->_user->setData(array(
-					'username' => $data['username'],
-					'password' => $data['password'],
-					'firstname' => $data['realName'],
-					'lastname' => $data['realName'],
-					'email' => $data['email'],
-					'is_active' => true
+			$this->_user->setData(array('username' => $data['username'],
+				'password' => $data['password'],
+				'firstname' => $data['realName'],
+				'lastname' => $data['realName'],
+				'email' => $data['email'],
+				'is_active' => true
 			));
 			// save new magento account
 			$this->_user->save();
@@ -137,7 +146,9 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 			$this->_user->saveRelations();
 		} catch(Exception $e) {
 			// log error
-			$this->_addMessage('Access failed', $e->getMessage(), t3lib_message_AbstractMessage::ERROR);
+			$this->_addMessage('access_failed_title', $e->getMessage(), 
+				t3lib_message_AbstractMessage::ERROR
+			);
 		}
 	}
 
@@ -151,28 +162,41 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 			// force accounts exist
 			if (!isset($this->_user) 
 			|| !$this->_user->getId()) {
-				$this->_addMessage('Login failed', 'Initializing Magento account failed.', t3lib_message_AbstractMessage::ERROR);
+				$this->_addMessage('login_failed_title', 'account_not_found_error', 
+					t3lib_message_AbstractMessage::ERROR
+				);
 				return;
 			}
 			// force session exist
 			if (!isset($this->_session)) {
-				$this->_addMessage('Login failed', 'Initializing Magento session failed', t3lib_message_AbstractMessage::ERROR);
+				$this->_addMessage('login_failed_title', 'initializing_session_failed_error', 
+					t3lib_message_AbstractMessage::ERROR
+				);
 				return;
 			}
 			// get typo3 account data
 			$data = $GLOBALS['BE_USER']->user;
 			// force account roles equal
 			if ($this->_user->getRole()->getId() != $data['tx_weetypogento_group']) {
-				$this->_addMessage('Access denied', 'Magento group membership is invalid.', t3lib_message_AbstractMessage::ERROR);
+				$this->_addMessage(
+					'access_denied_title', 
+					'account_group_not_set_error', 
+					t3lib_message_AbstractMessage::ERROR
+				);
 				return;
 			}
 			// force magento account is active
 			if ($this->_user->getIsActive() != '1') {
-				$this->_addMessage('Access denied', 'Magento account is not active.', t3lib_message_AbstractMessage::ERROR);
+				$this->_addMessage('access_denied_title', 'account_not_active_error', 
+					t3lib_message_AbstractMessage::ERROR);
 			}
 			// don't get it ...
 			if (!$this->_user->hasAssigned2Role($this->_user->getId())) {
-				$this->_addMessage('Access denied', 'Magento account is not assigned to role.', t3lib_message_AbstractMessage::ERROR);
+				$this->_addMessage(
+					'access_denied_title', 
+					'account_role_not_set_error', 
+					t3lib_message_AbstractMessage::ERROR
+				);
 			}
 			// finish magento login
 			Mage::dispatchEvent('admin_user_authenticate_after', array(
@@ -207,7 +231,9 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 				$this->session->unsIsFirstPageAfterLogin();
 			}
 			// log error
-			$this->_addMessage('Login failed', $e->getMessage(), t3lib_message_AbstractMessage::ERROR);
+			$this->_addMessage('login_failed_title', $e->getMessage(), 
+				t3lib_message_AbstractMessage::ERROR
+			);
 		}
 	}
 	
@@ -220,10 +246,12 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 		try {
 			// create redirect url
 			$url = Mage::getSingleton('adminhtml/url');
-			$redirect =  $url->addSessionParam()->getUrl('adminhtml/dashboard/*', array('_current' => true));
-			Mage::dispatchEvent('admin_session_user_login_success', array(
-				'user' => $this->_user
-			));
+			$redirect =  $url->addSessionParam()->getUrl('adminhtml/dashboard/*', 
+				array('_current' => true)
+			);
+			Mage::dispatchEvent('admin_session_user_login_success', 
+				array('user' => $this->_user)
+			);
 			// disable cookies for the first request
 			header_remove('set-cookie');
 			// send redirect
@@ -231,19 +259,23 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 			exit;
 		} catch(Exception $e) {
 			// log error
-			$this->_addMessage('Redirect failed', $e->getMessage(), t3lib_message_AbstractMessage::ERROR);
+			$this->_addMessage('redirect_failed_title', $e->getMessage(), 
+				t3lib_message_AbstractMessage::ERROR
+			);
 		}
 	}
 	
 	protected function _hasErrors() {
+		// get all messages
 		$messages = t3lib_FlashMessageQueue::getAllMessages();
-		
+		// check if any errors within
 		foreach($messages as $message) {
+			// return true and skip if an error is found
 			if ($message->getSeverity() === t3lib_message_AbstractMessage::ERROR) {
 				return true;
 			}
 		}
-		
+		// nothing found
 		return false;
 	}
 	
@@ -255,10 +287,26 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 	 * @param int $severity
 	 */
 	protected function _addMessage($title = null, $message = null, $severity = t3lib_message_AbstractMessage::OK){
+		// skip if no message is set
 		if (!isset($message)) {
 			return;
 		}
+		// get current language and include resource
+		$language = $GLOBALS['LANG'];
+		$language->includeLLFile('EXT:wee_typogento/mod_admin/locallang.xml');
+		// get title label
+		$value = $language->getLL($title);
+		if (!empty($value)) {
+			$title = $value;
+		}
+		// get message label
+		$value = $language->getLL($message);
+		if (!empty($value)) {
+			$message = $value;
+		}
+		// create flash message
 		$message = t3lib_div::makeInstance('t3lib_FlashMessage', $message, $title, $severity);
+		// add flash message to the queue
 		t3lib_FlashMessageQueue::addMessage($message);
 	}
 }

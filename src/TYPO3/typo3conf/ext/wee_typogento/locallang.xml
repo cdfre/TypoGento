@@ -8,6 +8,36 @@
 		<languageKey index="default" type="array">
 			<label index="pi1_title">Magento</label>
 			<label index="pi1_plus_wiz_description">Display Magento content</label>
+			<label index="lib_unknown_error">Unknown error</label>
+			<label index="lib_dispatching_failed_error">The requested URL '%s' could not be dispatched. %s</label>
+			<label index="lib_routing_failed_error">Unknown error</label>
+			<label index="lib_view_type_not_set_error">The Flexform configuration is not valid</label>
+			<label index="lib_unexpected_view_type_error"></label>
+			<label index="lib_missing_route_filter_error">The route filter is missing in '%s'</label>
+			<label index="lib_missing_route_target_error">The route target is missing in '%s'</label>
+			<label index="lib_unsupported_link_type_error">The link type '%s' is not supported</label>
+			<label index="lib_invalid_route_section_error">The route section '%s' is not valid</label>
+			<label index="lib_active_route_not_found_error">The route section '%s' has no active entry</label>
+			<label index="lib_invalid_document_root_error">The document root '%s' is not valid</label>
+			<label index="lib_empty_configuration_key_error">The configuration key is empty</label>
+			<label index="lib_invalid_configuration_section_error">The configuration section '%s' is not valid</label>
+			<label index="lib_invalid_configuration_key_error">The configuration key '%s' is not valid</label>
+			<label index="lib_typoscript_not_initialized_error">The TypoScript setup is not initialized</label>
+			<label index="lib_typoscript_setup_not_set_error">The TypoScript setup is not set</label>
+			<label index="lib_extension_configuration_not_set_error">The extension configuration is not set</label>
+			<label index="lib_damaged_extension_configuration_error">The extension configuration is damaged</label>
+			<label index="lib_unresolved_target_url_error">The routing system is unable to resolve the action URL: '%s'</label>
+			<label index="lib_processing_failed_error">An error has occurred during processing the action URL '%s': %s</label>
+			<label index="lib_application_initializing_failed_error">The following error has occurred during initializing the application: %s</label>
+			<label index="lib_invalid_base_url_error">The base URL '%s' is not valid</label>
+			<label index="lib_page_head_integration_failed_error">The requested URL '%s' could not be retrieved. %s</label>
+			<label index="lib_routing_system_initalizing_failed_error">The routing system could not be initialized properly for the requested URL '%s': '%s'</label>
+			<label index="lib_content_object_initializing_failed_error">The content object could not be created for the requested URL '%s': '%s'</label>
+			<label index="lib_unavailable_block_error">The block '%s' was not rendered for the requested URL '%s'</label>
+			<label index="lib_interface_access_failed_error">...</label>
+			<label index="lib_unsupported_block_type_error">The Block type '%s' is not supported</label>
+			<label index="lib_unexpected_soap_error">The SOAP request has failed: %s</label>
+			<label index="lib_wsdl_not_found_error">The WSDL file could not be loaded from '%s'</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="pi1_title">Magento</label>

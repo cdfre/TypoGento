@@ -29,11 +29,10 @@ class tx_weetypogento_observer implements t3lib_Singleton, tslib_content_getData
 	 * @param t3lib_pagerenderer $pObj
 	 */
 	public function renderPreProcess($params, t3lib_pagerenderer &$pObj) {
-		// check if automatic header integration is enabled
-		$setup = &tx_weetypogento_tools::getSetup();
-		if (!isset($setup['autoHeader'])) {
-			return;
-		}
+		// get configuration helper
+		$helper = t3lib_div::makeInstance('tx_weetypogento_configurationHelper');
+		// get plugin setup
+		$setup = $helper->getSection(tx_weetypogento_configurationHelper::TYPOSCRIPT_SETUP);
 		// integrate magento resources into typo3 header
 		try {
 			// integrate magento header using the default block
@@ -41,8 +40,9 @@ class tx_weetypogento_observer implements t3lib_Singleton, tslib_content_getData
 			// render magento resources into typo3 header
 			$header->render();
 		} catch (Exception $e) {
-			trigger_error(sprintf('Header integration on page \'%s\' failed: %s',
-				$pObj->id, $e->getMessage()), E_USER_WARNING);
+			tx_weetypogento_tools::throwException('lib_page_head_integration_failed_error',
+				array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), $e
+			);
 		}
 	}
 	
@@ -58,7 +58,9 @@ class tx_weetypogento_observer implements t3lib_Singleton, tslib_content_getData
 		try {
 			t3lib_div::makeInstance('tx_weetypogento_router');
 		} catch(Exception $e) {
-			throw new Exception(sprintf('Setup router on page \'%s\' failed: \'%s\'', $pObj->id, $e->getMessage()), 0, $e);
+			tx_weetypogento_tools::throwException('lib_routing_system_initalizing_failed_error', 
+				array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), $e
+			);
 		}
 		//}
 	}

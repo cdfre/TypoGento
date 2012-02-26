@@ -85,34 +85,32 @@ class tx_weetypogento_header implements t3lib_Singleton {
 			$this->_path = Mage::getBaseDir();
 			$this->_url = Mage::getBaseUrl('js');
 		} catch (Exception $e) {
-			throw new Exception(sprintf('Resolving local directories failed: \'%s\'', $e->getMessage()));
+			tx_weetypogento_tools::throwException('lib_interface_access_failed_error', 
+				array(), $e
+			);
 		}
 		// get design package for lookup includings
 		try {
 			$this->_design = Mage::getDesign();
 		} catch (Exception $e) {
-			throw new Exception(sprintf('Access design package failed: \'%s\'', $e->getMessage()));
+			tx_weetypogento_tools::throwException('lib_interface_access_failed_error', 
+				array(), $e
+			);
 		}
 		// get the header block
 		$this->_block = $this->_magento->getBlock(&$this->name);
 		// check the header block exists
 		if (!isset($this->_block)) {
-			//$source = array('pid' => $GLOBALS['TSFE']->id);
-			$router = t3lib_div::makeInstance('tx_weetypogento_router');
-			
-			try {
-				$url = $router->lookup(tx_weetypogento_router::ROUTE_SECTION_DISPATCH);
-			} catch(Exception $e) {
-				throw new Exception(sprintf('Block \'%s\' was not found. Lookup failed for page \'%s\': \'%s\'',
-					$this->name, $GLOBALS['TSFE']->id, $e->getMessage()), 0, $e);
-			}
-			
-			throw new Exception(sprintf('Block \'%s\' was not found. Targeting URL for page \'%s\' is \'%s\'', 
-				$this->name, $GLOBALS['TSFE']->id, $url));
+
+			tx_weetypogento_tools::throwException('lib_unavailable_block_error', 
+				array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $this->name)
+			);
 		}
 		// check the header block type
 		if (!($this->_block instanceof Mage_Page_Block_Html_Head)) {
-			throw new Exception(sprintf('Unexpected Block type \'%s\'', get_class($this->_block)));
+			tx_weetypogento_tools::throwException('lib_unsupported_block_type_error', 
+				array(get_class($this->_block))
+			);
 		}
 		// get page renderer
 		$this->_renderer = $GLOBALS['TSFE']->getPageRenderer();
@@ -136,10 +134,9 @@ class tx_weetypogento_header implements t3lib_Singleton {
 	 * @throws Exception
 	 */
 	public function render() {
-		// init the header
-		$this->_init();
-		
 		try {
+			// init the header
+			$this->_init();
 			// get template configuration
 			$config = &tx_weetypogento_tools::getConfig();
 			// collect items
@@ -197,7 +194,9 @@ class tx_weetypogento_header implements t3lib_Singleton {
 				$this->_renderer->addHeaderData(&$html);
 			}
 		} catch (Exception $e) {
-			trigger_error(sprintf('Rendering failed: %s.', $e->getMessage()), E_USER_WARNING);
+			tx_weetypogento_tools::throwException('lib_page_head_integration_failed_error', 
+				array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), $e
+			);
 		}
 	}
 	

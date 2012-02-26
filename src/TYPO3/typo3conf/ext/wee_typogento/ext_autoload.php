@@ -4,7 +4,9 @@ $extensionPath = t3lib_extMgm::extPath('wee_typogento');
 
 return array(
 	'tx_weetypogento_pi1' => $extensionPath.'pi1/class.tx_weetypogento_pi1.php',
+	
 	'tx_weetypogento_auth_sv1' => $extensionPath.'sv1/class.tx_weetypogento_auth_sv1.php',
+		
 	'tx_weetypogento_cache' => $extensionPath.'lib/class.tx_weetypogento_cache.php',
 	'tx_weetypogento_interface' => $extensionPath.'lib/class.tx_weetypogento_interface.php',
 	'tx_weetypogento_navigation' => $extensionPath.'lib/class.tx_weetypogento_navigation.php',
@@ -30,7 +32,11 @@ return array(
 	'tx_weetypogento_routehandler' => $extensionPath.'lib/routing/class.tx_weetypogento_routehandler.php',
 	'tx_weetypogento_typolinkroutehandler' => $extensionPath.'lib/routing/class.tx_weetypogento_routehandler.php',
 
-	'tx_weetypogento_routeenvironment' => $extensionPath.'lib/routing/class.tx_weetypogento_routeenvironment.php'
+	'tx_weetypogento_routeenvironment' => $extensionPath.'lib/routing/class.tx_weetypogento_routeenvironment.php',
+	
+	'tx_weetypogento_languagehelper' => $extensionPath.'lib/class.tx_weetypogento_languagehelper.php',
+	'tx_weetypogento_configurationhelper' => $extensionPath.'lib/class.tx_weetypogento_configurationhelper.php',
+	'tx_weetypogento_magentohelper' => $extensionPath.'lib/class.tx_weetypogento_magentohelper.php'
 );
 
 ?>

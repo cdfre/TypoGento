@@ -105,7 +105,9 @@ class tx_weetypogento_typolinkRouteHandler implements tx_weetypogento_routeHandl
 				t3lib_div::callUserFunction($hook, $params, $cObj);
 			}
 		} else {
-			throw new t3lib_exception(sprintf('Link type \'%s\' is not supported', $type));
+			tx_weetypogento_tools::throwException('lib_unsupported_link_type_error', 
+				array($type)
+			);
 		}
 	}
 	

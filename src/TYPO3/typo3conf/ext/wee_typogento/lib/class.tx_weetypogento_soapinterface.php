@@ -7,7 +7,7 @@
  */
 class tx_weetypogento_soapinterface implements t3lib_Singleton {
 
-	protected static $urlPostfix = 'api/soap/?wsdl';
+	const WSDL_URI = '/api/soap/?wsdl';
 	
 	protected $_client = null;
 	
@@ -48,10 +48,6 @@ class tx_weetypogento_soapinterface implements t3lib_Singleton {
 		}
 	}
 	
-	public function getUrl() {
-		return tx_weetypogento_tools::getExtConfig('url').self::$urlPostfix;
-	}
-	
 	protected function _getHash($resource, $parameters) {
 		ksort($parameters);
 		$serialized = serialize(array_filter($parameters));
@@ -77,23 +73,37 @@ class tx_weetypogento_soapinterface implements t3lib_Singleton {
 		} else {
 			// lock request before start
 			$lock = $this->_acquireLock($hash);
-			// init session if not set
-			if (!isset($this->client)
-			|| !isset($this->_session)) {
-				$url = $this->getUrl();
-				$user = tx_weetypogento_tools::getExtConfig('username');
-				$password = tx_weetypogento_tools::getExtConfig('password');
-				// start soap client
-				$this->client = new SoapClient($url, array('exceptions' => true, 'cache_wsdl' => WSDL_CACHE_MEMORY));
-				$this->_session = $this->client->login($user, $password);
-				// unset credentials
-				unset($password);
-				unset($user);
+			try {
+				// init session if not set
+				if (!isset($this->client)
+				|| !isset($this->_session)) {
+					// get configuration helper
+					$helper = t3lib_div::makeInstance('tx_weetypogento_magentoHelper');
+					$url = $helper->getBaseUrl();
+					$user = $helper->getApiAccount();
+					$password = $helper->getApiPassword();
+					// adds the wsdl path
+					$url .= self::WSDL_URI;
+					// xdebug work arround (see https://bugs.php.net/bug.php?id=34657)
+					if (!@file_get_contents($url)) {
+						tx_weetypogento_tools::throwException(
+							'lib_wsdl_not_found_error', array($url)
+						);
+					}
+					// start soap client
+					$this->client = new SoapClient($url, array('exceptions' => true, 'cache_wsdl' => WSDL_CACHE_MEMORY));
+					$this->_session = $this->client->login($user, $password);
+					// unset credentials
+					unset($password);
+					unset($user);
+				}
+				// perform soap query
+				$result = $this->client->call($this->_session, $resource, $parameters);
+				// cache the result
+				$this->_cache->set($hash, $result, array());
+			} catch (Exception $e) {
+				tx_weetypogento_tools::throwException('lib_unexpected_soap_error', array(), $e);
 			}
-			// perform soap query
-			$result = $this->client->call($this->_session, $resource, $parameters);
-			// cache the result
-			$this->_cache->set($hash, $result, array());
 			// release the lock
 			$this->_releaseLock($lock);
 			// return the result

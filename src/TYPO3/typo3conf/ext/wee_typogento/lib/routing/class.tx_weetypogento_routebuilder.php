@@ -30,8 +30,10 @@ class tx_weetypogento_defaultRouteBuilder implements tx_weetypogento_routeBuilde
 	 * @see tx_weetypogento_routeBuilder::build()
 	 */
 	public function build(tx_weetypogento_router $router) {
+		// get configuration helper
+		$helper = t3lib_div::makeInstance('tx_weetypogento_configurationHelper');
 		// get plugin setup
-		$setup = &tx_weetypogento_tools::getSetup();
+		$setup = $helper->getSection(tx_weetypogento_configurationHelper::TYPOSCRIPT_SETUP);
 		// get routes setup
 		$routes = &$setup['routes.'];
 		// skip if routes setup is empty
@@ -70,7 +72,7 @@ class tx_weetypogento_defaultRouteBuilder implements tx_weetypogento_routeBuilde
 		$segments = null;
 	
 		if (!$view) {
-			throw new Exception('Invalid FlexForm: View type is not set');
+			tx_weetypogento_tools::throwException('lib_view_type_not_set_error');
 		}
 	
 		switch ($view) {
@@ -96,7 +98,9 @@ class tx_weetypogento_defaultRouteBuilder implements tx_weetypogento_routeBuilde
 				);
 				break;
 			default:
-				throw new Exception(sprintf('Invalid FlexForm: View type \'%s\' is not supported', $view));
+				tx_weetypogento_tools::throwException('lib_unexpected_view_type_error', 
+					array($view)
+				);
 		}
 	
 		return $segments;
@@ -113,11 +117,15 @@ class tx_weetypogento_defaultRouteBuilder implements tx_weetypogento_routeBuilde
 	 */
 	protected function _buildRoute(array &$typoscript) {
 		if (!isset($typoscript['filter.'])) {
-			throw new InvalidArgumentException(sprintf('Filter is missing in \'%s\'', print_r($typoscript, true)));
+			tx_weetypogento_tools::throwException('lib_missing_route_filter_error', 
+				array(print_r($typoscript, true))
+			);
 		}
 	
 		if (!isset($typoscript['target.'])) {
-			throw new InvalidArgumentException(sprintf('Target is missing in \'%s\'', print_r($typoscript, true)));
+			tx_weetypogento_tools::throwException('lib_missing_route_target_error', 
+				array(print_r($typoscript, true))
+			);
 		}
 		
 		$priority = $this->_buildValue('priority', $typoscript, 0);

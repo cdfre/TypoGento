@@ -62,8 +62,11 @@ class tx_weetypogento_pi1 extends tslib_pibase {
 	 * @return The rendered content
 	 */
 	public function main($content, $conf) {
-		//
-		$setup = tx_weetypogento_tools::getSetup();
+		// get configuration helper
+		$helper = t3lib_div::makeInstance('tx_weetypogento_configurationHelper');
+		// get plugin setup
+		$setup = $helper->getSection(tx_weetypogento_configurationHelper::TYPOSCRIPT_SETUP);
+		// 
 		$type = $this->cObj->getUserObjectType();
 		// convert content type if possible and no cache flag is set
 		if ($conf['noCache'] && $type == tslib_cObj::OBJECTTYPE_USER) {
@@ -125,7 +128,9 @@ class tx_weetypogento_pi1 extends tslib_pibase {
 					$block = $this->_magento->getBlock($name);
 					// throw if default page head is not set
 					if (!isset($block)) {
-						throw new Exception(sprintf('Rendering block \'%s\' failed: Block was not found on page \'%s\'', $name, $pid));
+						tx_weetypogento_tools::throwException('lib_unavailable_block_error',
+							array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $name)
+						);
 					}
 					// if Mage_Core_Block_Text
 					if ($block instanceof Mage_Core_Block_Text) {

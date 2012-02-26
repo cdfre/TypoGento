@@ -14,6 +14,16 @@ class tx_weetypogento_auth_sv1 extends tx_sv_auth {
 	protected $_feUserCache = array();
 	
 	/**
+	 * 
+	 * @var tx_weetypogento_magentoHelper
+	 */
+	protected $_helper = null;
+	
+	public function __construct() {
+		$this->_helper = t3lib_div::makeInstance('tx_weetypogento_magentoHelper');
+	}
+	
+	/**
 	 * Authenticate a user
 	 * 
 	 * Loads the frontend session before user athentication.
@@ -32,7 +42,7 @@ class tx_weetypogento_auth_sv1 extends tx_sv_auth {
 		// load the frontend session
 		Mage::getSingleton('core/session', array('name' => 'frontend'));
 		
-		$customer = Mage::getSingleton('customer/customer')->setWebsiteId($this->emConf['website'])->load($user['tx_weetypogento_id']);
+		$customer = Mage::getSingleton('customer/customer')->setWebsiteId($this->_helper->getWebsiteId())->load($user['tx_weetypogento_id']);
 	
 		if ($customer->getConfirmation() && $customer->isConfirmationRequired()
 		|| !$customer->validatePassword($this->login['uident'])
@@ -58,14 +68,11 @@ class tx_weetypogento_auth_sv1 extends tx_sv_auth {
 	 * @return mixed user array or false
 	 */
 	public function getUser() {
-		// get Extension Config
-		$this->emConf = tx_weetypogento_tools::getExtConfig();
-
 		// get an Magento Instance
 		$this->mage = t3lib_div::makeInstance('tx_weetypogento_autoloader');
 		Mage::app();
 		// get Magento Customer
-		$this->_mageCustomer = Mage::getSingleton('customer/customer')->setWebsiteId($this->emConf['website']);
+		$this->_mageCustomer = Mage::getSingleton('customer/customer')->setWebsiteId($this->_helper->getWebsiteId());
 		$this->getMageCustomer()->loadByEmail($this->login['uname']);
 		$this->getMageCustomer()->getAttributes();
 

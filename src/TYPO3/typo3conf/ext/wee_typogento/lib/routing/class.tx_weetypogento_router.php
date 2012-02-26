@@ -54,7 +54,9 @@ class tx_weetypogento_router implements t3lib_Singleton {
 	public function lookup($section, tx_weetypogento_routeEnvironment $filter = null, tx_weetypogento_routeEnvironment $target = null) {
 		// assert section exists in route tree
 		if (!array_key_exists($section, $this->_sections)) {
-			throw new InvalidArgumentException(sprintf('Unknown route section \'%s\'', $section));
+			tx_weetypogento_tools::throwException('lib_invalid_route_section_error', 
+				array($section)
+			);
 		}
 		// get priority slots from section
 		$slots = &$this->_sections[$section];
@@ -94,7 +96,9 @@ class tx_weetypogento_router implements t3lib_Singleton {
 		if (isset($target)) {
 			$target->deinitialize();
 		}
-		throw new Exception(sprintf('No active route was found in section \'%s\'', $section));
+		tx_weetypogento_tools::throwException('lib_active_route_not_found_error', 
+			array($section)
+		);
 	}
 
 	/**

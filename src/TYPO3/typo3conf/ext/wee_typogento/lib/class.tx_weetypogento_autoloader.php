@@ -8,29 +8,34 @@
 class tx_weetypogento_autoloader implements t3lib_Singleton {
 	
 	/**
+	 * @var tx_weetypogento_magentoHelper
+	 */
+	protected static $_helper = null;
+	
+	/**
 	 * Constructor for tx_weetypogento_interface
 	 *
 	 */
 	public function __construct() {
+		// init confguration helper if not already done
+		if (!isset(self::$_helper)) {
+			self::$_helper = t3lib_div::makeInstance('tx_weetypogento_magentoHelper');
+		}
 		// get the local document root of magento
-		$path = &tx_weetypogento_tools::getExtConfig('path');
+		$documentRoot = self::$_helper->getDocumentRoot();
 		//
-		self::_initializeFramework($path);
+		self::_initializeFramework($documentRoot);
 	}
 	
 	/**
 	 * Initialize Magento framework
 	 * 
-	 * @param string $path Absolute local path to the Magento root
+	 * Make sure the document root is a valid local path 
+	 * without leading directory seperator.
+	 * 
+	 * @param string $documentRoot Absolute local path to the Magento document root
 	 */
-	protected static function _initializeFramework($path) {
-		if (empty($path)) {
-			throw new Exception('Root directory is not set');
-		}
-		
-		if (!is_dir($path)) {
-			throw new Exception(sprintf('Root directory \'%s\' not found', $path));
-		}
+	protected static function _initializeFramework($documentRoot) {
 		// init magento if it's not already done
 		if (class_exists('Mage', false)) {
 			return;
@@ -38,15 +43,17 @@ class tx_weetypogento_autoloader implements t3lib_Singleton {
 		// error reporting
 		error_reporting(E_ALL ^ E_NOTICE);
 		// compilation includes configuration file
-		$file = $path.'includes/config.php';
+		$file = $documentRoot.'/includes/config.php';
 		if (file_exists($file)) {
 			include $file;
 		}
 		// load application
-		$file = $path.'app/Mage.php';
+		$file = $documentRoot.'/app/Mage.php';
 		if (!file_exists($file)) {
 			restore_error_handler();
-			throw new Exception(sprintf('Invalid root directory \'%s\'', $path));
+			tx_weetypogento_tools::throwException('lib_invalid_document_root_error', 
+				array($documentRoot)
+			);
 		}
 		require_once $file;
 		// restore error reporting
