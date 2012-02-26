@@ -40,7 +40,7 @@ class tx_weetypogento_observer implements t3lib_Singleton, tslib_content_getData
 			// render magento resources into typo3 header
 			$header->render();
 		} catch (Exception $e) {
-			tx_weetypogento_tools::throwException('lib_page_head_integration_failed_error',
+			tx_weetypogento_div::throwException('lib_page_head_integration_failed_error',
 				array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), $e
 			);
 		}
@@ -58,7 +58,7 @@ class tx_weetypogento_observer implements t3lib_Singleton, tslib_content_getData
 		try {
 			t3lib_div::makeInstance('tx_weetypogento_router');
 		} catch(Exception $e) {
-			tx_weetypogento_tools::throwException('lib_routing_system_initalizing_failed_error', 
+			tx_weetypogento_div::throwException('lib_routing_system_initalizing_failed_error', 
 				array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), $e
 			);
 		}

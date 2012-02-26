@@ -24,7 +24,7 @@ class tx_weetypogento_typoscriptRouteFilter implements tx_weetypogento_routeFilt
 	}
 	
 	public function match() {
-		$cObj = tx_weetypogento_tools::getContentObject();
+		$cObj = tx_weetypogento_div::getContentObject();
 		return $cObj->checkIf($this->_conf);
 	}
 }

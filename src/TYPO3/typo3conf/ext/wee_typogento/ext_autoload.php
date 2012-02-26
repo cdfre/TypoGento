@@ -13,10 +13,10 @@ return array(
 	'tx_weetypogento_realurl' => $extensionPath.'lib/class.tx_weetypogento_realurl.php',
 	'tx_weetypogento_soapinterface' => $extensionPath.'lib/class.tx_weetypogento_soapinterface.php',
 	'tx_weetypogento_tcafields' => $extensionPath.'lib/class.tx_weetypogento_tcafields.php',
-	'tx_weetypogento_tools' => $extensionPath.'lib/class.tx_weetypogento_tools.php',
+	'tx_weetypogento_div' => $extensionPath.'lib/class.tx_weetypogento_div.php',
 
 	'tx_weetypogento_header' => $extensionPath.'lib/class.tx_weetypogento_header.php',
-	'tx_weetypogento_tools' => $extensionPath.'lib/class.tx_weetypogento_tools.php',
+	'tx_weetypogento_div' => $extensionPath.'lib/class.tx_weetypogento_div.php',
 	'tx_weetypogento_observer' => $extensionPath.'lib/class.tx_weetypogento_observer.php',
 	'tx_weetypogento_router' => $extensionPath.'lib/routing/class.tx_weetypogento_router.php',
 	'tx_weetypogento_autoloader' => $extensionPath.'lib/class.tx_weetypogento_autoloader.php',

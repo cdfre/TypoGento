@@ -7,7 +7,7 @@ require ($BACK_PATH.'template.php');
 
 $BE_USER->modAccess($MCONF, 1);
 
-require_once(t3lib_extmgm::extPath('wee_typogento').'lib/class.tx_weetypogento_tools.php');
+require_once(t3lib_extmgm::extPath('wee_typogento').'lib/class.tx_weetypogento_div.php');
 require_once(t3lib_extmgm::extPath('wee_typogento').'lib/class.tx_weetypogento_autoloader.php');
 
 /**

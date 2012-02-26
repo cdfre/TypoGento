@@ -97,6 +97,6 @@ if (TYPO3_MODE=="BE" /* && !empty($GLOBALS['BE_USER']->user['tx_weetypogento_gro
 
 // register Magento autoloader for backend
 //TODO calling a hook direct before session is started would be nicer. But there is none.
-//t3lib_div::makeInstance('tx_weetypogento_autoloader', tx_weetypogento_tools::getExtConfig());
+//t3lib_div::makeInstance('tx_weetypogento_autoloader', tx_weetypogento_div::getExtConfig());
 
 ?>

@@ -5,7 +5,7 @@
  * 
  * Integrates Magento html page header into a TYPO3 page.
  * 
- * @uses Mage, Mage_Page_Block_Html_Head, tslib_fe, t3lib_PageRenderer, tx_weetypogento_interface, tx_weetypogento_router, tx_weetypogento_tools
+ * @uses Mage, Mage_Page_Block_Html_Head, tslib_fe, t3lib_PageRenderer, tx_weetypogento_interface, tx_weetypogento_router, tx_weetypogento_div
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 class tx_weetypogento_header implements t3lib_Singleton {
@@ -85,7 +85,7 @@ class tx_weetypogento_header implements t3lib_Singleton {
 			$this->_path = Mage::getBaseDir();
 			$this->_url = Mage::getBaseUrl('js');
 		} catch (Exception $e) {
-			tx_weetypogento_tools::throwException('lib_interface_access_failed_error', 
+			tx_weetypogento_div::throwException('lib_interface_access_failed_error', 
 				array(), $e
 			);
 		}
@@ -93,7 +93,7 @@ class tx_weetypogento_header implements t3lib_Singleton {
 		try {
 			$this->_design = Mage::getDesign();
 		} catch (Exception $e) {
-			tx_weetypogento_tools::throwException('lib_interface_access_failed_error', 
+			tx_weetypogento_div::throwException('lib_interface_access_failed_error', 
 				array(), $e
 			);
 		}
@@ -102,13 +102,13 @@ class tx_weetypogento_header implements t3lib_Singleton {
 		// check the header block exists
 		if (!isset($this->_block)) {
 
-			tx_weetypogento_tools::throwException('lib_unavailable_block_error', 
+			tx_weetypogento_div::throwException('lib_unavailable_block_error', 
 				array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $this->name)
 			);
 		}
 		// check the header block type
 		if (!($this->_block instanceof Mage_Page_Block_Html_Head)) {
-			tx_weetypogento_tools::throwException('lib_unsupported_block_type_error', 
+			tx_weetypogento_div::throwException('lib_unsupported_block_type_error', 
 				array(get_class($this->_block))
 			);
 		}
@@ -138,7 +138,7 @@ class tx_weetypogento_header implements t3lib_Singleton {
 			// init the header
 			$this->_init();
 			// get template configuration
-			$config = &tx_weetypogento_tools::getConfig();
+			$config = &tx_weetypogento_div::getConfig();
 			// collect items
 			$items = &$this->_block->getData('items');
 			// skip if no items exist
@@ -194,7 +194,7 @@ class tx_weetypogento_header implements t3lib_Singleton {
 				$this->_renderer->addHeaderData($html);
 			}
 		} catch (Exception $e) {
-			tx_weetypogento_tools::throwException('lib_page_head_integration_failed_error', 
+			tx_weetypogento_div::throwException('lib_page_head_integration_failed_error', 
 				array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), $e
 			);
 		}

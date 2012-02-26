@@ -210,7 +210,7 @@ class tx_weetypogento_tcafields {
 			$flexform = $data['_THIS_ROW']['pi_flexform'];
 			$flexformArray = t3lib_div::xml2array($flexform);
 
-			return tx_weetypogento_tools::getFFvalue($flexformArray, $fieldName, $sheet, $lang, $value);
+			return tx_weetypogento_div::getFFvalue($flexformArray, $fieldName, $sheet, $lang, $value);
 		} catch (Exception $e) {
 			return null;
 		}

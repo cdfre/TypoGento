@@ -5,7 +5,7 @@
  *
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
-class tx_weetypogento_tools {
+class tx_weetypogento_div {
 
 	/**
 	 * The template configuration array
@@ -47,7 +47,7 @@ class tx_weetypogento_tools {
 	public static function &getFFvalue($T3FlexForm_array, $fieldName, $sheet = 'sDEF', $lang = 'lDEF', $value = 'vDEF') {
 		$sheetArray = is_array($T3FlexForm_array) ? $T3FlexForm_array['data'][$sheet][$lang] : '';
 		if (is_array($sheetArray)) {
-			return tx_weetypogento_tools::getFFvalueFromSheetArray($sheetArray,explode('/', $fieldName), $value);
+			return tx_weetypogento_div::getFFvalueFromSheetArray($sheetArray,explode('/', $fieldName), $value);
 		}
 	}
 
@@ -98,7 +98,7 @@ class tx_weetypogento_tools {
 			try{	// create cobj
 				return t3lib_div::makeInstance('tslib_cObj');
 			} catch(Exception $e) {
-				tx_weetypogento_tools::throwException('lib_content_object_initializing_failed_error', 
+				tx_weetypogento_div::throwException('lib_content_object_initializing_failed_error', 
 					array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), $e
 				);
 			}
@@ -157,8 +157,8 @@ class tx_weetypogento_tools {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/wee_typogento/lib/class.tx_weetypogento_tools.php']) {
-	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/wee_typogento/lib/class.tx_weetypogento_tools.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/wee_typogento/lib/class.tx_weetypogento_div.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/wee_typogento/lib/class.tx_weetypogento_div.php']);
 }
 
 ?>

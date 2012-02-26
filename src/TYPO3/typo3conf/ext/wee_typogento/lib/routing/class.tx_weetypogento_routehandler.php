@@ -49,7 +49,7 @@ class tx_weetypogento_typolinkRouteHandler implements tx_weetypogento_routeHandl
 	 * Enter description here ...
 	 */
 	public function process() {
-		$cObj = tx_weetypogento_tools::getContentObject();
+		$cObj = tx_weetypogento_div::getContentObject();
 		$hooks = &$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typoLink_PostProc'];
 		$persistent = &$GLOBALS['T3_VAR']['callUserFunction'];
 		$exception = null;
@@ -105,7 +105,7 @@ class tx_weetypogento_typolinkRouteHandler implements tx_weetypogento_routeHandl
 				t3lib_div::callUserFunction($hook, $params, $cObj);
 			}
 		} else {
-			tx_weetypogento_tools::throwException('lib_unsupported_link_type_error', 
+			tx_weetypogento_div::throwException('lib_unsupported_link_type_error', 
 				array($type)
 			);
 		}

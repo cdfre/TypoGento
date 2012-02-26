@@ -68,23 +68,23 @@ class tx_weetypogento_defaultRouteBuilder implements tx_weetypogento_routeBuilde
 	 */
 	protected function _buildRouteSegments(array $flexform) {
 		$field = 'main';
-		$view = &tx_weetypogento_tools::getFFvalue($flexform, 'show', $field);
+		$view = &tx_weetypogento_div::getFFvalue($flexform, 'show', $field);
 		$segments = null;
 	
 		if (!$view) {
-			tx_weetypogento_tools::throwException('lib_view_type_not_set_error');
+			tx_weetypogento_div::throwException('lib_view_type_not_set_error');
 		}
 	
 		switch ($view) {
 			case "SINGLEPRODUCT":
-				$product = &tx_weetypogento_tools::getFFvalue($flexform, 'product_id', $field);
+				$product = &tx_weetypogento_div::getFFvalue($flexform, 'product_id', $field);
 				$segments = array(
 					'route'=>'catalog', 'controller'=>'product', 
 					'action'=>'view', 'id' => $product
 				);
 				break;
 			case "PRODUCTLIST":
-				$category = &tx_weetypogento_tools::getFFvalue($flexform, 'category_id', $field);
+				$category = &tx_weetypogento_div::getFFvalue($flexform, 'category_id', $field);
 				$segments = array(
 					'route'=>'catalog', 'controller'=>'category', 
 					'action'=>'view', 'id' => $category
@@ -92,13 +92,13 @@ class tx_weetypogento_defaultRouteBuilder implements tx_weetypogento_routeBuilde
 				break;
 			case "USER":
 				$segments = array(
-					'route'=> tx_weetypogento_tools::getFFvalue($flexform, 'route', $field),
-					'controller'=> tx_weetypogento_tools::getFFvalue($flexform, 'controller', $field),
-					'action'=> tx_weetypogento_tools::getFFvalue($flexform, 'action', $field)
+					'route'=> tx_weetypogento_div::getFFvalue($flexform, 'route', $field),
+					'controller'=> tx_weetypogento_div::getFFvalue($flexform, 'controller', $field),
+					'action'=> tx_weetypogento_div::getFFvalue($flexform, 'action', $field)
 				);
 				break;
 			default:
-				tx_weetypogento_tools::throwException('lib_unexpected_view_type_error', 
+				tx_weetypogento_div::throwException('lib_unexpected_view_type_error', 
 					array($view)
 				);
 		}
@@ -117,13 +117,13 @@ class tx_weetypogento_defaultRouteBuilder implements tx_weetypogento_routeBuilde
 	 */
 	protected function _buildRoute(array &$typoscript) {
 		if (!isset($typoscript['filter.'])) {
-			tx_weetypogento_tools::throwException('lib_missing_route_filter_error', 
+			tx_weetypogento_div::throwException('lib_missing_route_filter_error', 
 				array(print_r($typoscript, true))
 			);
 		}
 	
 		if (!isset($typoscript['target.'])) {
-			tx_weetypogento_tools::throwException('lib_missing_route_target_error', 
+			tx_weetypogento_div::throwException('lib_missing_route_target_error', 
 				array(print_r($typoscript, true))
 			);
 		}
@@ -170,7 +170,7 @@ class tx_weetypogento_defaultRouteBuilder implements tx_weetypogento_routeBuilde
 	 * @param unknown_type $default
 	 */
 	protected function _buildValue($key, array &$typoscript, $default) {
-		$cObj = tx_weetypogento_tools::getContentObject();
+		$cObj = tx_weetypogento_div::getContentObject();
 		return isset($typoscript[$key.'.'])
 			? trim($cObj->stdWrap($typoscript['$key'], $typoscript[$key.'.']))
 			: isset($typoscript[$key])

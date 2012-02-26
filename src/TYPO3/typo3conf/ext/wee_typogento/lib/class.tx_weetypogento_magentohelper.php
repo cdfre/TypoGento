@@ -28,7 +28,7 @@ class tx_weetypogento_magentoHelper implements t3lib_Singleton {
 			$path = realpath($value);
 			
 			if ($path === false) {
-				tx_weetypogento_tools::throwException('lib_invalid_document_root_error', 
+				tx_weetypogento_div::throwException('lib_invalid_document_root_error', 
 					array($value)
 				);
 			}
@@ -47,7 +47,7 @@ class tx_weetypogento_magentoHelper implements t3lib_Singleton {
 			$url = filter_var($value, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED);
 			
 			if ($url === false) {
-				tx_weetypogento_tools::throwException('lib_invalid_base_url_error', 
+				tx_weetypogento_div::throwException('lib_invalid_base_url_error', 
 					array($value)
 				);
 			}
