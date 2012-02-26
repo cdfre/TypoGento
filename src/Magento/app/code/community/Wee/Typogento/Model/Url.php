@@ -61,7 +61,7 @@ class Wee_Typogento_Model_Url extends Mage_Core_Model_Url {
 			$data = array_merge($data, $parameters);
 		}
 		// recreate link for typo3 frontend using link data
-		$url = $this->getTypolink(&$data);
+		$url = $this->getTypolink($data);
 
 		// save last url in response for the _isurlinternal workaround
 		$response = Mage::app()->getResponse();
@@ -151,7 +151,7 @@ class Wee_Typogento_Model_Url extends Mage_Core_Model_Url {
 	 * @param array $params
 	 * @return string URL
 	 */
-	protected function getTypolink(array $data = array()) {
+	protected function getTypolink(array &$data = array()) {
 		// get typo3 helper
 		$typo3 = Mage::helper('typogento/typo3');
 		// get typo3 router

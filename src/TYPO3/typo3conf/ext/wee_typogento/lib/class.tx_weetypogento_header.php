@@ -98,7 +98,7 @@ class tx_weetypogento_header implements t3lib_Singleton {
 			);
 		}
 		// get the header block
-		$this->_block = $this->_magento->getBlock(&$this->name);
+		$this->_block = $this->_magento->getBlock($this->name);
 		// check the header block exists
 		if (!isset($this->_block)) {
 
@@ -157,41 +157,41 @@ class tx_weetypogento_header implements t3lib_Singleton {
 				// if conditional is set
 				if(!empty($item['if'])) {
 					// add includes with conditional
-					$conditionWrap = sprintf(&$wrap, &$item['if']);
+					$conditionWrap = sprintf($wrap, $item['if']);
 				} else {
 					$conditionWrap = '';
 				}
 				// prepares item
 				$this->_prepareItem($item['name'], $item['type'], $item['params']);
 
-				if (strpos(&$item['name'], '.js') !== false) {
-					$this->_renderer->addJsFile(&$item['name'], 'text/javascript', 
-						$compressJs, false, &$conditionWrap);
-				} elseif (strpos(&$item['name'], '.css') !== false) {
-					$this->_renderer->addCssFile(&$item['name'], 'stylesheet', 
-						&$item['params']['media'], &$item['params']['title'], $compressCss, false, &$conditionWrap);
+				if (strpos($item['name'], '.js') !== false) {
+					$this->_renderer->addJsFile($item['name'], 'text/javascript', 
+						$compressJs, false, $conditionWrap);
+				} elseif (strpos($item['name'], '.css') !== false) {
+					$this->_renderer->addCssFile($item['name'], 'stylesheet', 
+						$item['params']['media'], $item['params']['title'], $compressCss, false, $conditionWrap);
 				} else {
 					if (!empty($conditionWrap)) {
-						$html = &$GLOBALS['TSFE']->cObj->stdWrap(&$item['name'], &$conditionWrap);
+						$html = &$GLOBALS['TSFE']->cObj->stdWrap($item['name'], $conditionWrap);
 					} else {
 						$html = &$item['name'];
 					}
-					$this->_renderer->addHeaderData(&$html);
+					$this->_renderer->addHeaderData($html);
 				}
 			}
 			// render translator script
 			$json = &$this->_block->helper('core/js')->getTranslateJson();
 			$script = 'var Translator = new Translate('.$json.');';
-			$this->_renderer->addJsInlineCode('Magento Translator', &$script, $compressJs);
+			$this->_renderer->addJsInlineCode('Magento Translator', $script, $compressJs);
 			// render child html
 			$html = &$this->_block->getChildHtml();
 			if (!empty($html)) {
-				$this->_renderer->addHeaderData(&$html);
+				$this->_renderer->addHeaderData($html);
 			}
 			// render includes
 			$html = &$this->_block->getIncludes();
 			if (!empty($html)) {
-				$this->_renderer->addHeaderData(&$html);
+				$this->_renderer->addHeaderData($html);
 			}
 		} catch (Exception $e) {
 			tx_weetypogento_tools::throwException('lib_page_head_integration_failed_error', 
@@ -214,33 +214,33 @@ class tx_weetypogento_header implements t3lib_Singleton {
 		$default = array('_type' => 'skin');
 		$empty = array();
 		// set location
-		if (strpos(&$type, 'skin') !== false) {
+		if (strpos($type, 'skin') !== false) {
 			$location = 'skin';
 		} else {
 			$location = 'static';
 		}
 		// set type
-		if (strpos(&$type, 'js') !== false) {
+		if (strpos($type, 'js') !== false) {
 			$type = 'js';
-		} else if (strpos(&$type, 'css') !== false) {
+		} else if (strpos($type, 'css') !== false) {
 			$type = 'css';
 			// check if params where set
 			if (!empty($parameters) && is_string($parameters)) {
 				// map raw format
-				$parameters = &explode('=', &$parameters);
+				$parameters = explode('=', $parameters);
 				// set media if found
-				if ($i = array_search('media', &$parameters) !== false) {
-					$parameters['media'] = &trim(&$parameters[$i], ' "\'');
+				if ($i = array_search('media', $parameters) !== false) {
+					$parameters['media'] = trim($parameters[$i], ' "\'');
 				}
 				// set title if found
-				if ($i = array_search('title', &$parameters) !== false) {
-					$parameters['title'] = &trim(&$parameters[$i], ' "\'');
+				if ($i = array_search('title', $parameters) !== false) {
+					$parameters['title'] = trim($parameters[$i], ' "\'');
 				}
 			} else {
 				// set default params for css
 				$parameters = array('media' => 'all', 'title' => '');
 			}
-		} else if (strpos(&$type, 'rss') !== false){
+		} else if (strpos($type, 'rss') !== false){
 			$type = 'rss';
 		} else {
 			$type = 'other';
@@ -254,20 +254,20 @@ class tx_weetypogento_header implements t3lib_Singleton {
 			}
 		} elseif ($location == 'skin') {
 			if ($local) {
-				$item = &$this->_design->getFilename(&$item, &$default);
+				$item = $this->_design->getFilename($item, $default);
 			} else {
-				$item = &$this->_design->getSkinUrl(&$item, &$empty);
+				$item = $this->_design->getSkinUrl($item, $empty);
 			}
 		} else {
 			if ($type == 'rss') {
-				$item= &sprintf(
+				$item= sprintf(
 					'<link href="%s"%s rel="alternate" type="application/rss+xml" />',
-					&$item, &$parameters
+					$item, $parameters
 				);
 			} else {
-				$item = &sprintf(
+				$item = sprintf(
 					'<link%s href="%s" />',
-					&$item, &$parameters
+					$item, $parameters
 				);
 			}
 		}

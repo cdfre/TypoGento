@@ -68,7 +68,7 @@ class tx_weetypogento_defaultRouteBuilder implements tx_weetypogento_routeBuilde
 	 */
 	protected function _buildRouteSegments(array $flexform) {
 		$field = 'main';
-		$view = &tx_weetypogento_tools::getFFvalue(&$flexform, 'show', &$field);
+		$view = &tx_weetypogento_tools::getFFvalue($flexform, 'show', $field);
 		$segments = null;
 	
 		if (!$view) {
@@ -77,14 +77,14 @@ class tx_weetypogento_defaultRouteBuilder implements tx_weetypogento_routeBuilde
 	
 		switch ($view) {
 			case "SINGLEPRODUCT":
-				$product = &tx_weetypogento_tools::getFFvalue(&$flexform, 'product_id', &$field);
+				$product = &tx_weetypogento_tools::getFFvalue($flexform, 'product_id', $field);
 				$segments = array(
 					'route'=>'catalog', 'controller'=>'product', 
 					'action'=>'view', 'id' => $product
 				);
 				break;
 			case "PRODUCTLIST":
-				$category = &tx_weetypogento_tools::getFFvalue(&$flexform, 'category_id', &$field);
+				$category = &tx_weetypogento_tools::getFFvalue($flexform, 'category_id', $field);
 				$segments = array(
 					'route'=>'catalog', 'controller'=>'category', 
 					'action'=>'view', 'id' => $category
@@ -92,9 +92,9 @@ class tx_weetypogento_defaultRouteBuilder implements tx_weetypogento_routeBuilde
 				break;
 			case "USER":
 				$segments = array(
-					'route'=> tx_weetypogento_tools::getFFvalue(&$flexform, 'route', &$field),
-					'controller'=> tx_weetypogento_tools::getFFvalue(&$flexform, 'controller', &$field),
-					'action'=> tx_weetypogento_tools::getFFvalue(&$flexform, 'action', &$field)
+					'route'=> tx_weetypogento_tools::getFFvalue($flexform, 'route', $field),
+					'controller'=> tx_weetypogento_tools::getFFvalue($flexform, 'controller', $field),
+					'action'=> tx_weetypogento_tools::getFFvalue($flexform, 'action', $field)
 				);
 				break;
 			default:
@@ -153,7 +153,7 @@ class tx_weetypogento_defaultRouteBuilder implements tx_weetypogento_routeBuilde
 			return null;
 		}
 		
-		$flexform = t3lib_div::xml2array(&$row['pi_flexform']);
+		$flexform = t3lib_div::xml2array($row['pi_flexform']);
 		
 		if (!isset($flexform['data']['main']['lDEF']['show']['vDEF'])) {
 			return null;

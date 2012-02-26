@@ -142,7 +142,7 @@ class tx_weetypogento_pi1 extends tslib_pibase {
 			}
 			// wrap content in base class if set
 			if (!isset($this->conf['noWrap']) || !$this->conf['noWrap']) {
-				$content = $this->pi_wrapInBaseClass(&$content);
+				$content = $this->pi_wrapInBaseClass($content);
 			}
 		// render content block otherwise
 		} else {

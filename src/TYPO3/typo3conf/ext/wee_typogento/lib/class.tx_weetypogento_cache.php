@@ -41,7 +41,7 @@ class tx_weetypogento_cache implements t3lib_Singleton {
 	 * @return void
 	 */
 	public function set($key, &$value, $tags = array(), $lifetime = 0) {
-		return $this->_handler->set($key, &$value, $tags, $lifetime);
+		return $this->_handler->set($key, $value, $tags, $lifetime);
 	}
 
 	/**
