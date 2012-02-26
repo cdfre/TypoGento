@@ -25,17 +25,17 @@ class tx_weetypogento_configurationHelper implements t3lib_Singleton {
 		$this->_initializeConfiguration($section);
 
 		if (empty($key)) {
-			tx_weetypogento_div::throwException('lib_empty_configuration_key_error');
+			tx_weetypogento_div::throwException('lib_configuration_key_not_set_error');
 		}
 		
 		if (!isset(self::$_configuration[$section])) {
-			tx_weetypogento_div::throwException('lib_invalid_configuration_section_error',
+			tx_weetypogento_div::throwException('lib_configuration_section_not_found_error',
 				array($section)
 			);
 		}
 		
 		if (!isset(self::$_configuration[$section][$key])) {
-			tx_weetypogento_div::throwException('lib_invalid_configuration_key_error',
+			tx_weetypogento_div::throwException('lib_configuration_key_not_found_error',
 				array($key)
 			);
 		}
@@ -49,7 +49,7 @@ class tx_weetypogento_configurationHelper implements t3lib_Singleton {
 		$this->_initializeConfiguration($section);
 	
 		if (!isset(self::$_configuration[$section])) {
-			tx_weetypogento_div::throwException('lib_invalid_configuration_section_error',
+			tx_weetypogento_div::throwException('lib_configuration_section_not_found_error',
 				array($section)
 			);
 		}
@@ -69,7 +69,7 @@ class tx_weetypogento_configurationHelper implements t3lib_Singleton {
 			$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['wee_typogento']);
 
 			if (!is_array($configuration) || count($configuration) != 6) {
-				tx_weetypogento_div::throwException('lib_damaged_extension_configuration_error');
+				tx_weetypogento_div::throwException('lib_extension_configuration_not_valid_error');
 			}
 
 			self::$_configuration[$section] = $configuration;

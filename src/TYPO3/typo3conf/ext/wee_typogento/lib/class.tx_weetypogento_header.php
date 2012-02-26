@@ -102,13 +102,13 @@ class tx_weetypogento_header implements t3lib_Singleton {
 		// check the header block exists
 		if (!isset($this->_block)) {
 
-			tx_weetypogento_div::throwException('lib_unavailable_block_error', 
+			tx_weetypogento_div::throwException('lib_block_not_available_error', 
 				array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $this->name)
 			);
 		}
 		// check the header block type
 		if (!($this->_block instanceof Mage_Page_Block_Html_Head)) {
-			tx_weetypogento_div::throwException('lib_unsupported_block_type_error', 
+			tx_weetypogento_div::throwException('lib_block_type_not_supported_error', 
 				array(get_class($this->_block))
 			);
 		}

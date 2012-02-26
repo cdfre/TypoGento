@@ -35,7 +35,7 @@ class tx_weetypogento_interface implements t3lib_Singleton {
 			$this->_dispatch();
 		} catch (Exception $e) {
 			$this->_environment->deinitialize();
-			tx_weetypogento_div::throwException('lib_dispatching_failed_error',
+			tx_weetypogento_div::throwException('lib_request_dispatching_failed_error',
 				array($_SERVER['REQUEST_URI']), $e
 			);
 		}
@@ -104,19 +104,12 @@ class tx_weetypogento_interface implements t3lib_Singleton {
 			$front = Mage::app()->getFrontController();
 			// check response type
 			$response = $app->getResponse();
-			
 			// get current store code
 			$code = tx_weetypogento_div::getFELangStoreCode();
 			// get store by its code
 			$store = $app->getStore($code);
 			// activate current store
 			$app->setCurrentStore($store);
-			// create magento router
-			//$router = new Wee_Typogento_Controller_Router();
-			// set routes for the magento router
-			//$router->collectRoutes('frontend', 'standard');
-			// add magento router to the front controller
-			//$front->addRouter('standard', $router);
 			// run dispatch
 			$front->dispatch();
 		} catch (Exception $e) {

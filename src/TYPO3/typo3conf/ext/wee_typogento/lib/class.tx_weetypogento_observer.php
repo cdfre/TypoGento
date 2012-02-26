@@ -58,7 +58,7 @@ class tx_weetypogento_observer implements t3lib_Singleton, tslib_content_getData
 		try {
 			t3lib_div::makeInstance('tx_weetypogento_router');
 		} catch(Exception $e) {
-			tx_weetypogento_div::throwException('lib_routing_system_initalizing_failed_error', 
+			tx_weetypogento_div::throwException('lib_initalizing_routing_system_failed_error', 
 				array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), $e
 			);
 		}

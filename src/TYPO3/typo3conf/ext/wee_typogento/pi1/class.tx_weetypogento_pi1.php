@@ -128,7 +128,7 @@ class tx_weetypogento_pi1 extends tslib_pibase {
 					$block = $this->_magento->getBlock($name);
 					// throw if default page head is not set
 					if (!isset($block)) {
-						tx_weetypogento_div::throwException('lib_unavailable_block_error',
+						tx_weetypogento_div::throwException('lib_block_not_available_error',
 							array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $name)
 						);
 					}

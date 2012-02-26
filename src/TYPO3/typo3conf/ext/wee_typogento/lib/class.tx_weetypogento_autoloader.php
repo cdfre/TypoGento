@@ -51,7 +51,7 @@ class tx_weetypogento_autoloader implements t3lib_Singleton {
 		$file = $documentRoot.'/app/Mage.php';
 		if (!file_exists($file)) {
 			restore_error_handler();
-			tx_weetypogento_div::throwException('lib_invalid_document_root_error', 
+			tx_weetypogento_div::throwException('lib_document_root_not_valid_error', 
 				array($documentRoot)
 			);
 		}

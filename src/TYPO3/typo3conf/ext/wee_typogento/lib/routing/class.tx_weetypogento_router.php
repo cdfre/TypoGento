@@ -54,7 +54,7 @@ class tx_weetypogento_router implements t3lib_Singleton {
 	public function lookup($section, tx_weetypogento_routeEnvironment $filter = null, tx_weetypogento_routeEnvironment $target = null) {
 		// assert section exists in route tree
 		if (!array_key_exists($section, $this->_sections)) {
-			tx_weetypogento_div::throwException('lib_invalid_route_section_error', 
+			tx_weetypogento_div::throwException('lib_route_section_not_valid_error', 
 				array($section)
 			);
 		}

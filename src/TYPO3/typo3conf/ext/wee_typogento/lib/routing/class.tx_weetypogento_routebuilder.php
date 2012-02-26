@@ -98,7 +98,7 @@ class tx_weetypogento_defaultRouteBuilder implements tx_weetypogento_routeBuilde
 				);
 				break;
 			default:
-				tx_weetypogento_div::throwException('lib_unexpected_view_type_error', 
+				tx_weetypogento_div::throwException('lib_view_type_not_valid_error', 
 					array($view)
 				);
 		}

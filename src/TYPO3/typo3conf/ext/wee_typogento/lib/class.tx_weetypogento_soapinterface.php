@@ -87,7 +87,7 @@ class tx_weetypogento_soapinterface implements t3lib_Singleton {
 					// xdebug work arround (see https://bugs.php.net/bug.php?id=34657)
 					if (!@file_get_contents($url)) {
 						tx_weetypogento_div::throwException(
-							'lib_wsdl_not_found_error', array($url)
+							'lib_wsdl_resource_not_found_error', array($url)
 						);
 					}
 					// start soap client
@@ -102,7 +102,7 @@ class tx_weetypogento_soapinterface implements t3lib_Singleton {
 				// cache the result
 				$this->_cache->set($hash, $result, array());
 			} catch (Exception $e) {
-				tx_weetypogento_div::throwException('lib_unexpected_soap_error', array(), $e);
+				tx_weetypogento_div::throwException('lib_soap_request_failed_error', array(), $e);
 			}
 			// release the lock
 			$this->_releaseLock($lock);

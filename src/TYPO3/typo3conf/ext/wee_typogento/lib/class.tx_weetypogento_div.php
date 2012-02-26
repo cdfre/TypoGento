@@ -98,7 +98,7 @@ class tx_weetypogento_div {
 			try{	// create cobj
 				return t3lib_div::makeInstance('tslib_cObj');
 			} catch(Exception $e) {
-				tx_weetypogento_div::throwException('lib_content_object_initializing_failed_error', 
+				tx_weetypogento_div::throwException('lib_initializing_content_object_failed_error', 
 					array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), $e
 				);
 			}
