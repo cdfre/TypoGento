@@ -38,7 +38,11 @@ return array(
 	'tx_weetypogento_configurationhelper' => $extensionPath.'lib/class.tx_weetypogento_configurationhelper.php',
 	'tx_weetypogento_magentohelper' => $extensionPath.'lib/class.tx_weetypogento_magentohelper.php',
 
-	'tx_weetypogento_uniqueemail' => $extensionPath.'lib/class.tx_weetypogento_uniqueemail.php'
+	'tx_weetypogento_clearsoapcachetask' => $extensionPath.'tasks/class.tx_weetypogento_clearsoapcachetask.php',
+
+	'tx_weetypogento_uniqueemail' => $extensionPath.'lib/class.tx_weetypogento_uniqueemail.php',
+
+	'tx_weetypogento_statusreport' => $extensionPath.'reports/class.tx_weetypogento_statusreport.php'
 );
 
 ?>

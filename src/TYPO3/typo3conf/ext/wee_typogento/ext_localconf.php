@@ -142,4 +142,13 @@ if (t3lib_div::int_from_ver(TYPO3_version) < '4006000') {
 $TYPO3_CONF_VARS['SC_OPTIONS']['tce']['formevals']['tx_weetypogento_uniqueemail'] = 
 	'EXT:wee_typogento/lib/class.tx_weetypogento_uniqueemail.php';
 
+/**
+ * Add SOAP cache cleaning task
+ */
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_weetypogento_clearSoapCacheTask'] = array(
+	'extension'        => $_EXTKEY,
+	'title'            => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:lib_clear_soap_cache_task_name',
+	'description'      => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:lib_clear_soap_cache_task_description'
+);
+
 ?>
