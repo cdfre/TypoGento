@@ -36,7 +36,9 @@ return array(
 	
 	'tx_weetypogento_languagehelper' => $extensionPath.'lib/class.tx_weetypogento_languagehelper.php',
 	'tx_weetypogento_configurationhelper' => $extensionPath.'lib/class.tx_weetypogento_configurationhelper.php',
-	'tx_weetypogento_magentohelper' => $extensionPath.'lib/class.tx_weetypogento_magentohelper.php'
+	'tx_weetypogento_magentohelper' => $extensionPath.'lib/class.tx_weetypogento_magentohelper.php',
+
+	'tx_weetypogento_uniqueemail' => $extensionPath.'lib/class.tx_weetypogento_uniqueemail.php'
 );
 
 ?>

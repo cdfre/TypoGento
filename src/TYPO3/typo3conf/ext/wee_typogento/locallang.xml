@@ -39,6 +39,8 @@
 			<label index="lib_soap_request_failed_error">The SOAP request has failed: %s</label>
 			<label index="lib_wsdl_resource_not_found_error">The WSDL file could not be loaded from '%s'</label>
 			<label index="lib_store_not_resolved_error">The store '%s' could not be resolved: %s</label>
+			<label index="lib_clear_soap_cache_task_name">Clear the Magento API cache</label>
+			<label index="lib_clear_soap_cache_task_description">Clears all cached responses of Magento API calls.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="pi1_title">Magento</label>

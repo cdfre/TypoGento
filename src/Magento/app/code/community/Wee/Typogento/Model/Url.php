@@ -34,7 +34,7 @@ class Wee_Typogento_Model_Url extends Mage_Core_Model_Url {
 		// 
 		$url = parent::getUrl($path, $parameters);
 		// check if typo3 is disabled or default url is requested
-		if (!$typo3->isEnabled() || $useDefault){
+		if (!$typo3->isFrontendActive() || $useDefault){
 			return $url;
 		}
 		
@@ -87,7 +87,7 @@ class Wee_Typogento_Model_Url extends Mage_Core_Model_Url {
 		// get typo3 helper
 		$typo3 = Mage::helper('typogento/typo3');
 		// check if typo3 is disabled or original url is requested
-		if (!$typo3->isEnabled()) {
+		if (!$typo3->isFrontendActive()) {
 			return Mage_Core_Model_Url::getRouteUrl($path, $parameters);
 		}
 		// unset previous route parameters
@@ -132,7 +132,7 @@ class Wee_Typogento_Model_Url extends Mage_Core_Model_Url {
 			$domains[] = parse_url($store->getBaseUrl(), PHP_URL_HOST);
 			$domains[] = parse_url($store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true), PHP_URL_HOST);
 			// using additional domain related settings from typogento
-			$valiate = $store->getConfig(Wee_Typogento_Helper_Data::TYPO3_BE_BASE_URL);
+			$valiate = Mage::helper('typogento/typo3')->getBackendBaseUrl();
 			// and put them into the valid domains
 			if (isset($valiate)) {
 				$domains[] = parse_url($valiate, PHP_URL_HOST);

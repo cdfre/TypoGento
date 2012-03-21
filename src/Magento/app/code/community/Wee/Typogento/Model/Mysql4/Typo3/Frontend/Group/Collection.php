@@ -6,7 +6,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 
-class Wee_Typogento_Model_Mysql4_Typo3_Frontend_Group_Collection  extends Mage_Core_Model_Mysql4_Collection_Abstract {
+class Wee_Typogento_Model_Mysql4_Typo3_Frontend_Group_Collection extends Mage_Core_Model_Mysql4_Collection_Abstract {
 
 
 	protected function _construct() {

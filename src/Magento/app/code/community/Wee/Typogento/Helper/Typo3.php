@@ -7,35 +7,75 @@
  */
 class Wee_Typogento_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	
-	/**
-	 * @var bool
-	 */
-	protected $_isLoggingOut = false;
+	const XML_PATH_DATABASE_HOST                    = 'typogento/typo3_db/host';
+	const XML_PATH_DATABASE_USER                    = 'typogento/typo3_db/username';
+	const XML_PATH_DATABASE_PASSWORD                = 'typogento/typo3_db/password';
+	const XML_PATH_DATABASE_NAME                    = 'typogento/typo3_db/dbname';
+	const XML_PATH_DATABASE_CHARSET                 = 'typogento/typo3_db/charset';
+	
+	const XML_PATH_BACKEND_BASE_URL                 = 'typogento/typo3_be/base_url';
+	
+	const XML_PATH_FRONTEND_USERS_PAGE_ID           = 'typogento/typo3_fe/users_pid';
+	const XML_PATH_FRONTEND_USERS_GROUP_ID          = 'typogento/typo3_fe/group_uid';
+	
+	const REGISTRY_KEY_DATABASE_CONNECTION_IS_VALID = 'typo3_database_connection_is_valid';
+	
+	public function getBackendBaseUrl() {
+		return (string)Mage::getStoreConfig(self::XML_PATH_BACKEND_BASE_URL);
+	}
+	
+	public function getFrontendUsersPageId() {
+		return Mage::getStoreConfig(self::XML_PATH_FRONTEND_USERS_PAGE_ID, Mage::app()->getStore());
+	}
+	
+	public function getFrontendUsersGroupId() {
+		return Mage::getStoreConfig(self::XML_PATH_FRONTEND_USERS_GROUP_ID, Mage::app()->getStore());
+	}
+	
+	public function getDatabaseHost() {
+		return (string)Mage::getStoreConfig(self::XML_PATH_DATABASE_HOST);
+	}
+	
+	public function getDatabaseName() {
+		return (string)Mage::getStoreConfig(self::XML_PATH_DATABASE_NAME);
+	}
+	
+	public function getDatabaseCharset() {
+		return (string)Mage::getStoreConfig(self::XML_PATH_DATABASE_CHARSET);
+	}
+	
+	public function getDatabaseUser() {
+		return (string)Mage::getStoreConfig(self::XML_PATH_DATABASE_USER);
+	}
+	
+	public function getDatabasePassword() {
+		return (string)Mage::getStoreConfig(self::XML_PATH_DATABASE_PASSWORD);
+	}
 	
 	/**
-	 * Logout frontend user in TYPO3 and Magento
-	 * 
-	 * @return void
+	 * Validate the database connection
+	 *
+	 * @return boolean
 	 */
-	public function logout(){
-		$this->_assertIsEnabled();
-		
-		if ($this->_isLoggingOut){
-			return;
+	public function validateDatabaseConnection() {
+		// check if result is registered
+		if (Mage::registry(self::REGISTRY_KEY_DATABASE_CONNECTION_IS_VALID) === null) {
+			// set result
+			$valid = false;
+			// 
+			try {
+				// test database connection
+				$database = Mage::getResourceModel('typogento/typo3_replication_link')
+					->getReadConnection()
+					->fetchOne('SELECT database();');
+				// set result
+				$valid = ($database == $this->getDatabaseName());
+			} catch (Exception $e) {}
+			// register result
+			Mage::register(self::REGISTRY_KEY_DATABASE_CONNECTION_IS_VALID, $valid);
 		}
-	
-		$this->_isLoggingOut = true;
-	
-		try {
-			// logout TYPO3
-			$GLOBALS['TSFE']->fe_user->logoff();
-		} catch(Exception $e) {
-			$this->_isLoggingOut = false;
-			throw $e;
-		}
-		
-		$this->_isLoggingOut = false;
-	
+		// return registered result
+		return (bool)Mage::registry(self::REGISTRY_KEY_DATABASE_CONNECTION_IS_VALID);
 	}
 	
 	/**
@@ -43,7 +83,7 @@ class Wee_Typogento_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	 * 
 	 * @return bool Return true if TYPO3 frontend is enabled otherwise false
 	 */
-	public function isEnabled() {
+	public function isFrontendActive() {
 		return (defined('TYPO3_MODE') && TYPO3_MODE === 'FE' ? true : false);
 	}
 	
@@ -53,8 +93,8 @@ class Wee_Typogento_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	 * @param string $key Configuration key
 	 * @return mixed Return configuration array if no key is set otherwise it depends on the specified configuration
 	 */
-	public function getConfig($key = null) {
-		$this->_assertIsEnabled();
+	public function getPageConfiguration($key = null) {
+		$this->_assertIsFrontendActive();
 		
 		$config = $GLOBALS['TSFE']->config['config'];
 		
@@ -75,12 +115,12 @@ class Wee_Typogento_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	 * @return string The base URL of the TYPO3 frontend if enabled otherwise null
 	 */
 	public function getBaseUrl() {
-		if (!$this->isEnabled()) {
+		if (!$this->isFrontendActive()) {
 			return null;
 		}
 		
 		// get base url using tsfe
-		$url = $this->getConfig('baseURL');
+		$url = $this->getPageConfiguration('baseURL');
 		// check if base url is set in tsfe
 		if (isset($url)) {
 			// return base url from tsfe
@@ -97,9 +137,15 @@ class Wee_Typogento_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	 * @return int The id of the current TYPO3 page
 	 */
 	public function getPageId() {
-		$this->_assertIsEnabled();
+		$this->_assertIsFrontendActive();
 		
 		return intval($GLOBALS['TSFE']->id);
+	}
+	
+	public function getWebsiteId() {
+		$this->_assertIsFrontendActive();
+		
+		return t3lib_div::makeInstance('tx_weetypogento_magentoHelper')->getWebsiteId();
 	}
 	
 	/**
@@ -108,13 +154,13 @@ class Wee_Typogento_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	 * @return tx_weetypogento_router The TypoGento router
 	 */
 	public function getRouter() {
-		$this->_assertIsEnabled();
+		$this->_assertIsFrontendActive();
 		
 		return t3lib_div::makeInstance('tx_weetypogento_router');
 	}
 	
 	public function getRouteEnvironment() {
-		$this->_assertIsEnabled();
+		$this->_assertIsFrontendActive();
 		
 		return t3lib_div::makeInstance('tx_weetypogento_routeEnvironment');
 	}
@@ -124,9 +170,9 @@ class Wee_Typogento_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	 * 
 	 * @throws Exception Throws if TYPO3 frontend is not enabled
 	 */
-	protected function _assertIsEnabled() {
-		if (!$this->isEnabled()) {
-			throw new Exception('TYPO3 is not enabled');
+	protected function _assertIsFrontendActive() {
+		if (!$this->isFrontendActive()) {
+			throw new Exception($this->__('TYPO3 frontend is not active'));
 		}
 	}
 }

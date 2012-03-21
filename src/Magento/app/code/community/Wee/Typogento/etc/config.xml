@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Wee_Typogento>
-			<version>0.3.5</version>
+			<version>0.5.0</version>
 		</Wee_Typogento>
 	</modules>
 	<global>
@@ -12,49 +12,76 @@
 			</typogento>
 		</helpers>
 		<events>
+			<admin_system_config_changed_section_typogento>
+				<observers>
+					<typogento>
+						<type>singleton</type>
+						<class>Wee_Typogento_Model_Observer</class>
+						<method>adminSystemConfigChanged</method>
+					</typogento>
+				</observers>
+			</admin_system_config_changed_section_typogento>
+			<typogento_replication_manager_initialize>
+				<observers>
+					<typogento>
+						<type>singleton</type>
+						<class>Wee_Typogento_Model_Observer</class>
+						<method>replicationManagerInitialize</method>
+					</typogento>
+				</observers>
+			</typogento_replication_manager_initialize>
 			<customer_save_after>
 				<observers>
 					<typogento>
 						<type>singleton</type>
 						<class>Wee_Typogento_Model_Observer</class>
-						<method>customerSaveAfterEvent</method>
+						<method>customerSaveAfter</method>
 					</typogento>
 				</observers>
 			</customer_save_after>
+			<customer_address_save_after>
+				<observers>
+					<typogento>
+						<type>singleton</type>
+						<class>Wee_Typogento_Model_Observer</class>
+						<method>customerAddressSaveAfter</method>
+					</typogento>
+				</observers>
+			</customer_address_save_after>
 			<customer_login>
 				<observers>
-					<typogento_login>
-						<type>model</type>
+					<typogento>
+						<type>singleton</type>
 						<class>Wee_Typogento_Model_Observer</class>
-						<method>loginEvent</method>
-					</typogento_login>
+						<method>customerLogin</method>
+					</typogento>
 				</observers>
 			</customer_login>
 			<customer_logout>
 				<observers>
-					<typogento_logout>
-						<type>model</type>
+					<typogento>
+						<type>singleton</type>
 						<class>Wee_Typogento_Model_Observer</class>
-						<method>logoutEvent</method>
-					</typogento_logout>
+						<method>customerLogout</method>
+					</typogento>
 				</observers>
 			</customer_logout>
 			<controller_action_predispatch>
 				<observers>
-					<typogento_access_check>
+					<typogento>
 						<type>singleton</type>
 						<class>Wee_Typogento_Model_Observer</class>
 						<method>controllerActionPredispatch</method>
-					</typogento_access_check>
+					</typogento>
 				</observers>
 			</controller_action_predispatch>
 			<customer_group_save_before>
 				<observers>
-					<typogento_customer_group_save_before>
+					<typogento>
 						<type>singleton</type>
 						<class>Wee_Typogento_Model_Observer</class>
 						<method>customerGroupSaveBefore</method>
-					</typogento_customer_group_save_before>
+					</typogento>
 				</observers>
 			</customer_group_save_before>
 		</events>
@@ -66,6 +93,11 @@
 					<layout>Wee_Typogento_Model_Layout</layout>
 				</rewrite>
 			</core>
+			<customer>
+				<rewrite>
+					<customer>Wee_Typogento_Model_Customer</customer>
+				</rewrite>
+			</customer>
 			<typogento>
 				<class>Wee_Typogento_Model</class>
 				<resourceModel>typogento_mysql4</resourceModel>
@@ -79,13 +111,16 @@
 					<typo3_frontend_group>
 						<table>fe_groups</table>
 					</typo3_frontend_group>
+					<typo3_replication_link>
+						<table>tx_weetypogento_replication_links</table>
+					</typo3_replication_link>
 				</entities>
 			</typogento_mysql4>
 		</models>
 		<resources>
 			<typogento_setup>
 				<setup>
-					<module>typogento</module>
+					<module>Wee_Typogento</module>
 					<class>Mage_Eav_Model_Entity_Setup</class>
 				</setup>
 				<connection>

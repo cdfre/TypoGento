@@ -24,7 +24,7 @@ class tx_weetypogento_cache implements t3lib_Singleton {
 	}
 
 	/**
-	 * Get Data
+	 * Get data
 	 *
 	 * @param string $key
 	 * @return mixed
@@ -34,7 +34,7 @@ class tx_weetypogento_cache implements t3lib_Singleton {
 	}
 
 	/**
-	 * Set Data
+	 * Set data
 	 *
 	 * @param string $key
 	 * @param mixed $value
@@ -45,7 +45,7 @@ class tx_weetypogento_cache implements t3lib_Singleton {
 	}
 
 	/**
-	 * Has Data
+	 * Has data
 	 *
 	 * @param string $key
 	 * @return bool
@@ -55,13 +55,23 @@ class tx_weetypogento_cache implements t3lib_Singleton {
 	}
 
 	/**
-	 * Remove Data
+	 * Remove data
 	 *
 	 * @param string $key
 	 * @return bool
 	 */
 	public function remove($key) {
 		return $this->_handler->remove($key);
+	}
+	
+	/**
+	 * Remove data by tag
+	 *
+	 * @param string $key
+	 * @return bool
+	 */
+	public function flushByTag($tag) {
+		return $this->_handler->flushByTag($tag);
 	}
 	
 	/**

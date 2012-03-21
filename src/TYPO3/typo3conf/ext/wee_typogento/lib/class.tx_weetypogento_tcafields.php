@@ -6,20 +6,76 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 class tx_weetypogento_tcafields {
+	
+	public function itemsProcFunc_replicationLinkLabel(&$params, &$pObj) {
+		$params['title'] = $GLOBALS['LANG']->sL("LLL:EXT:wee_typogento/locallang_db.xml:tx_weetypogento_replication_links.provider.{$params['row']['provider']}");
+	}
 
+	public function itemsProcFunc_replicationSources(&$params, &$pObj) {
+		$this->_getSoapItems(
+			function ($soap) use (&$params) {
+				return $soap->typogento_replication()->sources($params['row']['provider']);
+			},
+			function (&$value, $key) use (&$params) {
+				$params['items'][] = array($value['display'], $value['id']);
+			}
+		);
+	}
+	
+	public function itemsProcFunc_replicationTargets(&$params, &$pObj) {
+		$this->_getSoapItems(
+			function ($soap) use (&$params) {
+				return $soap->typogento_replication()->targets($params['row']['provider']);
+			},
+			function (&$value, $key) use (&$params) {
+				$params['items'][] = array($value['display'], $value['id']);
+			}
+		);
+	}
+	
 	/**
 	 * Generates an Productlist as Array for TCA Select fields
 	 *
 	 * @param array $params
 	 * @param object $pObj
 	 */
-	public function itemsProcFunc_products(&$params,&$pObj) {
+	public function itemsProcFunc_products(&$params, &$pObj) {
 		$this->_getSoapItems(
 			function ($soap) {
 				return $soap->catalog_product()->list();
 			},
 			function (&$value, $key) use (&$params) {
 				$params['items'][] = array($value['name'] . ' - ' . $value['sku'], $value['product_id']);
+			}
+		);
+	}
+	
+	/**
+	 * Generates a Customerlist as Array for TCA Select fields
+	 *
+	 * @param array $params
+	 * @param object $pObj
+	 */
+	public function itemsProcFunc_customers(&$params, &$pObj) {
+		$this->_getSoapItems(
+			function ($soap) {
+				return $soap->customer()->list();
+			},
+			function (&$value, $key, &$data) use (&$params) {
+				if (array_search($value['customer_id'], $data) === false) {
+					$params['items'][] = array("{$value['lastname']}, {$value['firstname']} ({$value['email']})", $value['customer_id']);
+				}
+			},
+			function &() use (&$params) {
+				$result = array();
+				$resource = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_weetypogento_customer',
+					'fe_users', "deleted = 0 AND tx_weetypogento_customer <> 0 AND pid = {$params['row']['pid']} AND uid <> {$params['row']['uid']}"
+				);
+				while (($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resource)) !== false) {
+					$result[] = $row['tx_weetypogento_customer'];
+				}
+				$GLOBALS['TYPO3_DB']->sql_free_result($resource);
+				return $result;
 			}
 		);
 	}
@@ -170,7 +226,7 @@ class tx_weetypogento_tcafields {
 		);
 	}
 	
-	protected function _getSoapItems($fetch, $walk) {
+	protected function _getSoapItems($fetch, $walk, $data = null) {
 		try {
 			// try to fetch the data with soap
 			$soap = t3lib_div::makeInstance('tx_weetypogento_soapinterface');
@@ -181,7 +237,11 @@ class tx_weetypogento_tcafields {
 			}
 			// transform the items
 			if (is_array($result)) {
-				return array_walk($result, $walk);
+				if (isset($data)) {
+					return array_walk($result, $walk, $data());
+				} else {
+					return array_walk($result, $walk);
+				}
 			} else {
 				return $walk($result);
 			}

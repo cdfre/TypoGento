@@ -25,7 +25,7 @@ class Wee_Typogento_Model_Layout extends Mage_Core_Model_Layout {
 		// get typo3 helper
 		$typo3 = Mage::helper('typogento/typo3');
 		// use default behaviour if typo3 is not enabled
-		if (!$typo3->isEnabled()) {
+		if (!$typo3->isFrontendActive()) {
 			return parent::getOutput();
 		} else {
 			$out = '';

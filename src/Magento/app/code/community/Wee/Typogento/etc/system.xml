@@ -72,10 +72,18 @@
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
 						</dbname>
+						<charset translate="label">
+							<label>Charset</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>30</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</charset>
 						<username translate="label">
 							<label>User</label>
 							<frontend_type>text</frontend_type>
-							<sort_order>30</sort_order>
+							<sort_order>40</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
@@ -83,7 +91,7 @@
 						<password translate="label">
 							<label>Password</label>
 							<frontend_type>text</frontend_type>
-							<sort_order>40</sort_order>
+							<sort_order>50</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
@@ -100,7 +108,7 @@
 					<fields>
 						<users_pid translate="label comment">
 							<label>Users Folder</label>
-							<comment>System folder (pid) with the TYPO3 frontend users.</comment>
+							<comment>System folder (pid) containing the TYPO3 frontend users.</comment>
 							<frontend_type>text</frontend_type>
 							<sort_order>10</sort_order>
 							<show_in_default>1</show_in_default>
@@ -109,7 +117,7 @@
 						</users_pid>
 						<group_uid translate="label comment">
 							<label>Users Group</label>
-							<comment>Group (uid) of the TYPO3 frontend users.</comment>
+							<comment>Default group (uid) of the TYPO3 frontend users.</comment>
 							<frontend_type>text</frontend_type>
 							<sort_order>20</sort_order>
 							<show_in_default>1</show_in_default>
@@ -132,8 +140,8 @@
 							<frontend_type>text</frontend_type>
 							<sort_order>10</sort_order>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
-							<show_in_store>1</show_in_store>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
 						</base_url>
 					</fields>
 				</typo3_be>

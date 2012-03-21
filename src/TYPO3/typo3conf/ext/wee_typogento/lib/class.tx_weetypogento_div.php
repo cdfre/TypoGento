@@ -95,7 +95,8 @@ class tx_weetypogento_div {
 			return $GLOBALS['TSFE']->cObj;
 				
 		} else {
-			try{	// create cobj
+			try{
+				// create cobj
 				return t3lib_div::makeInstance('tslib_cObj');
 			} catch(Exception $e) {
 				tx_weetypogento_div::throwException('lib_initializing_content_object_failed_error', 
@@ -135,7 +136,7 @@ class tx_weetypogento_div {
 		return $store;
 	}
 	
-	public static function throwException($message, $arguments = array(), Exception $previous = null) {
+	public static function exception($message, $arguments = array(), Exception $previous = null) {
 		// get translation helper
 		$helper = t3lib_div::makeInstance('tx_weetypogento_languageHelper');
 		// check previous error message if set
@@ -153,7 +154,11 @@ class tx_weetypogento_div {
 		// get message translation
 		$message = $helper->getLabel($message, $arguments);
 		// throw the exception
-		throw new Exception($message, 0, $previous);
+		return new Exception($message, 0, $previous);
+	}
+	
+	public static function throwException($message, $arguments = array(), Exception $previous = null) {
+		throw self::exception($message, $arguments, $previous);
 	}
 }
 

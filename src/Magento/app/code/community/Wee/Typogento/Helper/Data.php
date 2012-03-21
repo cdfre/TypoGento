@@ -7,17 +7,43 @@
  */
 class Wee_Typogento_Helper_Data extends Mage_Core_Helper_Abstract {
 	
-	const TYPO3_BE_BASE_URL = 'typogento/typo3_be/base_url';
+	const XML_PATH_ALLOW_DIRECT_ACCESS  = 'typogento/config/allow_direct_access';
+	const XML_PATH_USER_AGENTS_REGEX    = 'typogento/config/user_agents_regex';
+	const XML_PATH_REDIRECT_URL         = 'typogento/config/redirect_url';
 	
-	/**
-	 * returns Config Data
-	 *
-	 * @param string $field
-	 * @return array config
-	 */
-	public function getConfigData($field) {
-		$path = 'typogento/config/'.$field;
-		$config = Mage::getStoreConfig($path, Mage::app()->getStore());
-		return $config;
+	public function getRedirectUrl() {
+		return Mage::getStoreConfig(self::XML_PATH_REDIRECT_URL, Mage::app()->getStore());
 	}
+	
+	public function getUserAgentsRegex() {
+		return Mage::getStoreConfig(self::XML_PATH_USER_AGENTS_REGEX, Mage::app()->getStore());
+	}
+	
+	public function isDirectAccessAllowed() {
+		$helper = Mage::helper('typogento/typo3');
+		$store = Mage::app()->getStore();
+		$request = Mage::app()->getRequest();
+		
+		if ($helper->isFrontendActive() || $store->isAdmin() || $request->getModuleName() === 'api') {
+			return true;
+		}
+		
+		if (!Mage::getStoreConfig(self::XML_PATH_ALLOW_DIRECT_ACCESS, $store)) {
+			$regex = $this->getUserAgentsRegex();
+			
+			if (!empty($_SERVER['HTTP_USER_AGENT']) && !empty($regex)) {
+				if (strpos($regex, '/', 0) === false) {
+					$regex = '/' . $regex . '/';
+				}
+				if (@preg_match($regex, $_SERVER['HTTP_USER_AGENT'])) {
+					return true;
+				}
+			}
+			
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 }

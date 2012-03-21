@@ -80,7 +80,7 @@ class tx_weetypogento_modadmin  extends t3lib_SCbase {
 			// init the parent
 			parent::init();
 			// init magento resources
-			t3lib_div::makeInstance('tx_weetypogento_autoloader', true);
+			t3lib_div::makeInstance('tx_weetypogento_autoloader');
 			Mage::app('admin');
 			// init magento admin session
 			$this->_session = Mage::getSingleton('core/session', array('name' => 'adminhtml'));

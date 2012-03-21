@@ -7,9 +7,21 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="tt_content.list_type_pi1">Magento</label>
-			<label index="fe_users.tx_weetypogento_firstname">Firstname</label>
-			<label index="fe_users.tx_weetypogento_id">Customer Id</label>
-			<label index="sys_language.tx_weetypogento_store">Magento Store View Code</label>
+			<label index="tx_weetypogento_replication_links">Magento Replication Link</label>
+			<label index="tx_weetypogento_replication_links.source">Source:</label>
+			<label index="tx_weetypogento_replication_links.target">Target:</label>
+			<label index="tx_weetypogento_replication_links.disable">Disable:</label>
+			<label index="tx_weetypogento_replication_links.provider">Provider:</label>
+			<label index="tx_weetypogento_replication_links.provider.1">Frontend User Provisioning</label>
+			<label index="tx_weetypogento_replication_links.provider.2">Customer Provisioning</label>
+			<label index="fe_users.tx_weetypogento_customer">Magento Customer:</label>
+			<label index="fe_users.static_info_country">Country Code:</label>
+			<label index="fe_users.date_of_birth">Date of birth:</label>
+			<label index="fe_users.gender">Gender:</label>
+			<label index="fe_users.gender.I.0">male</label>
+			<label index="fe_users.gender.I.1">female</label>
+			<label index="fe_users.gender.I.99"> </label>
+			<label index="sys_language.tx_weetypogento_store">Magento Store View Code:</label>
 			<label index="flexform.sheet_main">General</label>
 			<label index="flexform.label_productshow">Show</label>
 			<label index="flexform.label_productshow.0">Please Choose</label>
@@ -20,16 +32,15 @@
 			<label index="flexform.label_route">Route</label>	
 			<label index="flexform.label_controller">Controller</label>	
 			<label index="flexform.label_action">Action</label>				
-			<label index="be_users.tx_weetypogento_group">Magento Role</label>
+			<label index="be_users.tx_weetypogento_group">Magento Role:</label>
 			<label index="be_users.tx_weetypogentoo_group.0">none</label>
-			<label index="fe_groups.tx_weetypogento_group">Magento Customer Group</label>
+			<label index="fe_groups.tx_weetypogento_group">Magento Customer Group:</label>
 			<label index="fe_groups.tx_weetypogento_group.0">none</label>			
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.list_type_pi1">Magento</label>
-			<label index="fe_users.tx_weetypogento_firstname">Vorname</label>
-			<label index="fe_users.tx_weetypogento_id">Kundennummer</label>
-			<label index="sys_language.tx_weetypogento_store">Magento Store View Code</label>
+			<label index="fe_users.tx_weetypogento_customer">Magento Kunde:</label>
+			<label index="sys_language.tx_weetypogento_store">Magento Store View Code:</label>
 			<label index="flexform.sheet_main">Produkte</label>
 			<label index="flexform.label_productshow">Ansicht</label>
 			<label index="flexform.label_productshow.0">Bitte wählen</label>
@@ -40,9 +51,9 @@
 			<label index="flexform.label_route">Route</label>	
 			<label index="flexform.label_controller">Controller</label>	
 			<label index="flexform.label_action">Action</label>	
-			<label index="be_users.tx_weetypogento_group">Magento Gruppe</label>	
+			<label index="be_users.tx_weetypogento_group">Magento Gruppe:</label>	
 			<label index="be_users.tx_weetypogento_group.0">keine</label>	
-			<label index="fe_groups.tx_weetypogento_group">Magento Kundengruppe</label>
+			<label index="fe_groups.tx_weetypogento_group">Magento Kundengruppe:</label>
 			<label index="fe_groups.tx_weetypogento_group.0">keine</label>				
 		</languageKey>
 	</data>

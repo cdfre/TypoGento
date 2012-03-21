@@ -1,169 +1,186 @@
 <?php
 
 /**
- * TypoGento observer model
+ * TypoGento observer
  *
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
-class Wee_Typogento_Model_Observer extends Mage_Core_Model_Abstract {
+class Wee_Typogento_Model_Observer {
 	
 	/**
-	 * Set if the request is being made via SOAP or XMLRPC
-	 *
-	 * @var boolean
-	 */
-	protected $_apiRequest;
-
-	/**
-	 * Called by Customer Login, create TYPO3 fe_users Session
-	 *
+	 * Called during initialization of the replication manager
+	 * 
+	 * Registers the account provisioning provider.
+	 * 
 	 * @param Varien_Event_Observer $observer
 	 */
-	public static function loginEvent($observer) {
-		if (!Mage::helper('typogento/typo3')->isEnabled()) {
-			return;
+	public function replicationManagerInitialize(Varien_Event_Observer $observer) {
+		// register account replication provider
+		$manager = $observer->getEvent()->getManager();
+		$customer = Mage::getModel('typogento/replication_provider_accounts', 
+			Wee_Typogento_Model_Replication_Provider_Accounts::PROVIDER_ID_MAGENTO_CUSTOMER
+		);
+		$user = Mage::getModel('typogento/replication_provider_accounts', 
+			Wee_Typogento_Model_Replication_Provider_Accounts::PROVIDER_ID_TYPO3_FRONTEND_USER
+		);
+		$manager->registerProvider($customer);
+		$manager->registerProvider($user);
+		return $this;
+	}
+	
+	/**
+	 * Called after customer login
+	 * 
+	 * Performs auto login for the TYPO3 frontend user and starts the replication.
+	 * 
+	 * @param Varien_Event_Observer $observer
+	 */
+	public static function customerLogin($observer) {
+		//
+		$helper = Mage::helper('typogento/typo3');
+		// return if typo3 frontend not active
+		if (!$helper->isFrontendActive()) {
+			return $this;
 		}
-
-		$event = $observer->getEvent();
-
-		/*@var $customer Mage_Customer_Model_Customer */
-		$customer = $event->getCustomer();
-
-		if($customer->getTypo3_uid()){
-
-			$feUsers = Mage::getSingleton('typogento/typo3_frontend_user');
-			$tempuser = $feUsers->getUserById($customer->getTypo3_uid());
-
-			$GLOBALS['TSFE']->fe_user->createUserSession($tempuser);
+		// get customer
+		$customer = $observer->getEvent()->getCustomer();
+		// replicate frontend user
+		$manager = Mage::getSingleton('typogento/replication_manager');
+		$manager->replicate($customer);
+		// get frontend user model
+		$user = Mage::getSingleton('typogento/typo3_frontend_user');
+		// load frontend user
+		$user->load($customer->getId(), 'tx_weetypogento_customer');
+		// validate frontend user
+		if ($user->getId()) {
+			$record = $user->getData();
+			$GLOBALS['TSFE']->fe_user->createUserSession($record);
 		}
-
 	}
 
 	/**
-	 * Called by Customer Logout, kills TYPO3 fe_user Session
+	 * Called after customer logout
 	 *
+	 * Forces the TYPO3 frontend user logoff.
+	 * 
 	 * @param unknown_type $observer
 	 */
-	public static function logoutEvent($observer) {
-		if (!Mage::helper('typogento/typo3')->isEnabled()) {
-			return;
+	public static function customerLogout($observer) {
+		//
+		$helper = Mage::helper('typogento/typo3');
+		// return if typo3 frontend not active
+		if (!$helper->isFrontendActive()) {
+			return $this;
 		}
-		
-		Mage::helper('typogento/typo3')->logout();
+		// get logoff hooks
+		$hooks = &$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['logoff_pre_processing'];
+		// remove typogento handler
+		if (is_array($hooks)) {
+			$hook = $hooks['wee_typogento'];
+			unset($hooks['wee_typogento']);
+		}
+		// logout typo3
+		try {
+			$GLOBALS['TSFE']->fe_user->logoff();
+		} catch(Exception $e) {
+			throw $e;
+		}
+		// restore typogento handler
+		if (isset($hook)) {
+			$hooks['wee_typogento'] = $hook;
+		}
+		return $this;
 	}
 	
 	/**
-	 * Create or update an TYPO3 Frontend User
+	 * Called after customer saved
+	 * 
+	 * Replicates the Magento customer.
 	 *
 	 * @param Varien_Event_Observer $observer
 	 */
-	public function customerSaveAfterEvent($observer) {
-
-		if (!Mage::helper('typogento/typo3')->isEnabled()) {
-			return;
+	public function customerSaveAfter($observer) {
+		//
+		$helper = Mage::helper('typogento/typo3');
+		// return if typo3 frontend not active
+		if (!$helper->isFrontendActive()
+			|| !$helper->validateDatabaseConnection()) {
+			return $this;
 		}
-
-		// no TYPO3 db data given -> nothing to do
-		if (!Mage::getStoreConfig('typogento/typo3_db/host') 
-		|| !Mage::getStoreConfig('typogento/typo3_db/username') 
-		|| !Mage::getStoreConfig('typogento/typo3_db/password')
-		|| !Mage::getStoreConfig('typogento/typo3_db/dbname')) {
-			return;
-		}
-
+		// get customer
 		$customer = $observer->getCustomer();
-
-		// assign the fields
-		$fields = array (
-			'username' => $customer->getData('email'), 
-			'name' => $customer->getData('lastname'), 
-			'firstname' => $customer->getData('firstname'), 
-			'email' => $customer->getData('email'), 
-			'password' => $customer->getData('password'), 
-			'usergroup' => Mage::getStoreConfig('typogento/typo3_fe/group_uid'), 
-			'pid' => Mage::getStoreConfig('typogento/typo3_fe/users_uid'), 
-			'tx_fbmagento_id' => $customer->getId() 
-		);
-
+		// replicate changes
 		try {
-			// get fe_users Model
-			$feUsers = Mage::getSingleton('typogento/typo3_frontend_user');
-			$customer->load($customer->getId());
-				
-			if ($customer->getTypo3Uid()) {
-				$feUsers->setId($customer->getTypo3Uid());
-			}
-				
-			foreach($fields as $key => $value){
-				$feUsers->setData($key, $value);
-			}
-				
-			$feUsers->save();
-			$customer->setData('typo3_uid', $feUsers->getData('uid'));
-			$customer->getResource()->saveAttribute($customer, 'typo3_uid');
+			$manager = Mage::getSingleton('typogento/replication_manager');
+			$manager->replicate($customer);
 		} catch (Exception $e) {
 			Mage::log($e->getMessage());
 		}
+		return $this;
 	}
-
+	
 	/**
-	 * Save typo3 group id
+	 * Called after customer address saved
+	 *
+	 * Replicates the Magento customer.
 	 *
 	 * @param Varien_Event_Observer $observer
 	 */
-	public function customerGroupSaveBefore($observer) {
-
-		$observer->getObject()->setData('typo3_group_id', intval(Mage::app()->getRequest()->getParam('typo3_group_id')));
-
+	public function customerAddressSaveAfter($observer) {
+		//
+		$helper = Mage::helper('typogento/typo3');
+		// return if typo3 frontend not active
+		if (!$helper->isFrontendActive()
+			|| !$helper->validateDatabaseConnection()) {
+			return $this;
+		}
+		// get customer
+		$id = $observer->getCustomerAddress()->getCustomerId();
+		$customer = Mage::getModel('customer/customer');
+		$customer->setId($id);
+		// replicate changes
+		try {
+			$manager = Mage::getSingleton('typogento/replication_manager');
+			$manager->replicate($customer);
+		} catch (Exception $e) {
+			Mage::log($e->getMessage());
+		}
+		return $this;
 	}
-
+	
 	/**
-	 * Check if raw access is permitted to the magento frontend
+	 * Called before controller action started
+	 * 
+	 * Check if raw access is permitted to the Magento frontend
 	 *
 	 * @param Varien_Event_Observer $observer
 	 */
 	public function controllerActionPredispatch($observer) {
-		if (Mage::helper('typogento/typo3')->isEnabled()) return;
+		$helper = Mage::helper('typogento');
 		
-		if (!Mage::app()->getStore()->isAdmin() && ! $this->_isApiRequest()) {
-			if (!Mage::getStoreConfig('typogento/config/allow_direct_access')) {
-				if ($uaRegex = Mage::getStoreConfig('typogento/config/user_agents_regex')) {
-					if ($this->_checkUserAgentAgainstRegexps($uaRegex)) {
-						return;
-					}
-				}
-				Mage::app()->getResponse()->setRedirect(Mage::getStoreConfig('typogento/config/redirect_url'));
-			}
+		if (!$helper->isDirectAccessAllowed()) {
+			
+			$url = $helper->getRedirectUrl();
+			
+			Mage::app()->getResponse()->setRedirect($url);
 		}
+		
+		return $this;
 	}
-
+	
 	/**
-	 * Return true if the request is being made via SOAP or XMLRPC
-	 *
-	 * @return boolean
+	 * Called after TypoGento config has changed
+	 * 
+	 * @param unknown_type $observer
 	 */
-	protected function _isApiRequest() {
-		return Mage::app()->getRequest()->getModuleName() === 'api';
-	}
-
-	/**
-	 * Match the User Agent Header value agains the given regex
-	 *
-	 * @param string $regexp
-	 * @return bool
-	 */
-	protected function _checkUserAgentAgainstRegexps($regexp) {
-		if (!empty($_SERVER['HTTP_USER_AGENT'])) {
-			if (!empty($regexp)) {
-				if (false === strpos($regexp, '/', 0)) {
-					$regexp = '/' . $regexp . '/';
-				}
-				if (@preg_match($regexp, $_SERVER['HTTP_USER_AGENT'])) {
-					return true;
-				}
-			}
+	public function adminSystemConfigChanged($observer) {
+		//
+		$helper = Mage::helper('typogento/typo3');
+		// validate database connection
+		Mage::unregister(Wee_Typogento_Helper_Typo3::REGISTRY_KEY_DATABASE_CONNECTION_IS_VALID);
+		if (!$helper->validateDatabaseConnection()) {
+			Mage::throwException(Mage::helper('typogento')->__('TYPO3 database configuration is not valid.'));
 		}
-		return false;
 	}
 }
 

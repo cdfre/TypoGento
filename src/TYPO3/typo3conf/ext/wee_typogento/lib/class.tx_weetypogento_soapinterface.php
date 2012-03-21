@@ -9,12 +9,17 @@ class tx_weetypogento_soapinterface implements t3lib_Singleton {
 
 	const WSDL_URI = '/api/soap/?wsdl';
 	
+	const CACHE_TAG = 'wee_typogento_soap_results';
+	
 	protected $_client = null;
 	
 	protected $_session = null;
 	
 	protected $_resource = null;
 	
+	/** 
+	 * @var tx_weetypogento_cache 
+	 */
 	protected $_cache = false;
 	
 	/**
@@ -86,7 +91,7 @@ class tx_weetypogento_soapinterface implements t3lib_Singleton {
 					$url .= self::WSDL_URI;
 					// xdebug work arround (see https://bugs.php.net/bug.php?id=34657)
 					if (!@file_get_contents($url)) {
-						tx_weetypogento_div::throwException(
+						throw tx_weetypogento_div::exception(
 							'lib_wsdl_resource_not_found_error', array($url)
 						);
 					}
@@ -100,9 +105,12 @@ class tx_weetypogento_soapinterface implements t3lib_Singleton {
 				// perform soap query
 				$result = $this->client->call($this->_session, $resource, $parameters);
 				// cache the result
-				$this->_cache->set($hash, $result, array());
+				$this->_cache->set($hash, $result, array(self::CACHE_TAG));
 			} catch (Exception $e) {
-				tx_weetypogento_div::throwException('lib_soap_request_failed_error', array(), $e);
+				// release the lock
+				$this->_releaseLock($lock);
+				// throw exception
+				throw tx_weetypogento_div::exception('lib_soap_request_failed_error', array(), $e);
 			}
 			// release the lock
 			$this->_releaseLock($lock);
@@ -111,6 +119,34 @@ class tx_weetypogento_soapinterface implements t3lib_Singleton {
 		}
 		
 		return null;
+	}
+	
+	public function isAvailable() {
+		try {
+			// get configuration helper
+			$helper = t3lib_div::makeInstance('tx_weetypogento_magentoHelper');
+			$url = $helper->getBaseUrl();
+			$user = $helper->getApiAccount();
+			$password = $helper->getApiPassword();
+			// adds the wsdl path
+			$url .= self::WSDL_URI;
+			// xdebug work arround (see https://bugs.php.net/bug.php?id=34657)
+			if (!@file_get_contents($url)) {
+				throw tx_weetypogento_div::exception(
+					'lib_wsdl_resource_not_found_error', array($url)
+				);
+			}
+			// start soap client
+			$client = new SoapClient($url, array('exceptions' => true, 'cache_wsdl' => WSDL_CACHE_MEMORY));
+			$client->login($user, $password);
+			// unset credentials
+			unset($password);
+			unset($user);
+		} catch (Exception $e) {
+			// throw exception
+			throw $e;
+		}
+		return true;
 	}
 	
 	protected function _acquireLock($hash) {
@@ -136,16 +172,6 @@ class tx_weetypogento_soapinterface implements t3lib_Singleton {
 
 		return $success;
 	}
-
-	/**
-	 * get SoapClient
-	 *
-	 * @return SoapClient
-	 */
-	public function getClient(){
-		return $this->connection;
-	}
-
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/wee_typogento/lib/class.tx_weetypogento_soapinterface.php']) {

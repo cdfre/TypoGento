@@ -24,23 +24,44 @@ t3lib_extMgm::addTypoScript(
 );
 
 /**
- * Adds authentification service
+ * Adds default frontend user single sign-on service
  */
 t3lib_extMgm::addService(
 	$_EXTKEY, 
 	'auth', 
-	'tx_weetypogento_auth_sv1',
+	'tx_weetypogento_sv1',
 	array(
-		'title' => 'Magento Customer Login',
-		'description' => 'Login a frontend user automatically if one is found in the Magento customer table.',
-		'subtype' => 'getUserFE,authUserFE,getGroupsFE',
+		'title' => 'Magento customer single sign-on service',
+		'description' => 'Provides single sign-on for TYPO3 frontend users and Magento customers.',
+		'subtype' => 'getUserFE,authUserFE',
 		'available' => TRUE,
 		'priority' => 60,
 		'quality' => 50,
 		'os' => '',
 		'exec' => '',
-		'classFile' => t3lib_extMgm::extPath($_EXTKEY).'sv1/class.tx_weetypogento_auth_sv1.php',
-		'className' => 'tx_weetypogento_auth_sv1',
+		'classFile' => t3lib_extMgm::extPath($_EXTKEY).'sv1/class.tx_weetypogento_sv1.php',
+		'className' => 'tx_weetypogento_sv1'
+	)
+);
+
+/**
+ * Adds default frontend user replication service
+ */
+t3lib_extMgm::addService(
+	$_EXTKEY,
+	'auth',
+	'tx_weetypogento_sv2',
+	array(
+		'title' => 'Magento customer replication service',
+		'description' => 'Automatic, on-demand replication of TYPO3 frontend users and Magento customers.',
+		'subtype' => 'getUserFE',
+		'available' => TRUE,
+		'priority' => 100,
+		'quality' => 100,
+		'os' => '',
+		'exec' => '',
+		'classFile' => t3lib_extMgm::extPath($_EXTKEY).'sv2/class.tx_weetypogento_sv2.php',
+		'className' => 'tx_weetypogento_sv2'
 	)
 );
 
@@ -68,6 +89,12 @@ if (TYPO3_MODE === 'FE') {
 	 */
 	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['getData']['wee_typogento'] =
 		'EXT:wee_typogento/lib/class.tx_weetypogento_observer.php:&tx_weetypogento_observer';
+	
+	/**
+	 * Provides auto login for Magento customer
+	 */
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp']['wee_typogento_sv1'] =
+		'EXT:wee_typogento/sv1/class.tx_weetypogento_sv1.php:&tx_weetypogento_sv1->postUserLookUp';
 }
 
 /**
@@ -108,5 +135,11 @@ if (t3lib_div::int_from_ver(TYPO3_version) < '4006000') {
 		$TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['wee_typogento']['options']['tagsTable'] = 'tx_weetypogento_cache_tags';
 	}
 }
+
+/**
+ * Add validator for unique frontend user emails
+ */
+$TYPO3_CONF_VARS['SC_OPTIONS']['tce']['formevals']['tx_weetypogento_uniqueemail'] = 
+	'EXT:wee_typogento/lib/class.tx_weetypogento_uniqueemail.php';
 
 ?>
