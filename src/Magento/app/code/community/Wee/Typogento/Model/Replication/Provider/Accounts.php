@@ -127,7 +127,7 @@ class Wee_Typogento_Model_Replication_Provider_Accounts extends Wee_Typogento_Mo
 			if ($object->getId()) {
 				$select = $read->select()
 					->from(array('t' => $table), array('id' => 'uid'))
-					->where('t.tx_weetypogento_customer = ?', $object->getId())
+					->where('t.tx_typogento_customer = ?', $object->getId())
 					->where('t.deleted = 0')
 					->where('t.pid = ? ', Mage::getStoreConfig('typogento/typo3_fe/users_pid'))
 					->limit(1);
@@ -160,10 +160,10 @@ class Wee_Typogento_Model_Replication_Provider_Accounts extends Wee_Typogento_Mo
 			$read = Mage::getSingleton('core/resource')->getConnection('core_read');
 			$table = $read->getTableName('customer_entity');
 			
-			if ($object->getData('tx_weetypogento_customer')) {
+			if ($object->getData('tx_typogento_customer')) {
 				$select = $read->select()
 					->from(array('t' => $table), array('id' => 'entity_id'))
-					->where('t.entity_id = ?', $object->getData('tx_weetypogento_customer'))
+					->where('t.entity_id = ?', $object->getData('tx_typogento_customer'))
 					->where('t.website_id = ?', Mage::helper('typogento/typo3')->getWebsiteId())
 					->limit(1);
 				
@@ -256,7 +256,7 @@ class Wee_Typogento_Model_Replication_Provider_Accounts extends Wee_Typogento_Mo
 			'name'               => "{$source->getData('firstname')} {$source->getData('lastname')}",
 			'email'              => $source->getData('email'),
 			'date_of_birth'      => strtotime($source->getData('dob')),
-			'tx_weetypogento_customer' => $source->getId(),
+			'tx_typogento_customer' => $source->getId(),
 		);
 		$gender = $source->getData('gender');
 		$gender = intval($gender);

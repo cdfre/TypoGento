@@ -53,13 +53,13 @@ class Wee_Typogento_Model_Typo3_Frontend_User extends Mage_Core_Model_Abstract {
 			}
 			// 
 			$authenticated = false;
-			$exclude = array('tx_weetypogento_sv2');
+			$exclude = array('tx_typogento_sv2');
 			// 
 			$lib = $GLOBALS['TSFE']->fe_user;
 			$lib->formfield_status = 'login';
-			$lib->formfield_uname = 'tx_weetypogento_login_name';
-			$lib->formfield_uident = 'tx_weetypogento_login_password';
-			$lib->formfield_chalvalue = 'tx_weetypogento_login_challenge';
+			$lib->formfield_uname = 'tx_typogento_login_name';
+			$lib->formfield_uident = 'tx_typogento_login_password';
+			$lib->formfield_chalvalue = 'tx_typogento_login_challenge';
 			$lib->getMethodEnabled = true;
 			t3lib_div::_GETset($this->getData('username'), $lib->formfield_uname);
 			t3lib_div::_GETset($password, $lib->formfield_uident);
@@ -73,7 +73,7 @@ class Wee_Typogento_Model_Typo3_Frontend_User extends Mage_Core_Model_Abstract {
 				// exclude service
 				$exclude[] = $service->getServiceKey();
 				//
-				if ($service->getServiceKey() == 'tx_weetypogento_sv1') {
+				if ($service->getServiceKey() == 'tx_typogento_sv1') {
 					continue;
 				}
 				// initialize service

@@ -145,24 +145,24 @@ class Wee_Typogento_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	public function getWebsiteId() {
 		$this->_assertIsFrontendActive();
 		
-		return t3lib_div::makeInstance('tx_weetypogento_magentoHelper')->getWebsiteId();
+		return t3lib_div::makeInstance('tx_typogento_magentoHelper')->getWebsiteId();
 	}
 	
 	/**
 	 * Get the TypoGento router
 	 * 
-	 * @return tx_weetypogento_router The TypoGento router
+	 * @return tx_typogento_router The TypoGento router
 	 */
 	public function getRouter() {
 		$this->_assertIsFrontendActive();
 		
-		return t3lib_div::makeInstance('tx_weetypogento_router');
+		return t3lib_div::makeInstance('tx_typogento_router');
 	}
 	
 	public function getRouteEnvironment() {
 		$this->_assertIsFrontendActive();
 		
-		return t3lib_div::makeInstance('tx_weetypogento_routeEnvironment');
+		return t3lib_div::makeInstance('tx_typogento_routeEnvironment');
 	}
 	
 	/**

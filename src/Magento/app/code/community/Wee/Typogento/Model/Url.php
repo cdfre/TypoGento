@@ -165,9 +165,9 @@ class Wee_Typogento_Model_Url extends Mage_Core_Model_Url {
 		$target = $typo3->getRouteEnvironment();
 		$target->register('getVars', $_GET);
 		$target->register('queryString', $_SERVER['QUERY_STRING']);
-		$target->getVars = array('tx_weetypogento' => $data);
+		$target->getVars = array('tx_typogento' => $data);
 		$target->queryString = t3lib_div::implodeArrayForUrl('', $target->getVars, '', false, true);
 		// get url
-		return $router->lookup(tx_weetypogento_router::ROUTE_SECTION_LINKS, $filter, $target);
+		return $router->lookup(tx_typogento_router::ROUTE_SECTION_LINKS, $filter, $target);
 	}
 }

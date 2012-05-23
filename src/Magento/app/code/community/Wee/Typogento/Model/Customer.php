@@ -59,7 +59,7 @@ class Wee_Typogento_Model_Customer extends Mage_Customer_Model_Customer {
 			}
 			// load frontend user
 			$user = Mage::getModel('typogento/typo3_frontend_user');
-			$user->load($this->getId(), 'tx_weetypogento_customer');
+			$user->load($this->getId(), 'tx_typogento_customer');
 			// use frontend user provider
 			if (!$user->authenticate($password)) {
 				throw $e;

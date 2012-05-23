@@ -96,11 +96,11 @@ class Wee_Typogento_Model_Mysql4_Typo3_Frontend_User extends Wee_Typogento_Model
 		$read = $this->_getReadAdapter();
 		
 		$select  = $read->select()
-			->from(array('main_table' => $this->getMainTable()), array('tx_weetypogento_customer', 'cnt' => 'COUNT(*)'))
+			->from(array('main_table' => $this->getMainTable()), array('tx_typogento_customer', 'cnt' => 'COUNT(*)'))
 			->where('deleted = 0')
 			->where('pid = ? ', Mage::helper('typogento/typo3')->getFrontendUsersPageId())
-			->where('tx_weetypogento_customer <> 0')
-			->group('tx_weetypogento_customer')
+			->where('tx_typogento_customer <> 0')
+			->group('tx_typogento_customer')
 			->order('cnt DESC')
 			->limit(1);
 		

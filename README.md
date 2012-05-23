@@ -71,14 +71,14 @@ TYPO3 pages.
 
 You should prefer using TypoScript to put Magento blocks beside `content` (i.e. `top.search`) on your TYPO3 pages:
 
-	includeLibs.user_tx_weetypogento_pi1 = EXT:wee_typogento_pi1/pi1/class.tx_weetypogento_pi1.php
+	includeLibs.user_tx_typogento_pi1 = EXT:wee_typogento_pi1/pi1/class.tx_typogento_pi1.php
 	/**
 	 * You could also use USER_INT in this case the frontend 
 	 * plugin wouldn't trigger cache hash checking.
 	 */
 	temp.search = USER
 	temp.search {
-		userFunc = tx_weetypogento_pi1->main
+		userFunc = tx_typogento_pi1->main
 		block = top.search
 		noWrap = 1
 	}
@@ -89,7 +89,7 @@ Before you start putting Magento content on your TYPO3 pages, you must provide t
 with enough data to dispatch the TYPO3 frontend page requests to Magento. See the [wiki](https://github.com/witrin/TypoGento/wiki/Overview#wiki-routing) for a brief 
 explanation of how this general works.
 
-	plugin.tx_weetypogento_pi1 {
+	plugin.tx_typogento_pi1 {
 		/** 
 		 * Section for all TypoGento routes.
 		 */
@@ -99,7 +99,7 @@ explanation of how this general works.
 			 * will use the target to dispatch the TYPO3 page request to Magento 
 			 * if the filter match and if the route has the highest priority.
 			 * Remark that TypoGento will transfer the the GET vars namespace 
-			 * from tx_weetypogento[...] to [...] between filter and target and 
+			 * from tx_typogento[...] to [...] between filter and target and 
 			 * vice versa in the links section. The default route priority is 0.
 			 */
 			10 {
@@ -125,25 +125,25 @@ explanation of how this general works.
 						10 {
 							wrap = magento:/|/
 							value = typogento
-							override.data = GP:route // TSFE:config|tx_weetypogento|route
+							override.data = GP:route // TSFE:config|tx_typogento|route
 						}
 						20 = TEXT
 						20 {
 							wrap = |/
 							value = page
-							override.data = GP:controller // TSFE:config|tx_weetypogento|controller
+							override.data = GP:controller // TSFE:config|tx_typogento|controller
 						}
 						30 = TEXT
 						30 {
 							wrap = |/
 							value = index
-							override.data = GP:action // TSFE:config|tx_weetypogento|action
+							override.data = GP:action // TSFE:config|tx_typogento|action
 						}
 						40 = TEXT
 						40 {
 							wrap = id/|/
-							data = GP:id // TSFE:config|tx_weetypogento|id
-							if.isTrue.data = GP:id // TSFE:config|tx_weetypogento|id
+							data = GP:id // TSFE:config|tx_typogento|id
+							if.isTrue.data = GP:id // TSFE:config|tx_typogento|id
 						}
 					}
 					addQueryString = 1
@@ -168,7 +168,7 @@ explanation of how this general works.
 					# e.g. the page {$pid} has already a frontend plugin for 
 					# the content block of /catalog/product/view/ so wee need
 					# only the product id there
-					addQueryString.exclude = tx_weetypogento[route],tx_weetypogento[controller],tx_weetypogento[action]
+					addQueryString.exclude = tx_typogento[route],tx_typogento[controller],tx_typogento[action]
 					useCacheHash = 1
 				}
 				section = links

@@ -112,7 +112,7 @@
 						<table>fe_groups</table>
 					</typo3_frontend_group>
 					<typo3_replication_link>
-						<table>tx_weetypogento_replication_links</table>
+						<table>tx_typogento_replication_links</table>
 					</typo3_replication_link>
 				</entities>
 			</typogento_mysql4>

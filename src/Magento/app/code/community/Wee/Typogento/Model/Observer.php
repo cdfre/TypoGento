@@ -50,7 +50,7 @@ class Wee_Typogento_Model_Observer {
 		// get frontend user model
 		$user = Mage::getSingleton('typogento/typo3_frontend_user');
 		// load frontend user
-		$user->load($customer->getId(), 'tx_weetypogento_customer');
+		$user->load($customer->getId(), 'tx_typogento_customer');
 		// validate frontend user
 		if ($user->getId()) {
 			$record = $user->getData();
@@ -76,8 +76,8 @@ class Wee_Typogento_Model_Observer {
 		$hooks = &$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['logoff_pre_processing'];
 		// remove typogento handler
 		if (is_array($hooks)) {
-			$hook = $hooks['wee_typogento'];
-			unset($hooks['wee_typogento']);
+			$hook = $hooks['typogento'];
+			unset($hooks['typogento']);
 		}
 		// logout typo3
 		try {
@@ -87,7 +87,7 @@ class Wee_Typogento_Model_Observer {
 		}
 		// restore typogento handler
 		if (isset($hook)) {
-			$hooks['wee_typogento'] = $hook;
+			$hooks['typogento'] = $hook;
 		}
 		return $this;
 	}
