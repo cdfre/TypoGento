@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * TypoGento frontend group collection
+ *
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
+ */
+
+class Typogento_Core_Model_Mysql4_Typo3_Replication_Link_Collection extends Mage_Core_Model_Mysql4_Collection_Abstract {
+
+
+	protected function _construct() {
+		$this->_init('typogento/typo3_replication_link');
+
+	}
+
+}
