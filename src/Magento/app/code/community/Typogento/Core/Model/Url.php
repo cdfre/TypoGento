@@ -10,14 +10,6 @@
 class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	
 	/**
-	 * Default Constructor
-	 *
-	 */
-	public function _construct(){
-		parent::_construct();
-	}
-	
-	/**
 	 * Build URL by requested path and parameters
 	 * 
 	 * 
@@ -145,7 +137,14 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	}
 	
 	/**
-	 * Generate TYPO3 frontend url
+	 * Initialize object
+	 */
+	protected function _construct() {
+		parent::_construct();
+	}
+	
+	/**
+	 * Render TYPO3 frontend URL
 	 *
 	 * @todo Maybe preserving the overriden query params in a typoscript register
 	 * @param array $params
