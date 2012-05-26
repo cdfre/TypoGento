@@ -194,7 +194,7 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 		$target->getVars = array('tx_typogento' => $data);
 		$target->queryString = t3lib_div::implodeArrayForUrl('', $target->getVars, '', false, true);
 		// render url
-		$url = $router->lookup(tx_typogento_router::ROUTE_SECTION_LINKS, $filter, $target);
+		$url = $router->lookup(tx_typogento_router::ROUTE_SECTION_RENDER, $filter, $target);
 		// return result
 		return $url;
 	}

@@ -71,7 +71,7 @@ TYPO3 pages.
 
 You should prefer using TypoScript to put Magento blocks beside `content` (i.e. `top.search`) on your TYPO3 pages:
 
-	includeLibs.user_tx_typogento_pi1 = EXT:wee_typogento_pi1/pi1/class.tx_typogento_pi1.php
+	includeLibs.user_tx_typogento_pi1 = EXT:typogento_pi1/pi1/class.tx_typogento_pi1.php
 	/**
 	 * You could also use USER_INT in this case the frontend 
 	 * plugin wouldn't trigger cache hash checking.
@@ -152,9 +152,9 @@ explanation of how this general works.
 				section = dispatch
 			}
 			/** 
-			 * This is a route in the links section similiar to the example above. 
+			 * This is a route in the render section similiar to the example above. 
 			 * It means TypoGento will use this if Magento requests an URL during 
-			 * block rendering. The target is here just a internal TYPO3 frontend URL.
+			 * block rendering. The target is here just a TYPO3 frontend URL.
 			 */
 			20 {
 				filter {
@@ -166,12 +166,12 @@ explanation of how this general works.
 					parameter = {$pid} 
 					addQueryString = 1
 					# e.g. the page {$pid} has already a frontend plugin for 
-					# the content block of /catalog/product/view/ so wee need
+					# the content block of /catalog/product/view/ so we need
 					# only the product id there
 					addQueryString.exclude = tx_typogento[route],tx_typogento[controller],tx_typogento[action]
 					useCacheHash = 1
 				}
-				section = links
+				section = render
 				priority = 1
 			}
 		}

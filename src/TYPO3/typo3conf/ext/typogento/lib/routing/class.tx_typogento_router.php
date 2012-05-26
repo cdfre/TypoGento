@@ -13,7 +13,7 @@ class tx_typogento_router implements t3lib_Singleton {
 	 * 
 	 * @var string
 	 */
-	const ROUTE_SECTION_LINKS = 'links';
+	const ROUTE_SECTION_RENDER = 'render';
 	
 	/**
 	 * 
