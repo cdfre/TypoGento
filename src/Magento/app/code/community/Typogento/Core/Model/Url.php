@@ -1,64 +1,36 @@
 <?php 
 
 /**
- * Typogento URL model overrides
- * 
- * 
- * @todo Not sure this is right implemented
+ * URL model overrides
  *
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	
 	/**
 	 * Build URL by requested path and parameters
 	 * 
+	 * @todo Support URL fragments
 	 * 
-	 * @todo Support for fragments
+	 * @param string $path Path to the route
+	 * @param array $arameters Parameters for the route
 	 * 
-	 * @param   string $path       Path to the route
-	 * @param   array  $arameters  Parameters for the route
-	 * @param   bool   $useDefault If set base class is used
 	 * @return  string
 	 */
-	public function getUrl($path = null, $parameters = null, $useDefault = false) {
+	public function getUrl($path = null, $parameters = null) {
 		// get typo3 helper
 		$typo3 = Mage::helper('typogento/typo3');
-		// 
+		// it's neccessary in both cases to process the passed arguments
 		$url = parent::getUrl($path, $parameters);
-		// check if typo3 is disabled or default url is requested
-		if (!$typo3->isFrontendActive() || $useDefault){
-			return $url;
+		// check if typo3 is disabled or default behaviour is requested
+		if ($typo3->isFrontendActive() 
+			&& !$this->_getData('force_default_behaviour')) {
+			// rerender link for typo3 frontend
+			$url = $this->_getTypolink();
+			// save last url in response for the _isurlinternal workaround
+			$response = Mage::app()->getResponse();
+			$response->lastUrl = $url;
 		}
-		
-		// here we just collect the processed parameters 
-		// in a flat data array to pass them to gettypolink()
-		
-		// collect route data
-		$data = array(
-			'route' => $this->getRouteName(),
-			'controller' => $this->getControllerName(),
-			'action' => $this->getActionName(),
-		);
-		// get route parameters only (ignores query params)
-		$parameters = $this->getRouteParams();
-		// merge route parameters if set
-		if (is_array($parameters)) {
-			$parameters = array_filter($parameters);
-			$data = array_merge($data, $parameters);
-		}
-		$parameters = $this->getQueryParams();
-		// merge query parameters if set
-		if (is_array($parameters)) {
-			$parameters = array_filter($parameters);
-			$data = array_merge($data, $parameters);
-		}
-		// recreate link for typo3 frontend using link data
-		$url = $this->getTypolink($data);
-
-		// save last url in response for the _isurlinternal workaround
-		$response = Mage::app()->getResponse();
-		$response->lastUrl = $url;
-
 		// return url
 		return $url;
 	}
@@ -66,9 +38,8 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	/**
 	 * Retrieve route URL
 	 * 
-	 * If TYPO3 is activated this doesn't use 
-	 * the store base url. If _direct is set 
-	 * path is replaced by its target path.
+	 * If TYPO3 is activated this doesn't use the store base url. 
+	 * If _direct is set path is replaced by its target path.
 	 *  
 	 * @param string $routePath
 	 * @param array $routeParams
@@ -78,9 +49,10 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	public function getRouteUrl($path = null, $parameters = null) {
 		// get typo3 helper
 		$typo3 = Mage::helper('typogento/typo3');
-		// check if typo3 is disabled or original url is requested
-		if (!$typo3->isFrontendActive()) {
-			return Mage_Core_Model_Url::getRouteUrl($path, $parameters);
+		// check if typo3 is disabled or default behaviour is requested
+		if (!$typo3->isFrontendActive() 
+			|| $this->_getData('force_default_behaviour')) {
+			return parent::getRouteUrl($path, $parameters);
 		}
 		// unset previous route parameters
 		$this->unsetData('route_params');
@@ -97,16 +69,16 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 			// set rewritten path
 			$path = $rewrite->getTargetPath();
 		}
-		
+		// 
 		if (!is_null($path)) {
 			$this->setRoutePath($path);
 		}
 		if (is_array($parameters)) {
 			$this->setRouteParams($parameters, false);
 		}
-	
+		// 
 		$url = $this->getRoutePath($parameters);
-		
+		// 
 		return $url;
 	}
 	
@@ -144,29 +116,65 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	}
 	
 	/**
+	 * Collect URL data for rendering TYPO3 frontend URL
+	 * 
+	 * @see _getTypolink()
+	 * 
+	 * @return array
+	 */
+	protected function _getTypolinkData() {
+		// collect route data
+		$data = array(
+			'route' => $this->getRouteName(),
+			'controller' => $this->getControllerName(),
+			'action' => $this->getActionName()
+		);
+		// get route parameters only (ignore query parameters)
+		$parameters = $this->getRouteParams();
+		// merge route parameters if set
+		if (is_array($parameters)) {
+			$parameters = array_filter($parameters);
+			$data = array_merge($data, $parameters);
+		}
+		$parameters = $this->getQueryParams();
+		// merge query parameters if set
+		if (is_array($parameters)) {
+			$parameters = array_filter($parameters);
+			$data = array_merge($data, $parameters);
+		}
+		// return result
+		return $data;
+	}
+	
+	/**
 	 * Render TYPO3 frontend URL
 	 *
 	 * @todo Maybe preserving the overriden query params in a typoscript register
-	 * @param array $params
-	 * @return string URL
+	 * 
+	 * @return string
 	 */
-	protected function getTypolink(array &$data = array()) {
+	protected function _getTypolink() {
+		// get typolink data
+		$data = $this->_getTypolinkData();
 		// get typo3 helper
 		$typo3 = Mage::helper('typogento/typo3');
 		// get typo3 router
 		$router = $typo3->getRouter();
-		// prepare environment
+		// prepare filter environment
 		$filter = $typo3->getRouteEnvironment();
 		$filter->register('getVars', $_GET);
 		$filter->register('queryString', $_SERVER['QUERY_STRING']);
 		$filter->getVars = $data;
 		$filter->queryString = t3lib_div::implodeArrayForUrl('', $filter->getVars, '', false, true);
+		// prepare target environment
 		$target = $typo3->getRouteEnvironment();
 		$target->register('getVars', $_GET);
 		$target->register('queryString', $_SERVER['QUERY_STRING']);
 		$target->getVars = array('tx_typogento' => $data);
 		$target->queryString = t3lib_div::implodeArrayForUrl('', $target->getVars, '', false, true);
-		// get url
-		return $router->lookup(tx_typogento_router::ROUTE_SECTION_LINKS, $filter, $target);
+		// render url
+		$url = $router->lookup(tx_typogento_router::ROUTE_SECTION_LINKS, $filter, $target);
+		// return result
+		return $url;
 	}
 }
