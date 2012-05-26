@@ -36,6 +36,27 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	}
 	
 	/**
+	 * Rebuild URL to handle the case when session ID was changed
+	 *
+	 * @todo Support URL rebuilds
+	 * 
+	 * @param string $url
+	 * 
+	 * @return string
+	 */
+	public function getRebuiltUrl($url) {
+		// get typo3 helper
+		$typo3 = Mage::helper('typogento/typo3');
+		// check if typo3 is disabled or default behaviour is requested
+		if (!$typo3->isFrontendActive() 
+			|| $this->_getData('force_default_behaviour')) {
+			$url = parent::getRebuiltUrl($url);
+		}
+		// return result
+		return $url;
+	}
+	
+	/**
 	 * Retrieve route URL
 	 * 
 	 * If TYPO3 is activated this doesn't use the store base url. 
