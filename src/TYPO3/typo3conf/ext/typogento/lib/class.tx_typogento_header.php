@@ -78,51 +78,52 @@ class tx_typogento_header implements t3lib_Singleton {
 		}
 		// get the interface
 		$this->_magento = t3lib_div::makeInstance('tx_typogento_interface');
-		// dispatch path for current page
-		//$this->_magento->dispatch();
-		// get local directories
-		try {
-			$this->_path = Mage::getBaseDir();
-			$this->_url = Mage::getBaseUrl('js');
-		} catch (Exception $e) {
-			tx_typogento_div::throwException('lib_interface_access_failed_error', 
-				array(), $e
-			);
+		// skip if this is a redirect
+		if (!Mage::app()->getResponse()->isRedirect()) {
+			// get local directories
+			try {
+				$this->_path = Mage::getBaseDir();
+				$this->_url = Mage::getBaseUrl('js');
+			} catch (Exception $e) {
+				tx_typogento_div::throwException('lib_interface_access_failed_error', 
+					array(), $e
+				);
+			}
+			// get design package for lookup includings
+			try {
+				$this->_design = Mage::getDesign();
+			} catch (Exception $e) {
+				tx_typogento_div::throwException('lib_interface_access_failed_error', 
+					array(), $e
+				);
+			}
+			// get the header block
+			$this->_block = $this->_magento->getBlock($this->name);
+			// check the header block exists
+			if (!isset($this->_block)) {
+	
+				tx_typogento_div::throwException('lib_block_not_available_error', 
+					array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $this->name)
+				);
+			}
+			// check the header block type
+			if (!($this->_block instanceof Mage_Page_Block_Html_Head)) {
+				tx_typogento_div::throwException('lib_block_type_not_supported_error', 
+					array(get_class($this->_block))
+				);
+			}
+			// get page renderer
+			$this->_renderer = $GLOBALS['TSFE']->getPageRenderer();
+			// set init flag
+			$this->_isInitialized = true;
 		}
-		// get design package for lookup includings
-		try {
-			$this->_design = Mage::getDesign();
-		} catch (Exception $e) {
-			tx_typogento_div::throwException('lib_interface_access_failed_error', 
-				array(), $e
-			);
-		}
-		// get the header block
-		$this->_block = $this->_magento->getBlock($this->name);
-		// check the header block exists
-		if (!isset($this->_block)) {
-
-			tx_typogento_div::throwException('lib_block_not_available_error', 
-				array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $this->name)
-			);
-		}
-		// check the header block type
-		if (!($this->_block instanceof Mage_Page_Block_Html_Head)) {
-			tx_typogento_div::throwException('lib_block_type_not_supported_error', 
-				array(get_class($this->_block))
-			);
-		}
-		// get page renderer
-		$this->_renderer = $GLOBALS['TSFE']->getPageRenderer();
-		// set init flag
-		$this->_isInitialized = true;
+		
+		return $this->_isInitialized;
 	}
 	
 	public function getBlock() {
-		// init header
-		$this->_init();
-		// return block
-		return $this->_block;
+		// init header and return result
+		return $this->_init() ? $this->_block : null;
 	}
 	
 	/**
@@ -136,7 +137,9 @@ class tx_typogento_header implements t3lib_Singleton {
 	public function render() {
 		try {
 			// init the header
-			$this->_init();
+			if (!$this->_init()) {
+				return;
+			}
 			// get template configuration
 			$config = &tx_typogento_div::getConfig();
 			// collect items

@@ -93,7 +93,6 @@ class tx_typogento_pi1 extends tslib_pibase {
 	protected function _init(array &$conf) {
 		// set plugin configuration
 		$this->conf = &$conf;
-		
 		// 
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
@@ -110,9 +109,12 @@ class tx_typogento_pi1 extends tslib_pibase {
 	}
 	
 	protected function _render(&$content) {
+		// skip if this is a redirect
+		if (Mage::app()->getResponse()->isRedirect()) {
+			return;
+		}
 		// get current page id
 		$pid = $GLOBALS['TSFE']->id;
-		
 		// render block specified by typoscript
 		if (isset($this->conf['block'])) {
 			// get block name

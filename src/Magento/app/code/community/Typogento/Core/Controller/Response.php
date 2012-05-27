@@ -27,15 +27,15 @@ class Typogento_Core_Controller_Response extends Mage_Core_Controller_Response_H
 	 * @param string $output
 	 */
 	protected function ajaxHandler($output) {
-		
+		// 
 		if (!Mage::app ()->getFrontController ()->getRequest ()->isXmlHttpRequest()) {
 			return;
 		}
-		
+		// 
 		if ($GLOBALS['TSFE']->renderCharset) {
 			header('Content-Type: text/html; charset='.$GLOBALS['TSFE']->renderCharset);
 		} 
-		
+		// 
 		echo $output;
 		exit;
 	}
@@ -44,6 +44,7 @@ class Typogento_Core_Controller_Response extends Mage_Core_Controller_Response_H
 	 * Echo the body segments
 	 *
 	 * @param boolean $returnBody
+	 * 
 	 * @return void
 	 */
 	public function outputBody($returnBody = false) {
@@ -59,26 +60,27 @@ class Typogento_Core_Controller_Response extends Mage_Core_Controller_Response_H
 	}
 	
 	/**
-	 * Send the Response and exit
+	 * Send the response and exit
 	 */
 	public function sendResponse() {
 		
 		parent::sendResponse();
 		
 		if ($this->isRedirect()) {
-			exit ();
+			//exit ();
 		}
 	}
 	
 	/**
-	 * set Body
+	 * Set Body
 	 *
 	 * @param string $content
 	 * @param string $name
+	 * 
 	 * @return $this
 	 */
 	public function setBody($content, $name = null) {
-			// handle Checkout redirects
+		// handle Checkout redirects
 		if (strstr($content, 'paypal_standard_checkout') 
 		|| strstr($content, 'clickandbuy_checkout')
 		|| strstr($content, 'payone_checkout')
@@ -87,7 +89,7 @@ class Typogento_Core_Controller_Response extends Mage_Core_Controller_Response_H
 			exit;
 		}
 		
-		// not longer necessary because of the rewriting of the app Model we can change die Response Object everywhere
+		// not longer necessary because of the rewriting of the app Model we can change Response Object everywhere
 		//$this->ajaxHandler($content);
 		return parent::setBody($content, $name);
 	}
@@ -100,6 +102,7 @@ class Typogento_Core_Controller_Response extends Mage_Core_Controller_Response_H
 	 *
 	 * @param string $url
 	 * @param int $code
+	 * 
 	 * @return Zend_Controller_Response_Abstract
 	 */
 	public function setRedirect($url, $code = 302) {
@@ -107,13 +110,18 @@ class Typogento_Core_Controller_Response extends Mage_Core_Controller_Response_H
 		if ($url == Mage::app()->getStore()->getBaseUrl() && $this->lastUrl){
 			$url = $this->lastUrl;
 		}
-		$this->canSendHeaders(true);
-		#$this->setHeader ( 'Location', t3lib_div::locationHeaderUrl ( $url ), true )->setHttpResponseCode ( $code );
-		$this->sendHeaders();
-		$this->_isRedirect = true;
 		
-		header('Location: ' . t3lib_div::locationHeaderUrl($url));
-		exit;
+		$url = t3lib_div::locationHeaderUrl($url);
+		
+		return parent::setRedirect($url, $code);
+		
+		//$this->canSendHeaders(true);
+		//$this->setHeader ( 'Location', t3lib_div::locationHeaderUrl ( $url ), true )->setHttpResponseCode ( $code );
+		//$this->sendHeaders();
+		//$this->_isRedirect = true;
+		
+		//header('Location: ' . t3lib_div::locationHeaderUrl($url));
+		//exit;
 	}
 
 }
