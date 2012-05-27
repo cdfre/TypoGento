@@ -67,7 +67,7 @@ class tx_typogento_statusReport implements tx_reports_StatusProvider {
 				throw new Exception($GLOBALS['LANG']->getLL('status_system_not_available'));
 			}
 			// validate connector is installed and enabled
-			if (Mage::helper('core')->isModuleEnabled('typogento') === false) {
+			if (Mage::helper('core')->isModuleEnabled('Typogento_Core') === false) {
 				throw new Exception($GLOBALS['LANG']->getLL('status_connector_not_installed_or_enabled'));
 			}
 			// get helpers
