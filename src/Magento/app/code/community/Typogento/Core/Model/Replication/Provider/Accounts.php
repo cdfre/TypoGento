@@ -270,6 +270,8 @@ class Typogento_Core_Model_Replication_Provider_Accounts extends Typogento_Core_
 			$data['usergroup'] = Mage::getStoreConfig('typogento/typo3_fe/group_uid');
 			$random = $source->getRandomPassword();
 			$data['password'] = md5($random);
+			$data['username'] = $data['email'];
+			$data['pid'] = Mage::getStoreConfig('typogento/typo3_fe/users_pid');
 		}
 		// set data
 		$target->addData($data);
