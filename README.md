@@ -1,32 +1,25 @@
 # TypoGento
 
-> The plug-in shall not cache at all since the views may contain highly dynamic information 
-> and Magento does a lot of caching as well. So we need to get rid of the checkCHash [...]
-> 
->  -- <cite>[Flagbit](https://github.com/Flagbit/TypoGento/issues/1#issuecomment-705602)</cite>
-
-This project is a fork of Flagbit's [TypoGento](http://www.typogento.com/) and gives you the choice 
-to decide whether or not Magento provides enough performance for you. There are already many Magento 
-full page cache solutions for a good reason. But this is more than just that, licensed under the GNU 
+This project is a fork of Flagbit's [TypoGento](http://www.typogento.com/) licensed under the GNU 
 General Public License (GPL-2.0) Version 2.
 
 ## Features
 
 ### Caching  
-Support for caching Magento blocks on TYPO3 pages. Combining this with Ajax would it also with 
-session dependend Magento blocks on every TYPO3 page possible to get a full page caching solution 
-for your online store.
+Supports TYPO3 frontend cache for Magento blocks and TYPO3 backend cache for Magento API requests (SOAP).
 ### Routing  
-Powerful TypoScript interface for mapping TYPO3 frontend requests to Magento route paths and vice 
-versa. This also makes setting up speaking URLs for your store pages much more flexible.
+Advanced TypoScript interface for mapping TYPO3 frontend requests to Magento actions and Magento URLs 
+to TYPO3 frontend URLs.
 ### Integration  
-Beside the already available features for integrating Magento with TYPO3 this fork brings you:
+Beside the already available features for integrating Magento with TYPO3 this fork brings already:
 
 * Improved Magento HTML page head integration
-* Accessing Magento HTML page meta through TypoScript
+* Magento HTML page meta access through TypoScript
+* Improved integration of Magento blocks through TypoScript
 * URL rewrites for Magento products
-* Improved single sign-on to Magento backend
-* Support for the Magento compiler
+* Improved single sign-on to Magento and TYPO3
+* Integration of the Magento compiler
+* Improved replication of Magento customers and TYPO3 frontend users
 
 ## Prerequisites
 
