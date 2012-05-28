@@ -21,6 +21,14 @@ Beside the already available features for integrating Magento with TYPO3 this fo
 * Integration of the Magento compiler
 * Improved replication of Magento customers and TYPO3 frontend users
 
+## Limitations
+
+* Doesn't support Magento session IDs (SID) in TYPO3 frontend URLs. This is because of lack concepts of 
+rebuilding such URLs which come with HTTP referers. Especially when using TYPO3 extensions such as RealURL.
+* Doesn't support multiple Magento websites. Currently you can only choose one Magento website for your 
+TYPO3 installation.
+
+
 ## Prerequisites
 
 TypoGento is distributed as an extension package for Magento and TYPO3. As such, installing TypoGento 
