@@ -31,9 +31,9 @@ class tx_typogento_defaultRouteBuilder implements tx_typogento_routeBuilder {
 	 */
 	public function build(tx_typogento_router $router) {
 		// get configuration helper
-		$helper = t3lib_div::makeInstance('tx_typogento_configurationHelper');
+		$helper = t3lib_div::makeInstance('tx_typogento_configuration');
 		// get plugin setup
-		$setup = $helper->getSection(tx_typogento_configurationHelper::TYPOSCRIPT_SETUP);
+		$setup = $helper->getSection(tx_typogento_configuration::TYPOSCRIPT_SETUP);
 		// get routes setup
 		$routes = &$setup['routes.'];
 		// skip if routes setup is empty

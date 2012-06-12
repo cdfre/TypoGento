@@ -63,9 +63,9 @@ class tx_typogento_pi1 extends tslib_pibase {
 	 */
 	public function main($content, $conf) {
 		// get configuration helper
-		$helper = t3lib_div::makeInstance('tx_typogento_configurationHelper');
+		$helper = t3lib_div::makeInstance('tx_typogento_configuration');
 		// get plugin setup
-		$setup = $helper->getSection(tx_typogento_configurationHelper::TYPOSCRIPT_SETUP);
+		$setup = $helper->getSection(tx_typogento_configuration::TYPOSCRIPT_SETUP);
 		// 
 		$type = $this->cObj->getUserObjectType();
 		// convert content type if possible and no cache flag is set

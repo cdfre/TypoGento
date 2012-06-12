@@ -35,7 +35,7 @@ return array(
 	'tx_typogento_environment' => $extensionPath.'lib/class.tx_typogento_environment.php',
 	
 	'tx_typogento_languagehelper' => $extensionPath.'lib/class.tx_typogento_languagehelper.php',
-	'tx_typogento_configurationhelper' => $extensionPath.'lib/class.tx_typogento_configurationhelper.php',
+	'tx_typogento_configuration' => $extensionPath.'lib/class.tx_typogento_configuration.php',
 	'tx_typogento_magentohelper' => $extensionPath.'lib/class.tx_typogento_magentohelper.php',
 
 	'tx_typogento_clearsoapcachetask' => $extensionPath.'tasks/class.tx_typogento_clearsoapcachetask.php',

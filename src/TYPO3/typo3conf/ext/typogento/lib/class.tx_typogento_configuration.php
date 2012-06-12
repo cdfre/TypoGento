@@ -8,7 +8,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 
-class tx_typogento_configurationHelper implements t3lib_Singleton {
+class tx_typogento_configuration implements t3lib_Singleton {
 
 	const EXTENSION_MANAGER = 1;
 	const TYPOSCRIPT_SETUP = 2;
@@ -94,4 +94,9 @@ class tx_typogento_configurationHelper implements t3lib_Singleton {
 		}
 	}
 }
+
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/typogento/lib/class.tx_typogento_configuration.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/typogento/lib/class.tx_typogento_configuration.php']);
+}
+
 ?>

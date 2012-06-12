@@ -30,9 +30,9 @@ class tx_typogento_observer implements t3lib_Singleton, tslib_content_getDataHoo
 	 */
 	public function renderPreProcess($params, t3lib_pagerenderer &$pObj) {
 		// get configuration helper
-		$helper = t3lib_div::makeInstance('tx_typogento_configurationHelper');
+		$helper = t3lib_div::makeInstance('tx_typogento_configuration');
 		// get plugin setup
-		$setup = $helper->getSection(tx_typogento_configurationHelper::TYPOSCRIPT_SETUP);
+		$setup = $helper->getSection(tx_typogento_configuration::TYPOSCRIPT_SETUP);
 		// integrate magento resources into typo3 header
 		try {
 			// integrate magento header using the default block
