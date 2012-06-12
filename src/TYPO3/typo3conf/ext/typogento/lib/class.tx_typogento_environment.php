@@ -5,7 +5,7 @@
  *
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
-class tx_typogento_routeEnvironment {
+class tx_typogento_environment {
 	
 	protected $_references = array();
 	
@@ -40,8 +40,8 @@ class tx_typogento_routeEnvironment {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/typogento/lib/routing/class.tx_typogento_routeenvironment.php']) {
-	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/typogento/lib/routing/class.tx_typogento_routeenvironment.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/typogento/lib/class.tx_typogento_environment.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/typogento/lib/class.tx_typogento_environment.php']);
 }
 
 ?>

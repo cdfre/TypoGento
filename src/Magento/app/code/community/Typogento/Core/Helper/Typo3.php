@@ -159,10 +159,10 @@ class Typogento_Core_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 		return t3lib_div::makeInstance('tx_typogento_router');
 	}
 	
-	public function getRouteEnvironment() {
+	public function getEnvironment() {
 		$this->_assertIsFrontendActive();
 		
-		return t3lib_div::makeInstance('tx_typogento_routeEnvironment');
+		return t3lib_div::makeInstance('tx_typogento_environment');
 	}
 	
 	/**

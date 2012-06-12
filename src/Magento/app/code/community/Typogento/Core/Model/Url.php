@@ -182,13 +182,13 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 		// get typo3 router
 		$router = $typo3->getRouter();
 		// prepare filter environment
-		$filter = $typo3->getRouteEnvironment();
+		$filter = $typo3->getEnvironment();
 		$filter->register('getVars', $_GET);
 		$filter->register('queryString', $_SERVER['QUERY_STRING']);
 		$filter->getVars = $data;
 		$filter->queryString = t3lib_div::implodeArrayForUrl('', $filter->getVars, '', false, true);
 		// prepare target environment
-		$target = $typo3->getRouteEnvironment();
+		$target = $typo3->getEnvironment();
 		$target->register('getVars', $_GET);
 		$target->register('queryString', $_SERVER['QUERY_STRING']);
 		$target->getVars = array('tx_typogento' => $data);

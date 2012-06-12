@@ -51,7 +51,7 @@ class tx_typogento_interface implements t3lib_Singleton {
 		// lookup magento action for the current typo3 page
 		try {
 			$router = t3lib_div::makeInstance('tx_typogento_router');
-			$target = t3lib_div::makeInstance('tx_typogento_routeEnvironment');
+			$target = t3lib_div::makeInstance('tx_typogento_environment');
 			$target->register('getVars', $_GET);
 			//$target->register('postVars', $_POST);
 			$target->register('queryString', $_SERVER['QUERY_STRING']);
@@ -78,7 +78,7 @@ class tx_typogento_interface implements t3lib_Singleton {
 		$path = $components['path'];
 		parse_str($components['query'], $query);
 		// 
-		$environment = t3lib_div::makeInstance('tx_typogento_routeEnvironment');
+		$environment = t3lib_div::makeInstance('tx_typogento_environment');
 		$environment->register('getVars', $_GET);
 		//$environment->register('postVars', $_POST);
 		$environment->register('queryString', $_SERVER['QUERY_STRING']);

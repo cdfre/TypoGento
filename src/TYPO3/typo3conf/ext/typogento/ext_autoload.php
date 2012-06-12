@@ -32,7 +32,7 @@ return array(
 	'tx_typogento_routehandler' => $extensionPath.'lib/routing/class.tx_typogento_routehandler.php',
 	'tx_typogento_typolinkroutehandler' => $extensionPath.'lib/routing/class.tx_typogento_routehandler.php',
 
-	'tx_typogento_routeenvironment' => $extensionPath.'lib/routing/class.tx_typogento_routeenvironment.php',
+	'tx_typogento_environment' => $extensionPath.'lib/class.tx_typogento_environment.php',
 	
 	'tx_typogento_languagehelper' => $extensionPath.'lib/class.tx_typogento_languagehelper.php',
 	'tx_typogento_configurationhelper' => $extensionPath.'lib/class.tx_typogento_configurationhelper.php',

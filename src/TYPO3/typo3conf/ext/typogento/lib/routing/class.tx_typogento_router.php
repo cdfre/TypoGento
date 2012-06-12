@@ -51,7 +51,7 @@ class tx_typogento_router implements t3lib_Singleton {
 	 * @throws InvalidArgumentException If the given route section doesn't exist
 	 * @throws Exception If no matching route was found
 	 */
-	public function lookup($section, tx_typogento_routeEnvironment $filter = null, tx_typogento_routeEnvironment $target = null) {
+	public function lookup($section, tx_typogento_environment $filter = null, tx_typogento_environment $target = null) {
 		// assert section exists in route tree
 		if (!array_key_exists($section, $this->_sections)) {
 			tx_typogento_div::throwException('lib_route_section_not_valid_error', 
