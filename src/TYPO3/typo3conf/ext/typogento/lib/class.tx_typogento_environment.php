@@ -7,6 +7,10 @@
  */
 class tx_typogento_environment {
 	
+	protected static $_stack = array();
+	
+	protected $_isInitialized = false;
+	
 	protected $_references = array();
 	
 	protected $_current = array();
@@ -28,15 +32,37 @@ class tx_typogento_environment {
 	}
 	
 	public function initialize() {
+		// skip
+		if ($this->_isInitialized) {
+			return;
+		}
+		// push stack
+		self::$_stack[] = $this;
+		// 
 		foreach ($this->_current as $key => &$value) {
 			$this->_references[$key] = $value;
 		}
+		// block initialize
+		$this->_isInitialized = true;
 	}
 	
 	public function deinitialize() {
+		// skip
+		if (!$this->_isInitialized) {
+			return;
+		}
+		// check order
+		if (end(self::$_stack) !== $this) {
+			throw tx_typogento_div::exception('lib_unknown_error', array());
+		}
+		// 
 		foreach ($this->_preserved as $key => &$value) {
 			$this->_references[$key] = $value;
 		}
+		// pop stack
+		array_pop(self::$_stack);
+		// block deinitialize
+		$this->_isInitialized = false;
 	}
 }
 

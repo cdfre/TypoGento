@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Typogento_Core>
-			<version>0.5.3</version>
+			<version>0.5.4</version>
 		</Typogento_Core>
 	</modules>
 	<global>

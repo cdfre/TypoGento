@@ -24,7 +24,7 @@ class tx_typogento_magentoHelper implements t3lib_Singleton {
 		// 
 		if (!isset(self::$_data['document_root'])) {
 			
-			$value = self::$_helper->getValue(tx_typogento_configuration::EXTENSION_MANAGER, 'path');
+			$value = self::$_helper->get('path', '', tx_typogento_configuration::EXTENSION);
 			$path = realpath($value);
 			
 			if ($path === false) {
@@ -43,7 +43,7 @@ class tx_typogento_magentoHelper implements t3lib_Singleton {
 		//
 		if (!isset(self::$_data['base_url'])) {
 			
-			$value = self::$_helper->getValue(tx_typogento_configuration::EXTENSION_MANAGER, 'url');
+			$value = self::$_helper->get('url', '', tx_typogento_configuration::EXTENSION);
 			$url = filter_var($value, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED);
 			
 			if ($url === false) {
@@ -66,15 +66,15 @@ class tx_typogento_magentoHelper implements t3lib_Singleton {
 	}
 	
 	public function getApiAccount() {
-		return self::$_helper->getValue(tx_typogento_configuration::EXTENSION_MANAGER, 'username');
+		return self::$_helper->get('username', '', tx_typogento_configuration::EXTENSION);
 	}
 	
 	public function getApiPassword() {
-		return self::$_helper->getValue(tx_typogento_configuration::EXTENSION_MANAGER, 'password');
+		return self::$_helper->get('password', '', tx_typogento_configuration::EXTENSION);
 	}
 	
 	public function getWebsiteId() {
-		return self::$_helper->getValue(tx_typogento_configuration::EXTENSION_MANAGER, 'website');
+		return self::$_helper->get('website', -1, tx_typogento_configuration::EXTENSION);
 	}
 }
 ?>

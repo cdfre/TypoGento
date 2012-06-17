@@ -1,90 +1,209 @@
 <?php
 
 /**
- * TypoGento utilities
+ * Utilities
  *
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 class tx_typogento_div {
-
+	
 	/**
-	 * The template configuration array
-	 *
-	 * @var array
+	 * Get flat version of an associative array
+	 * 
+	 * @param array $array The array to flatten
+	 * @param unknown_type $prefix The prefix for each entry
+	 * 
+	 * @return array The flat array
 	 */
-	protected static $config = null;
-
-	/**
-	 *
-	 * Enter description here ...
-	 * @var unknown_type
-	 */
-	protected static $cObj = null;
-
-	/**
-	 * Get the template configuration array
-	 *
-	 * @return array
-	 */
-	public static function &getConfig() {
-		if (!isset(self::$config)) {
-			self::$config = &$GLOBALS['TSFE']->config['config'];
+	public static function &getFlatArray(array &$array, $prefix = '') {
+		// helper
+		$result = array();
+		$i = new RecursiveIteratorIterator(new RecursiveArrayIterator($array));
+		// iterate array recursive
+		foreach ($i as $key => $value) {
+			// build path
+			for ($j = 0; $j < $i->getDepth(); $j++) {
+				$key = $i->getSubIterator($j)->key() . '.' . $key;
+			}
+			// add result
+			$result[$prefix . $key] = $value;
 		}
-
-		return self::$config;
+		// return result
+		return $result;
+	}
+	
+	/**
+	 * Get value of a TypoScript array by using "root.branch.leaf" notation
+	 *
+	 * @param array $typoscript TypoScript array to traverse
+	 * @param string $path Path to a specific option to extract
+	 * @param mixed $default Value to use if the path was not found
+	 *
+	 * @return mixed
+	 */
+	public static function &getTypoScriptValue(array &$array, $path, $default = null) {
+		// prepare path
+		$path = str_replace('.', '.#', $path);
+		$path = rtrim($path, '#');
+		$keys = explode('#', $path);
+		// iterate parts
+		foreach ($keys as &$key) {
+			//
+			if (isset($array[$key])) {
+				$array = &$array[$key];
+			} else {
+				return $default;
+			}
+		}
+		// return result
+		return $array;
+	}
+	
+	/**
+	 * Set value of a TypoScript array by using "root.branch.leaf" notation
+	 * 
+	 * @param array $typoscript TypoScript array to traverse
+	 * @param string $path Path to a specific option to change
+	 * @param mixed &$value Value to set
+	 */
+	public static function setTypoScriptValue(array &$array, $path, $value) {
+		// prepare path
+		$path = str_replace('.', '.#', $path);
+		$path = rtrim($path, '#');
+		$keys = explode('#', $path);
+		// loop through each part and extract its value
+		while(count($keys) > 1) {
+			// next key
+			$key = array_shift($keys);
+			$array = &$array[$key];
+		}
+		// set value
+		$key = reset($keys);
+		$array[$key] = $value;
+	}
+	
+	/**
+	 * Get value of an array by using "root.branch.leaf" notation
+	 *
+	 * @param array $array Array to traverse
+	 * @param string $path Path to a specific option to extract
+	 * @param mixed $default Value to use if the path was not found
+	 * 
+	 * @return mixed
+	 */
+	public static function &getArrayValue(array &$array, $path, $default = null) {
+		// prepare path
+		$path = rtrim($path, '.');
+		$keys = explode('.', $path);
+		// iterate parts
+		while(count($keys) > 0) {
+			$key = array_shift($keys);
+			if (!isset($array[$key])) {
+				return $default;
+			}
+			$array = &$array[$key];
+		}
+		// return result
+		return $array;
+	}
+	
+	/**
+	 * Set value of an array by using "root.branch.leaf" notation
+	 *
+	 * @param array $array Array to traverse
+	 * @param string $path Path to a specific option to extract
+	 * @param mixed $default Value to use if the path was not found
+	 *
+	 * @return mixed
+	 */
+	public static function setArrayValue(array &$array, $path, &$value) {
+		// prepare path
+		$path = rtrim($path, '.');
+		$keys = explode('.', $path);
+		// loop through each part and extract its value
+		while(count($keys) > 1) {
+			// next key
+			$key = array_shift($keys);
+			//
+			if(isset($array[$key]) && !is_array($array[$key])) {
+				throw new Exception("Invalid path '{$path}'");
+			}
+			$array = &$array[$key];
+		}
+		// set value
+		$key = reset($keys);
+		$array[$key] = $value;
 	}
 
 	/**
 	 * Return value from somewhere inside a FlexForm structure
 	 *
-	 * @param	array		FlexForm data
-	 * @param	string		Field name to extract. Can be given like "test/el/2/test/el/field_templateObject" where each part will dig a level deeper in the FlexForm data.
-	 * @param	string		Sheet pointer, eg. "sDEF"
-	 * @param	string		Language pointer, eg. "lDEF"
-	 * @param	string		Value pointer, eg. "vDEF"
-	 * @return	string		The content.
+	 * @param array FlexForm array
+	 * @param string Field name to extract, e.g. "test.el.field_templateObject" where each part will dig a level deeper in the FlexForm data.
+	 * @param string Sheet pointer, e.g. "sDEF"
+	 * @param string Language pointer, e.g. "lDEF"
+	 * @param string Value pointer, e.g. "vDEF"
+	 * 
+	 * @return string The content.
 	 */
-	public static function &getFFvalue($T3FlexForm_array, $fieldName, $sheet = 'sDEF', $lang = 'lDEF', $value = 'vDEF') {
-		$sheetArray = is_array($T3FlexForm_array) ? $T3FlexForm_array['data'][$sheet][$lang] : '';
-		if (is_array($sheetArray)) {
-			return tx_typogento_div::getFFvalueFromSheetArray($sheetArray,explode('/', $fieldName), $value);
+	public static function &getFlexFormValue(array &$array, $path, $sheet = 'sDEF', $language = 'lDEF', $value = 'vDEF', $default = null) {
+		$array = &$array['data'][$sheet][$language];
+		
+		if (!is_array($array)) {
+			return $default;
 		}
-	}
-
-	/**
-	 * Returns part of $sheetArray pointed to by the keys in $fieldNameArray
-	 *
-	 * @param	array		Multidimensiona array, typically FlexForm contents
-	 * @param	array		Array where each value points to a key in the FlexForms content - the input array will have the value returned pointed to by these keys. All integer keys will not take their integer counterparts, but rather traverse the current position in the array an return element number X (whether this is right behavior is not settled yet...)
-	 * @param	string		Value for outermost key, typ. "vDEF" depending on language.
-	 * @return	mixed		The value, typ. string.
-	 * @access private
-	 * @see pi_getFFvalue()
-	 */
-	public static function &getFFvalueFromSheetArray($sheetArray, $fieldNameArr, $value) {
-		$tempArr=$sheetArray;
-		foreach($fieldNameArr as $k => $v) {
+		
+		$keys = explode('.', $path);
+		
+		foreach($keys as $k => $v) {
 			if (t3lib_div::testInt($v)) {
-				if (is_array($tempArr)) {
-					$c=0;
-					foreach($tempArr as $values) {
-						if ($c==$v) {
-							#debug($values);
-							$tempArr=$values;
-						break;
+				if (is_array($array)) {
+					$c = 0;
+					foreach($array as $item) {
+						if ($c == $v) {
+							$array = &$item;
+							break;
 						}
 						$c++;
 					}
 				}
 			} else {
-				$tempArr = $tempArr[$v];
+				$array = &$array[$v];
 			}
 		}
-		return $tempArr[$value];
+		
+		return $array[$value];
+	}
+	
+	/**
+	 * Get FlexForm array from content object
+	 * 
+	 * @param tslib_fe $page Page of the content object
+	 * @param unknown_type $type List type of the content object
+	 * @param unknown_type $column Page column of the content object
+	 * @param unknown_type $position Position of the content object
+	 */
+	public static function &getContentFlexForm(tslib_fe $page, $type, $column = 0, $position = 0) {
+		// select
+		$where = 'pid=\'' . $page->id . '\' AND colPos = ' . $column . ' AND list_type=\'' . $type . '\' ';
+		$where .= $page->sys_page->enableFields('tt_content');
+		$limit = $position . ',1';
+		$row = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'pi_flexform', 'tt_content', $where, '', 'sorting', $limit
+		);
+		// validate
+		if (!isset($row[0]['pi_flexform'])) {
+			// result
+			return null;
+		}
+		// flexform
+		$flexform = t3lib_div::xml2array($row[0]['pi_flexform']);
+		// result
+		return $flexform;
 	}
 
 	/**
-	 * Return TYPO3 cObj reference
+	 * Return a content object
 	 *
 	 * @return tslib_cObj
 	 */
@@ -108,7 +227,8 @@ class tx_typogento_div {
 
 	/**
 	 * Get store code for current frontend language
-	 *
+	 * 
+	 * @todo Refactor
 	 * @return string
 	 */
 	public static function getFELangStoreCode() {
@@ -121,7 +241,7 @@ class tx_typogento_div {
 		}
 
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_typogento_store', 'sys_language', sprintf('uid = %d', $GLOBALS['TSFE']->config['config']['sys_language_uid'])
+			'tx_typogento_store', 'sys_language', sprintf('uid = %d', $GLOBALS['TSFE']->config['config']['sys_language_uid'])
 		);
 
 		$res = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
@@ -136,6 +256,14 @@ class tx_typogento_div {
 		return $store;
 	}
 	
+	/**
+	 * Create an exception
+	 * 
+	 * @param string $message The exception message
+	 * @param array $arguments The message arguments
+	 * @param Exception $previous The previous exception
+	 * @return Exception
+	 */
 	public static function exception($message, $arguments = array(), Exception $previous = null) {
 		// get translation helper
 		$helper = t3lib_div::makeInstance('tx_typogento_languageHelper');
@@ -157,6 +285,15 @@ class tx_typogento_div {
 		return new Exception($message, 0, $previous);
 	}
 	
+	/**
+	 * Throw an exception
+	 * 
+	 * @param string $message The exception message
+	 * @param array $arguments The message arguments
+	 * @param Exception $previous The previous exception
+	 * @throws Exception
+	 * @deprecated
+	 */
 	public static function throwException($message, $arguments = array(), Exception $previous = null) {
 		throw self::exception($message, $arguments, $previous);
 	}

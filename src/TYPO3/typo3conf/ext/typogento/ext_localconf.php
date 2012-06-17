@@ -84,17 +84,18 @@ if (TYPO3_MODE === 'FE') {
 	 */
 	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc']['typogento'] =
 		'EXT:typogento/lib/class.tx_typogento_observer.php:&tx_typogento_observer->configArrayPostProc';
-	/**
-	 * 
-	 */
-	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['getData']['typogento'] =
-		'EXT:typogento/lib/class.tx_typogento_observer.php:&tx_typogento_observer';
 	
 	/**
 	 * Provides auto login for Magento customer
 	 */
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp']['typogento_sv1'] =
 		'EXT:typogento/sv1/class.tx_typogento_sv1.php:&tx_typogento_sv1->postUserLookUp';
+	
+	/**
+	 * Provides page cache validation on redirects
+	 */
+	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['insertPageIncache']['typogento'] = 
+		'EXT:typogento/lib/class.tx_typogento_observer.php:&tx_typogento_observer';
 }
 
 /**

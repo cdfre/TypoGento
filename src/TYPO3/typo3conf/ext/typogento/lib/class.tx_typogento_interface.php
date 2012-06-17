@@ -9,7 +9,7 @@ class tx_typogento_interface implements t3lib_Singleton {
 	
 	protected $_environment = null;
 	
-	protected $_target = null;
+	protected $_url = null;
 	
 	/**
 	 * Constructor
@@ -19,74 +19,84 @@ class tx_typogento_interface implements t3lib_Singleton {
 	 * @remarks Requires a fully loaded TypoScript template.
 	 */
 	public function __construct() {
-		// init magento if it's not already done
+		// initialize framework
 		t3lib_div::makeInstance('tx_typogento_autoloader');
-		//
-		$this->_target = $this->_getTarget();
-		//
-		$this->_environment = $this->_getEnvironment($this->_target);
-		//
+		// target url
+		$this->_url = $this->_lookup();
+		// target environment
+		$this->_environment = $this->_buildEnvironment($this->_url);
+		// initialize target environment
 		$this->_environment->initialize();
-		
+		// try to dispatch the target url
 		try {
-			//
+			// start application
 			$this->_initialize();
-			//
+			// dispatch target url
 			$this->_dispatch();
 		} catch (Exception $e) {
+			// deinitialize target environment
 			$this->_environment->deinitialize();
-			tx_typogento_div::throwException('lib_request_dispatching_failed_error',
+			throw tx_typogento_div::exception('lib_request_dispatching_failed_error',
 				array($_SERVER['REQUEST_URI']), $e
 			);
 		}
+		// deinitialize target environment
 		$this->_environment->deinitialize();
 	}
 	
 	/**
-	 * Get the Magento target for the current frontend request
+	 * Lookup for the target URL
 	 * 
 	 * @throws Exception If routing fails
 	 */
-	protected function _getTarget() {
-		// lookup magento action for the current typo3 page
+	protected function _lookup() {
+		// try lookup
 		try {
+			// router
 			$router = t3lib_div::makeInstance('tx_typogento_router');
+			// route environment
 			$target = t3lib_div::makeInstance('tx_typogento_environment');
+			// register variables
 			$target->register('getVars', $_GET);
 			//$target->register('postVars', $_POST);
 			$target->register('queryString', $_SERVER['QUERY_STRING']);
+			// overwrite variables
 			$target->getVars = isset($_GET['tx_typogento'])?$_GET['tx_typogento']:array();
 			//$target->postVars = isset($_POST['tx_typogento'])?$_POST['tx_typogento']:array();
 			$target->queryString = t3lib_div::implodeArrayForUrl('', $target->getVars, '', false, true);
-			// lookup for matching typogento route
+			// lookup matching route
 			return $router->lookup(tx_typogento_router::ROUTE_SECTION_DISPATCH, null, $target);
 		} catch (Exception $e) {
-			tx_typogento_div::throwException('lib_unresolved_target_url_error',
+			throw tx_typogento_div::exception('lib_unresolved_target_url_error',
 				array(), $e
 			);
 		}
 	}
 
 	/**
-	 * Get environment for the the Magento target
+	 * Build the target environment
 	 * 
 	 * @param string $url
 	 */
-	protected function _getEnvironment($url) {
-		// get url components path and query
+	protected function _buildEnvironment($url) {
+		// url components
 		$components = parse_url($url);
 		$path = $components['path'];
+		$query = array();
 		parse_str($components['query'], $query);
-		// 
+		// target environment
 		$environment = t3lib_div::makeInstance('tx_typogento_environment');
+		// register variables
 		$environment->register('getVars', $_GET);
 		//$environment->register('postVars', $_POST);
 		$environment->register('queryString', $_SERVER['QUERY_STRING']);
 		$environment->register('requestUri', $_SERVER['REQUEST_URI']);
+		// overwrite variables
 		$environment->getVars = isset($query)?$query:array();
 		//$environment->postVars = isset($_POST['tx_typogento'])?$_POST['tx_typogento']:array();
 		$environment->queryString = t3lib_div::implodeArrayForUrl('', $environment->getVars, '', false, true);
 		$environment->requestUri = $path.'?'.trim($environment->queryString, '&');
+		// return result
 		return $environment;
 	}
 	/**
@@ -95,7 +105,7 @@ class tx_typogento_interface implements t3lib_Singleton {
 	 * @return boolan
 	 */
 	protected function _dispatch() {
-		// dispatching current typo3 page
+		// try dispatch
 		try {
 			// get magento application
 			$app = Mage::app();
@@ -132,7 +142,6 @@ class tx_typogento_interface implements t3lib_Singleton {
 	 * @param unknown_type $options
 	 */
 	protected function _initialize($code = '', $type = 'store', $options = array()) {
-		
 		try {
 			// reset magento if initialized before
 			Mage::reset();
@@ -170,22 +179,25 @@ class tx_typogento_interface implements t3lib_Singleton {
 	}
 	
 	/**
-	 * Get Magento layout block by its name
-	 *
-	 * @param string $identifier
-	 * @return Mage_Core_Block_Abstract
+	 * Open the target environment
+	 * 
+	 * @return tx_typogento_interface
 	 */
-	public function getBlock($name) {
+	public function open() {
 		//
-		$layout = Mage::app()->getLayout();
-		
-		$block = $layout->getBlock($name);
+		$this->_environment->initialize();
+		return $this;
+	}
 	
-		if ($block instanceof Mage_Core_Block_Abstract) {
-			return $block;
-		} else {
-			return null;
-		}
+	/**
+	 * Close the target environment
+	 *
+	 * @return tx_typogento_interface
+	 */
+	public function close() {
+		// 
+		$this->_environment->deinitialize();
+		return $this;
 	}
 }
 

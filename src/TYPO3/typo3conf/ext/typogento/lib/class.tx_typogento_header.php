@@ -1,14 +1,22 @@
 <?php
 
 /**
- * TypoGento header
+ * Page header
  * 
- * Integrates Magento html page header into a TYPO3 page.
+ * Integrate the Magento html page header into the current TYPO3 page.
  * 
  * @uses Mage, Mage_Page_Block_Html_Head, tslib_fe, t3lib_PageRenderer, tx_typogento_interface, tx_typogento_router, tx_typogento_div
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
-class tx_typogento_header implements t3lib_Singleton {
+class tx_typogento_header {
+	
+	const IMPORT_CSS = 1;
+	
+	const IMPORT_JS = 2;
+	
+	const COMPRESS_CSS = 1;
+	
+	const COMPRESS_JS = 2;
 
 	/**
 	 * @var string
@@ -31,14 +39,9 @@ class tx_typogento_header implements t3lib_Singleton {
 	protected $_block = null;
 	
 	/**
-	 * @var string
-	 */
-	protected $_name = null;
-	
-	/**
 	 * @var tx_typogento_interface
 	 */
-	protected $_magento = null;
+	protected $_interface = null;
 	
 	/**
 	 * @var t3lib_PageRenderer
@@ -46,234 +49,288 @@ class tx_typogento_header implements t3lib_Singleton {
 	protected $_renderer = null;
 	
 	/**
-	 * @var bool
+	 * @var tx_typogento_configuration
 	 */
-	protected $_isInitialized = false;
+	protected $_configuration = null;
+	
+	protected static $_types = array(
+		'skin_js'  => array('skin', 'js'),
+		'skin_css' => array('skin', 'js'),
+		'js'       => array('static', 'js'),
+		'js_css'   => array('static', 'css'),
+		'rss'      => array('other', 'rss'),
+		'link_rel' => array('other', 'link'),
+		'default'  => array('other', 'other')
+	);
 
 	/**
-	 * Constructor for tx_typogento_header
-	 * 
-	 * @param string $name The name of the Magento html page block. Default is 'head'.
+	 * Constructor
 	 */
 	public function __construct($name = 'head') {
-		// set the header block name if given
-		if (isset($name)) {
-			$this->name = (string)$name;
-		}
-	}
-	
-	/**
-	 * Initialize the page html block
-	 * 
-	 * Dispatch the current request to Magento front controller, 
-	 * get the resulting Magento html page block and the TYPO3 
-	 * page renderer.
-	 * 
-	 * @throws Exception
-	 */
-	protected function _init() {
-		// check if init is already done
-		if ($this->_isInitialized) {
-			return;
-		}
+		// cast block name
+		$name = (string)$name;
 		// get the interface
-		$this->_magento = t3lib_div::makeInstance('tx_typogento_interface');
-		// skip if this is a redirect
-		if (!Mage::app()->getResponse()->isRedirect()) {
-			// get local directories
+		$this->_interface = t3lib_div::makeInstance('tx_typogento_interface');
+		// open the interface
+		$this->_interface->open();
+		// initialize
+		try {
+			// base locations
 			try {
 				$this->_path = Mage::getBaseDir();
-				$this->_url = Mage::getBaseUrl('js');
+				$this->_url = Mage::getBaseUrl();
 			} catch (Exception $e) {
-				tx_typogento_div::throwException('lib_interface_access_failed_error', 
+				throw tx_typogento_div::exception('lib_interface_access_failed_error',
 					array(), $e
 				);
 			}
-			// get design package for lookup includings
+			// design package
 			try {
 				$this->_design = Mage::getDesign();
 			} catch (Exception $e) {
-				tx_typogento_div::throwException('lib_interface_access_failed_error', 
+				throw tx_typogento_div::exception('lib_interface_access_failed_error',
 					array(), $e
 				);
 			}
-			// get the header block
-			$this->_block = $this->_magento->getBlock($this->name);
+			// header block
+			$this->_block = Mage::app()->getLayout()->getBlock($name);
 			// check the header block exists
-			if (!isset($this->_block)) {
-	
-				tx_typogento_div::throwException('lib_block_not_available_error', 
-					array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $this->name)
+			if (!$this->_block) {
+				throw tx_typogento_div::exception('lib_block_not_available_error',
+					array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $name)
 				);
 			}
 			// check the header block type
 			if (!($this->_block instanceof Mage_Page_Block_Html_Head)) {
-				tx_typogento_div::throwException('lib_block_type_not_supported_error', 
+				throw tx_typogento_div::exception('lib_block_type_not_supported_error',
 					array(get_class($this->_block))
 				);
 			}
-			// get page renderer
+			// page renderer
 			$this->_renderer = $GLOBALS['TSFE']->getPageRenderer();
-			// set init flag
-			$this->_isInitialized = true;
+		} catch (Exception $e) {
+			// close the interface
+			$this->_interface->close();
+			throw $e;
 		}
-		
-		return $this->_isInitialized;
-	}
-	
-	public function getBlock() {
-		// init header and return result
-		return $this->_init() ? $this->_block : null;
+		// close the interface
+		$this->_interface->close();
 	}
 	
 	/**
-	 * Render the header
+	 * Render header
 	 * 
-	 * Renders the Magento html page block into one appropriate 
-	 * section of the TYPO3 page renderer. 
-	 * 
-	 * @throws Exception
+	 * @param int $compress Bitmask for resource compression @see COMPRESS_JS and COMPRESS_CSS
+	 * @param int $import Bitmask for resource import @see IMPORT_JS and IMPORT_CSS
+	 * @throws Exception If somthing went wrong
 	 */
-	public function render() {
+	public function render($compress = 0, $import = 0) {
 		try {
-			// init the header
-			if (!$this->_init()) {
+			// 
+			$block = $this->_block;
+			// collect items
+			$items = &$block->getData('items');
+			// skip
+			if (!is_array($items)) {
 				return;
 			}
-			// get template configuration
-			$config = &tx_typogento_div::getConfig();
-			// collect items
-			$items = &$this->_block->getData('items');
-			// skip if no items exist
-			if (!is_array($items)) {
-				return array();
-			}
 			// get compression settings
-			$compressJs = (bool)$config['compressJs'] || (bool)$config['minifyJS'];
-			$compressCss = (bool)$config['compressCss'] || (bool)$config['minifyCSS'];
-			$wrap = '<!--[if %s ]>|<![endif]-->';
-			// iter items
+			$compress = array(
+				'js' => $compress & self::COMPRESS_JS, 
+				'css' => $compress & self::COMPRESS_CSS 
+			);
+			$import = array(
+				'js' => $import & self::IMPORT_JS, 
+				'css' => $import & self::IMPORT_CSS 
+			);
+			// open the interface
+			$this->_interface->open();
+			// render items
 			foreach ($items as &$item) {
-				if (!is_null($item['cond']) && !$this->_block->getData($item['cond']) || !isset($item['name'])) {
+				// skip
+				if (!is_null($item['cond']) && !$$block->getData($item['cond']) || !isset($item['name'])) {
 					continue;
 				}
-				// if conditional is set
+				// condition
 				if(!empty($item['if'])) {
 					// add includes with conditional
-					$conditionWrap = sprintf($wrap, $item['if']);
+					$condition = str_replace('%if%', $item['if'], '<!--[if %if% ]>|<![endif]-->');
 				} else {
-					$conditionWrap = '';
+					$condition = '';
 				}
-				// prepares item
-				$this->_prepareItem($item['name'], $item['type'], $item['params']);
-
-				if (strpos($item['name'], '.js') !== false) {
-					$this->_renderer->addJsFile($item['name'], 'text/javascript', 
-						$compressJs, false, $conditionWrap);
-				} elseif (strpos($item['name'], '.css') !== false) {
-					$this->_renderer->addCssFile($item['name'], 'stylesheet', 
-						$item['params']['media'], $item['params']['title'], $compressCss, false, $conditionWrap);
-				} else {
-					if (!empty($conditionWrap)) {
-						$html = &$GLOBALS['TSFE']->cObj->stdWrap($item['name'], $conditionWrap);
-					} else {
-						$html = &$item['name'];
-					}
-					$this->_renderer->addHeaderData($html);
+				// prepare
+				$this->_prepareItem($item['name'], $item['type'], $item['params'], $import);
+				// render
+				switch($item['type']) {
+					case 'js':
+						$this->_renderer->addJsFile($item['name'], 'text/javascript', 
+							$compressJs, false, $condition);
+						break;
+					case 'css':
+						$this->_renderer->addCssFile($item['name'], 'stylesheet', 
+							$item['params']['media'], $item['params']['title'], $compress['css'], false, $condition);
+						break;
+					case 'rss':
+					case 'link':
+						$html = '<link href="' . $item['name'] . '" ' . $item['params'] . '/>';
+						$html = &$GLOBALS['TSFE']->cObj->stdWrap($html, $condition);
+						$this->_renderer->addHeaderData($html);
+						break;
 				}
 			}
-			// render translator script
-			$json = &$this->_block->helper('core/js')->getTranslateJson();
+			// render translator
+			$json = &$block->helper('core/js')->getTranslateJson();
 			$script = 'var Translator = new Translate('.$json.');';
-			$this->_renderer->addJsInlineCode('Magento Translator', $script, $compressJs);
-			// render child html
-			$html = &$this->_block->getChildHtml();
+			if ($import['js']) {
+				$script = TSpagegen::inline2TempFile($script, 'js');
+				$this->_renderer->addJsFile($script, 'text/javascript', $compressJs);
+			} else {
+				$this->_renderer->addJsInlineCode(
+					'Magento Translator', $script, $compressJs
+				);
+			}
+			// render children
+			$html = &$block->getChildHtml();
 			if (!empty($html)) {
 				$this->_renderer->addHeaderData($html);
 			}
 			// render includes
-			$html = &$this->_block->getIncludes();
+			$html = &$block->getIncludes();
 			if (!empty($html)) {
 				$this->_renderer->addHeaderData($html);
 			}
 		} catch (Exception $e) {
-			tx_typogento_div::throwException('lib_page_head_integration_failed_error', 
+			// close the interface
+			$this->_interface->close();
+			// re-throw exception
+			throw tx_typogento_div::exception('lib_page_head_rendering_failed_error', 
 				array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), $e
 			);
+		}
+		// close the interface
+		$this->_interface->close();
+	}
+	
+	/**
+	 * Prepare header item
+	 * 
+	 * @param string $item The item name
+	 * @param string $type The item type @see $_types
+	 * @param array|string $parameters The item paramters
+	 * @param array $import The import flags @see _importItem()
+	 */
+	protected function &_prepareItem(&$item, &$type, &$parameters, &$import) {
+		// transform type
+		if (!isset(self::$_types[$type])) {
+			$type = 'default';
+		}
+		$location = self::$_types[$type][0];
+		$extension = self::$_types[$type][1];
+		// prepare type
+		$type = $extension;
+		// prepare url
+		switch ($location) {
+			case 'static':
+				if ($import[$type]) {
+					$item = $this->_path . DS . 'js' . DS . $item;
+					$this->_importItem($item, $extension);
+				} else {
+					$item = $this->_url . DS . 'js' . DS . $item;
+				}
+				break;
+			case 'skin':
+				if ($import[$type]) {
+					$item = $this->_design->getFilename($item, array('_type' => 'skin'));
+					$this->_importItem($item, $extension);
+				} else {
+					$item = $this->_design->getSkinUrl($item, array());
+				}
+				break;
+		}
+		// prepare parameters
+		switch ($extension) {
+			case 'css':
+				if (is_string($parameters)) {
+					// map raw format
+					$parameters = explode('=', $parameters);
+					// set media if found
+					if ($i = array_search('media', $parameters) !== false) {
+						$parameters['media'] = trim($parameters[$i], ' "\'');
+					}
+					// set title if found
+					if ($i = array_search('title', $parameters) !== false) {
+						$parameters['title'] = trim($parameters[$i], ' "\'');
+					}
+				} else {
+					// set default params for css
+					$parameters = array('media' => 'all', 'title' => '');
+				}
+				break;
+			case 'rss':
+				if (empty($paramters)) {
+					$parameters = 'rel="alternate" type="application/rss+xml" ';
+				} else {
+					$parameters .= ' ';
+				}
+				break;
+			case 'link_rel':
+				if (empty($paramters)) {
+					$parameters = '';
+				} else {
+					$parameters .= ' ';
+				}
+				break;
 		}
 	}
 	
 	/**
-	 * Prepare a header item
-	 * 
-	 * Prepares a resource of the Magento page html block for its 
-	 * use in TYPO3.
-	 * 
-	 * @param array $static
-	 * @param array $skin
-	 * @param bool $local
+	 * Import header item
+	 *
+	 * @param string $item The item name
+	 * @param string $extension Extension of the item (js or css)
+	 * @throws Exception If the item was not found or the extension is unknown
 	 */
-	protected function &_prepareItem(&$item, &$type, &$parameters, $local = false) {
-		$default = array('_type' => 'skin');
-		$empty = array();
-		// set location
-		if (strpos($type, 'skin') !== false) {
-			$location = 'skin';
-		} else {
-			$location = 'static';
+	protected function _importItem(&$item, &$extension) {
+		//
+		$source = &$item;
+		// last change
+		$time = @filemtime($source);
+		//
+		if ($time === false) {
+			throw tx_typogento_div::exception('lib_file_access_error',
+				array($item), $e
+			);
 		}
-		// set type
-		if (strpos($type, 'js') !== false) {
-			$type = 'js';
-		} else if (strpos($type, 'css') !== false) {
-			$type = 'css';
-			// check if params where set
-			if (!empty($parameters) && is_string($parameters)) {
-				// map raw format
-				$parameters = explode('=', $parameters);
-				// set media if found
-				if ($i = array_search('media', $parameters) !== false) {
-					$parameters['media'] = trim($parameters[$i], ' "\'');
-				}
-				// set title if found
-				if ($i = array_search('title', $parameters) !== false) {
-					$parameters['title'] = trim($parameters[$i], ' "\'');
-				}
-			} else {
-				// set default params for css
-				$parameters = array('media' => 'all', 'title' => '');
-			}
-		} else if (strpos($type, 'rss') !== false){
-			$type = 'rss';
-		} else {
-			$type = 'other';
-		}
-		// prepare item value
-		if ($location == 'static') {
-			if ($local) {
-				$item = $this->_path . DS . 'js' . DS . $item;
-			} else {
-				$item = $this->_url . $item;
-			}
-		} elseif ($location == 'skin') {
-			if ($local) {
-				$item = $this->_design->getFilename($item, $default);
-			} else {
-				$item = $this->_design->getSkinUrl($item, $empty);
-			}
-		} else {
-			if ($type == 'rss') {
-				$item= sprintf(
-					'<link href="%s"%s rel="alternate" type="application/rss+xml" />',
-					$item, $parameters
+		//
+		$hash = $source . $time;
+		$hash = substr(md5($hash), 0, 10);
+		//
+		switch ($extension) {
+			case 'js' :
+				$temp = 'typo3temp/javascript_' . $hash . '.js';
+			break;
+			case 'css' :
+				$temp = 'typo3temp/stylesheet_' . $hash . '.css';
+			break;
+			default:
+				throw tx_typogento_div::exception('lib_unknown_error',
+					array(), $e
 				);
-			} else {
-				$item = sprintf(
-					'<link%s href="%s" />',
-					$item, $parameters
+		}
+		//
+		$target = PATH_site . $temp;
+		//
+		if (!@is_file($target)) {
+			//
+			if (!@copy($item, $target)) {
+				throw tx_typogento_div::exception('lib_file_access_error',
+					array($item), $e
 				);
 			}
+			t3lib_div::fixPermissions($target);
 		}
+		//
+		$item = $GLOBALS['TSFE']->absRefPrefix . $temp;
 	}
 }
 

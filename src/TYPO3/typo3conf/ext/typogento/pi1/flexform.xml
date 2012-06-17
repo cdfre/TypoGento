@@ -4,16 +4,17 @@
 		<!--  <langChildren>1</langChildren>!-->
 	</meta>
 	<sheets>
-		<main>
+		<display>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:typogento/locallang_db.xml:flexform.sheet_main</sheetTitle>
+					<sheetTitle>LLL:EXT:typogento/locallang_db.xml:flexform.sheet_display</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
-					<show>
+					<type>
 						<TCEforms>
-							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_productshow</label>
+							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_type</label>
+							<section>1</section>
 							<onChange>reload</onChange>
 							<config>
 								<type>select</type>
@@ -21,29 +22,29 @@
 								<size>1</size>
 								<items type="array">
 									<numIndex index="0" type="array">
-										<numIndex index="0">LLL:EXT:typogento/locallang_db.xml:flexform.label_productshow.0</numIndex>
+										<numIndex index="0">LLL:EXT:typogento/locallang_db.xml:flexform.label_type.0</numIndex>
 										<numIndex index="1"></numIndex>
 									</numIndex>
 									<numIndex index="1" type="array">
-										<numIndex index="0">LLL:EXT:typogento/locallang_db.xml:flexform.label_productshow.1</numIndex>
-										<numIndex index="1">SINGLEPRODUCT</numIndex>
+										<numIndex index="0">LLL:EXT:typogento/locallang_db.xml:flexform.label_type.1</numIndex>
+										<numIndex index="1">PRODUCT</numIndex>
 									</numIndex>
 									<numIndex index="2" type="array">
-										<numIndex index="0">LLL:EXT:typogento/locallang_db.xml:flexform.label_productshow.2</numIndex>
-										<numIndex index="1">PRODUCTLIST</numIndex>
+										<numIndex index="0">LLL:EXT:typogento/locallang_db.xml:flexform.label_type.2</numIndex>
+										<numIndex index="1">CATEGORY</numIndex>
 									</numIndex>
 									<numIndex index="3" type="array">
-										<numIndex index="0">LLL:EXT:typogento/locallang_db.xml:flexform.label_productshow.3</numIndex>
+										<numIndex index="0">LLL:EXT:typogento/locallang_db.xml:flexform.label_type.3</numIndex>
 										<numIndex index="1">USER</numIndex>
 									</numIndex>
 								</items>
 							</config>
 						</TCEforms>
-					</show>
-					<product_id>
+					</type>
+					<product>
 						<TCEforms>
-							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_productlist</label>
-							<displayCond>FIELD:show:=:SINGLEPRODUCT</displayCond>
+							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_product_list</label>
+							<displayCond>FIELD:type:=:PRODUCT</displayCond>
 							<config>
 								<type>select</type>
 								<itemsProcFunc>EXT:typogento/lib/class.tx_typogento_tcafields.php:tx_typogento_tcafields->itemsProcFunc_products</itemsProcFunc>
@@ -51,11 +52,11 @@
 								<size>15</size>
 							</config>
 						</TCEforms>
-					</product_id>
-					<category_id>
+					</product>
+					<category>
 						<TCEforms>
-							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_categorylist</label>
-							<displayCond>FIELD:show:=:PRODUCTLIST</displayCond>
+							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_category_list</label>
+							<displayCond>FIELD:type:=:CATEGORY</displayCond>
 							<config>
 								<type>select</type>
 								<itemsProcFunc>EXT:typogento/lib/class.tx_typogento_tcafields.php:tx_typogento_tcafields->itemsProcFunc_categories</itemsProcFunc>
@@ -63,11 +64,11 @@
 								<size>15</size>
 							</config>
 						</TCEforms>
-					</category_id>
+					</category>
 					<route>
 						<TCEforms>
 							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_route</label>
-							<displayCond>FIELD:show:=:USER</displayCond>
+							<displayCond>FIELD:type:=:USER</displayCond>
 							<onChange>reload</onChange>
 							<config>
 								<type>select</type>
@@ -76,11 +77,11 @@
 								<size>1</size>
 							</config>
 						</TCEforms>
-					</route>					
+					</route>
 					<controller>
 						<TCEforms>
 							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_controller</label>
-							<displayCond>FIELD:show:=:USER</displayCond>
+							<displayCond>FIELD:type:=:USER</displayCond>
 							<onChange>reload</onChange>
 							<config>
 								<type>select</type>
@@ -93,7 +94,7 @@
 					<action>
 						<TCEforms>
 							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_action</label>
-							<displayCond>FIELD:show:=:USER</displayCond>
+							<displayCond>FIELD:type:=:USER</displayCond>
 							<config>
 								<type>select</type>
 								<itemsProcFunc>EXT:typogento/lib/class.tx_typogento_tcafields.php:tx_typogento_tcafields->itemsProcFunc_actions</itemsProcFunc>
@@ -104,6 +105,24 @@
 					</action>
 				</el>
 			</ROOT>
-		</main>
+		</display>
+		<cache>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:typogento/locallang_db.xml:flexform.sheet_cache</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<disable>
+						<TCEforms>
+							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_disable</label>
+							<config>
+								<type>check</type>
+							</config>
+						</TCEforms>
+					</disable>
+				</el>
+			</ROOT>
+		</cache>
 	</sheets>
 </T3DataStructure>

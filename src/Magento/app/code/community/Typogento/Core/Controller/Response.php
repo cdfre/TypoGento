@@ -14,21 +14,21 @@ class Typogento_Core_Controller_Response extends Mage_Core_Controller_Response_H
 	 *
 	 * @return void
 	 */
-	public function appendBody($output, $name = null) {
+	/*public function appendBody($output, $name = null) {
 		
 		$this->ajaxHandler($output);
 		
 		return parent::appendBody($output, $name);
-	}
+	}*/
 	
 	/**
 	 * Handle Ajax Requests
 	 *
 	 * @param string $output
 	 */
-	protected function ajaxHandler($output) {
+	/*protected function ajaxHandler($output) {
 		// 
-		if (!Mage::app ()->getFrontController ()->getRequest ()->isXmlHttpRequest()) {
+		if (!Mage::app()->getFrontController()->getRequest()->isXmlHttpRequest()) {
 			return;
 		}
 		// 
@@ -37,39 +37,30 @@ class Typogento_Core_Controller_Response extends Mage_Core_Controller_Response_H
 		} 
 		// 
 		echo $output;
-		exit;
-	}
+		//exit;
+	}*/
 	
 	/**
 	 * Echo the body segments
-	 *
-	 * @param boolean $returnBody
 	 * 
 	 * @return void
 	 */
-	public function outputBody($returnBody = false) {
-		
+	public function outputBody() {
 		$content = implode('', (array)$this->_body);
-		
-		if (!$returnBody) {
-			$this->ajaxHandler($content);
-		} else{
-			
-			return $content;
-		}
+		return $content;
 	}
 	
 	/**
 	 * Send the response and exit
 	 */
-	public function sendResponse() {
+	/*public function sendResponse() {
 		
 		parent::sendResponse();
 		
 		if ($this->isRedirect()) {
 			//exit ();
 		}
-	}
+	}*/
 	
 	/**
 	 * Set Body
@@ -123,5 +114,44 @@ class Typogento_Core_Controller_Response extends Mage_Core_Controller_Response_H
 		//header('Location: ' . t3lib_div::locationHeaderUrl($url));
 		//exit;
 	}
-
+	
+	/**
+	 * Check if this is a Ajax response
+	 * 
+	 * @return bool True on an Ajax response otherwise false.
+	 */
+	public function isAjax() {
+		// always respond with ajax on xml http requests
+		$ajax = Mage::app()->getFrontController()->getRequest()->isXmlHttpRequest();
+		// respond with ajax on content type 'application/json'
+		if (!$ajax) {
+			foreach ($this->_headers as $header) {
+				if (strtolower($header['name']) != 'content-type') {
+					continue;
+				}
+				$ajax = strtolower($header['value']) == 'application/json';
+			}
+		}
+		// return result
+		return $ajax;
+	}
+	
+	/**
+	 * Check if this is HTTP 404 response
+	 * 
+	 * @return boolean False on HTTP 404 otherwise true.
+	 */
+	public function isAvailable() {
+		// available per default
+		$available = true;
+		// check headers
+		foreach ($this->_headers as $header) {
+			if (strtolower($header['name']) != 'http/1.1') {
+				continue;
+			}
+			$available = strtolower($header['value']) != '404 not found';
+		}
+		// return result
+		return $available;
+	}
 }

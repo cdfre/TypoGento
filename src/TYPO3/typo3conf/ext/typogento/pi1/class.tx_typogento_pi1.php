@@ -2,21 +2,10 @@
 
 /**
  * Frontend plugin
- *
- * @todo Check caching configuration (config.no_cache, $this->pi_USER_INT_obj, $this->pi_checkCHash and tslib_cObj::convertToUserIntObject())
+ * 
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 class tx_typogento_pi1 extends tslib_pibase {
-	
-	/**
-	 * @var bool
-	 */
-	public $pi_checkCHash = false;
-	
-	/**
-	 * @var bool
-	 */
-	public $pi_USER_INT_obj = true;
 	
 	/**
 	 * @var string
@@ -34,53 +23,72 @@ class tx_typogento_pi1 extends tslib_pibase {
 	public $extKey = 'typogento';
 	
 	/**
-	 * @var array
-	 */
-	public $emConf = null;
-	
-	/**
 	 * @var tx_typogento_interface
 	 */
-	protected $_magento = null;
+	protected $_interface = null;
+	
+	/**
+	 * @var tx_typogento_configuration
+	 */
+	protected $_configuration = null;
+	
+	/**
+	 * @var int
+	 */
+	protected $_section = -1;
+	
+	/**
+	 * @var bool
+	 */
+	protected $_isInitialized = false;
 	
 	/**
 	 * Constructor
 	 * 
-	 * Skips always cache hash checking. This will be done later.
-	 * @see $pi_checkCHash, _init()
+	 * Disables the parent constructor and thus skips cache hash checking.
+	 * 
+	 * @see _initialize()
 	 */
 	public function __construct() {
-		// call parent
-		parent::__construct();
-	} 
+	}
 	
 	/**
-	 * Main method of the plugin
+	 * Run the plugin
 	 * 
 	 * @param string $content The plugin content
 	 * @param array $conf The plugin configuration
-	 * @return The rendered content
+	 * 
+	 * @return string The rendered content
 	 */
-	public function main($content, $conf) {
-		// get configuration helper
-		$helper = t3lib_div::makeInstance('tx_typogento_configuration');
-		// get plugin setup
-		$setup = $helper->getSection(tx_typogento_configuration::TYPOSCRIPT_SETUP);
-		// 
-		$type = $this->cObj->getUserObjectType();
-		// convert content type if possible and no cache flag is set
-		if ($conf['noCache'] && $type == tslib_cObj::OBJECTTYPE_USER) {
-			$this->cObj->convertToUserIntObject();
-			return '';
-		// only check cache hash if content type is user and additional flag is not disabled
-		} elseif ($type == tslib_cObj::OBJECTTYPE_USER && count($this->piVars) 
-		&& (!isset($setup['checkCacheHash']) || $setup['checkCacheHash'])) {
-			$GLOBALS['TSFE']->reqCHash();
+	public function main($content, $typoscript) {
+		// initialize
+		$this->_initialize($typoscript);
+		// skip
+		if ($this->_isInitialized) {
+			// response
+			$response = Mage::app()->getResponse();
+			// check response
+			if (!$response->isAvailable()) {
+				$GLOBALS['TSFE']->pageNotFoundAndExit();
+			} else if (!$response->isRedirect()) {
+				// open interface
+				$this->_interface->open();
+				// render content
+				try {
+					$this->_render($content);
+				} catch (Exception $e) {
+					// close interface
+					$this->_interface->close();
+					// re-throw exception
+					// @todo extend connfiguration
+					throw $e;
+				}
+				// close interface
+				$this->_interface->close();
+			}
+		} else {
+			$content = null;
 		}
-		// init the plugin
-		$this->_init($conf);
-		// render content
-		$this->_render($content);
 		// return content
 		return $content;
 	}
@@ -88,70 +96,120 @@ class tx_typogento_pi1 extends tslib_pibase {
 	/**
 	 * Initialize the plugin
 	 * 
-	 * @param array $conf
+	 * @param array $typoscript
+	 * @throws Exception
 	 */
-	protected function _init(array &$conf) {
-		// set plugin configuration
-		$this->conf = &$conf;
-		// 
-		$this->pi_setPiVarDefaults();
-		$this->pi_loadLL();
-		$this->pi_initPIflexForm();
-		// get the singleton instance
-		$this->_magento = t3lib_div::makeInstance('tx_typogento_interface');
-		// if Magento reports 404 error use TYPO3 page not found behavior
-		if (isset($this->conf['useTYPO3pageNotFound'])
-		&& $this->conf['useTYPO3pageNotFound']
-		&& strpos(serialize((array) Mage::app()->getResponse()->getHeaders()), '404 File not found')
-		) {
-			$GLOBALS['TSFE']->pageNotFoundAndExit();
-		}
-	}
-	
-	protected function _render(&$content) {
-		// skip if this is a redirect
-		if (Mage::app()->getResponse()->isRedirect()) {
+	protected function _initialize(array &$typoscript) {
+		// skip
+		if ($this->_isInitialized) {
 			return;
 		}
-		// get current page id
-		$pid = $GLOBALS['TSFE']->id;
-		// render block specified by typoscript
-		if (isset($this->conf['block'])) {
-			// get block name
-			$name = $this->conf['block'];
-			// check specified block
-			switch($name) {
-				case '__responseBody':
-					// get body data
-					$content .= $this->_magento->getBodyData();
-					break;
-				default:
-					// get the specified block
-					$block = $this->_magento->getBlock($name);
-					// throw if default page head is not set
-					if (!isset($block)) {
-						tx_typogento_div::throwException('lib_block_not_available_error',
-							array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $name)
-						);
-					}
-					// if Mage_Core_Block_Text
-					if ($block instanceof Mage_Core_Block_Text) {
-						$block->setText('');
-					}
-					// get block html
-					$content .= $block->toHtml();
-					break;
+		// configuration
+		$this->_configuration = t3lib_div::makeInstance('tx_typogento_configuration');
+		// merge flexform
+		if (isset($this->cObj->data['pi_flexform'])) {
+			// reference flexform
+			$flexform = &$this->cObj->data['pi_flexform'];
+			// transform flexform
+			if (!is_array($flexform)) {
+				$flexform = t3lib_div::xml2array($flexform);
+				$helper = t3lib_div::makeInstance('tx_typogento_pi1_helper');
+				$flexform = $helper->getFlexFormConfiguration($flexform);
 			}
-			// wrap content in base class if set
-			if (!isset($this->conf['noWrap']) || !$this->conf['noWrap']) {
+			// override typoscript
+			if (is_array($flexform)) {
+				// cache flag
+				if ($flexform['cache'] === false) {
+					$typoscript['cache'] = false;
+				}
+			}
+		}
+		// merge typoscript
+		$this->_section = $this->_configuration->merge(
+			$typoscript, tx_typogento_configuration::PLUGIN
+		);
+		// cache flag
+		$cache = (bool)$this->_configuration->get(
+			'cache', true, $this->_section
+		);
+		// content type
+		$type = $this->cObj->getUserObjectType();
+		// get/post
+		$variables = t3lib_div::_GPmerged($this->prefixId);
+		// check caching
+		if ($type == tslib_cObj::OBJECTTYPE_USER) {
+			// check flag
+			if (!$cache) {
+				// convert to user int
+				$this->cObj->convertToUserIntObject();
+				return;
+			} else if (count($variables) > 0) {
+				// to make this clear :P
+				$this->pi_checkCHash = true;
+				// check hash
+				$GLOBALS['TSFE']->reqCHash();
+			}
+		} else {
+			// to make this clear :P
+			$this->pi_USER_INT_obj = true;
+		}
+		// initialize interface
+		try {
+			$this->_interface = t3lib_div::makeInstance('tx_typogento_interface');
+		} catch (Exception $e) {
+			// re-throw exception
+			// @todo typoscript configuration
+			throw $e;
+		}
+		// success
+		$this->_isInitialized = true;
+	}
+	
+	/**
+	 * 
+	 * @param unknown_type $content
+	 */
+	protected function _render(&$content) {
+		// application
+		$application = Mage::app();
+		// response
+		$response = $application->getResponse();
+		// layout
+		$layout = $application->getLayout();
+		// configuration
+		$configuration = $this->_configuration;
+		// render block
+		if (!$response->isAjax()) {
+			// block name
+			$name = $configuration->get(
+				'block', 'content', $this->_section
+			);
+			// wrap flag
+			$wrap = !(bool)$configuration->get(
+				'noWrap', true, $this->_section
+			);
+			// retrive block
+			$block = $layout->getBlock($name);
+			// check block
+			if (!$block) {
+				throw tx_typogento_div::exception('lib_block_not_available_error',
+					array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $name)
+				);
+			} else if (!($block instanceof Mage_Core_Block_Abstract)) {
+				throw tx_typogento_div::exception('lib_block_type_not_supported_error',
+					array(get_class($name))
+				);
+			}
+			// render html
+			$content .= $block->toHtml();
+			// wrap html
+			if ($wrap) {
 				$content = $this->pi_wrapInBaseClass($content);
 			}
-		// render content block otherwise
+		// render response
 		} else {
-			// get content block html
-			if ($this->_magento->getBlock('content') !== null) {
-				$content .= $this->_magento->getBlock('content')->toHtml();
-			}
+			// render body
+			$content .= $response->outputBody();
 		}
 	}
 }

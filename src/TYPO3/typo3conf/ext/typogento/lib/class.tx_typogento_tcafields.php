@@ -139,7 +139,7 @@ class tx_typogento_tcafields {
 	 */
 	public function itemsProcFunc_controllers(&$params, &$pObj) {
 
-		$module = $this->_getFlexformData($pObj, 'route', 'main');
+		$module = $this->_getFlexformData($pObj, 'route', 'display');
 		if (!$module) {
 			return;
 		}
@@ -162,12 +162,12 @@ class tx_typogento_tcafields {
 	 */
 	public function itemsProcFunc_actions(&$params, &$pObj) {
 
-		$module = $this->_getFlexformData($pObj, 'route', 'main');
+		$module = $this->_getFlexformData($pObj, 'route', 'display');
 		if (!$module) {
 			return;
 		}
 
-		$controller = $this->_getFlexformData($pObj, 'controller', 'main');
+		$controller = $this->_getFlexformData($pObj, 'controller', 'display');
 		if (!$controller) {
 			return;
 		}
@@ -270,7 +270,7 @@ class tx_typogento_tcafields {
 			$flexform = $data['_THIS_ROW']['pi_flexform'];
 			$flexformArray = t3lib_div::xml2array($flexform);
 
-			return tx_typogento_div::getFFvalue($flexformArray, $fieldName, $sheet, $lang, $value);
+			return tx_typogento_div::getFlexFormValue($flexformArray, $fieldName, $sheet, $lang, $value);
 		} catch (Exception $e) {
 			return null;
 		}

@@ -27,17 +27,19 @@ interface tx_typogento_routeBuilder {
 class tx_typogento_defaultRouteBuilder implements tx_typogento_routeBuilder {
 	
 	/**
+	 * Build the routes
+	 * 
+	 * Uses the TypoScript setup and caches the FlexForm route path.
+	 * 
 	 * @see tx_typogento_routeBuilder::build()
 	 */
 	public function build(tx_typogento_router $router) {
 		// get configuration helper
 		$helper = t3lib_div::makeInstance('tx_typogento_configuration');
-		// get plugin setup
-		$setup = $helper->getSection(tx_typogento_configuration::TYPOSCRIPT_SETUP);
 		// get routes setup
-		$routes = &$setup['routes.'];
+		$routes = &$helper->get('routes.', array());
 		// skip if routes setup is empty
-		if (!isset($routes)) {
+		if (count($routes) < 1) {
 			return;
 		}
 		// build routes
@@ -51,68 +53,12 @@ class tx_typogento_defaultRouteBuilder implements tx_typogento_routeBuilder {
 			// add route to router
 			$router->add($conf['section'], $route);
 		}
-		
-		if (!isset($GLOBALS['TSFE']->config['tx_typogento'])) {
-			$GLOBALS['TSFE']->config['tx_typogento'] = $this->_getRouteSegments($GLOBALS['TSFE']);
-		}
 	}
 	
 	/**
-	 * Get route set from FlexForm
+	 * Create a single route from TypoScript
 	 * 
-	 * Extracts the route set from a FlexForm array if set.
-	 * 
-	 * @param array $flexform
-	 * @return array
-	 * @throws Exception
-	 */
-	protected function _buildRouteSegments(array $flexform) {
-		$field = 'main';
-		$view = &tx_typogento_div::getFFvalue($flexform, 'show', $field);
-		$segments = null;
-	
-		if (!$view) {
-			tx_typogento_div::throwException('lib_view_type_not_set_error');
-		}
-	
-		switch ($view) {
-			case "SINGLEPRODUCT":
-				$product = &tx_typogento_div::getFFvalue($flexform, 'product_id', $field);
-				$segments = array(
-					'route'=>'catalog', 'controller'=>'product', 
-					'action'=>'view', 'id' => $product
-				);
-				break;
-			case "PRODUCTLIST":
-				$category = &tx_typogento_div::getFFvalue($flexform, 'category_id', $field);
-				$segments = array(
-					'route'=>'catalog', 'controller'=>'category', 
-					'action'=>'view', 'id' => $category
-				);
-				break;
-			case "USER":
-				$segments = array(
-					'route'=> tx_typogento_div::getFFvalue($flexform, 'route', $field),
-					'controller'=> tx_typogento_div::getFFvalue($flexform, 'controller', $field),
-					'action'=> tx_typogento_div::getFFvalue($flexform, 'action', $field)
-				);
-				break;
-			default:
-				tx_typogento_div::throwException('lib_view_type_not_valid_error', 
-					array($view)
-				);
-		}
-	
-		return $segments;
-	}
-	
-	/**
-	 * Get Route from TypoScript
-	 * 
-	 * Creates a TypoGento route from TypoScript setup 
-	 * like used in 'plugin.tx_typogento.routes'.
-	 * 
-	 * @param array $config TypoScript setup for a TypoGento route
+	 * @param array $config TypoScript setup
 	 * @throws InvalidArgumentException If something is missing in the TypoScript setup
 	 */
 	protected function _buildRoute(array &$typoscript) {
@@ -134,32 +80,6 @@ class tx_typogento_defaultRouteBuilder implements tx_typogento_routeBuilder {
 		$handler = new tx_typogento_typolinkRouteHandler($typoscript['target.']);
 		
 		return new tx_typogento_route($filter, $handler, $priority);
-	}
-	
-	/**
-	 * Get route 
-	 * 
-	 * @return boolean
-	 */
-	protected function _getRouteSegments(tslib_fe $page) {
-		$row = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-			'pi_flexform',
-			'tt_content',
-			'pid=\'' . $page->id.'\' AND list_type=\'typogento_pi1\' ' . $page->sys_page->enableFields('tt_content'),
-			'sorting'
-		);
-
-		if (!isset($row['pi_flexform'])) {
-			return null;
-		}
-		
-		$flexform = t3lib_div::xml2array($row['pi_flexform']);
-		
-		if (!isset($flexform['data']['main']['lDEF']['show']['vDEF'])) {
-			return null;
-		}
-		
-		return $this->_buildRouteSegments($flexform);
 	}
 	
 	/**
