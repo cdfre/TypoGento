@@ -148,24 +148,6 @@
 			</adminhtml>
 		</blocks>
 	</global>
-	<frontend>
-		<routers>
-			<template>
-				<use>standard</use>
-				<args>
-					<module>Typogento_Core</module>
-					<frontName>typogento</frontName>
-				</args>
-			</template>
-		</routers>
-		<layout>
-			<updates>
-				<template>
-					<file>wee_typogento.xml</file>
-				</template>
-			</updates>
-		</layout>
-	</frontend>
 	<adminhtml>
 		<translate>
 		<modules>
