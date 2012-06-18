@@ -44,11 +44,6 @@ class tx_typogento_header {
 	protected $_interface = null;
 	
 	/**
-	 * @var t3lib_PageRenderer
-	 */
-	protected $_renderer = null;
-	
-	/**
 	 * @var tx_typogento_configuration
 	 */
 	protected $_configuration = null;
@@ -106,8 +101,6 @@ class tx_typogento_header {
 					array(get_class($this->_block))
 				);
 			}
-			// page renderer
-			$this->_renderer = $GLOBALS['TSFE']->getPageRenderer();
 		} catch (Exception $e) {
 			// close the interface
 			$this->_interface->close();
@@ -120,11 +113,12 @@ class tx_typogento_header {
 	/**
 	 * Render header
 	 * 
+	 * @param t3lib_PageRenderer $renderer The page renderer
 	 * @param int $compress Bitmask for resource compression @see COMPRESS_JS and COMPRESS_CSS
 	 * @param int $import Bitmask for resource import @see IMPORT_JS and IMPORT_CSS
 	 * @throws Exception If somthing went wrong
 	 */
-	public function render($compress = 0, $import = 0) {
+	public function render(t3lib_PageRenderer $renderer, $compress = 0, $import = 0) {
 		try {
 			// 
 			$block = $this->_block;
@@ -163,18 +157,18 @@ class tx_typogento_header {
 				// render
 				switch($item['type']) {
 					case 'js':
-						$this->_renderer->addJsFile($item['name'], 'text/javascript', 
+						$renderer->addJsFile($item['name'], 'text/javascript', 
 							$compressJs, false, $condition);
 						break;
 					case 'css':
-						$this->_renderer->addCssFile($item['name'], 'stylesheet', 
+						$renderer->addCssFile($item['name'], 'stylesheet', 
 							$item['params']['media'], $item['params']['title'], $compress['css'], false, $condition);
 						break;
 					case 'rss':
 					case 'link':
 						$html = '<link href="' . $item['name'] . '" ' . $item['params'] . '/>';
 						$html = &$GLOBALS['TSFE']->cObj->stdWrap($html, $condition);
-						$this->_renderer->addHeaderData($html);
+						$renderer->addHeaderData($html);
 						break;
 				}
 			}
@@ -183,21 +177,21 @@ class tx_typogento_header {
 			$script = 'var Translator = new Translate('.$json.');';
 			if ($import['js']) {
 				$script = TSpagegen::inline2TempFile($script, 'js');
-				$this->_renderer->addJsFile($script, 'text/javascript', $compressJs);
+				$renderer->addJsFile($script, 'text/javascript', $compressJs);
 			} else {
-				$this->_renderer->addJsInlineCode(
+				$renderer->addJsInlineCode(
 					'Magento Translator', $script, $compressJs
 				);
 			}
 			// render children
 			$html = &$block->getChildHtml();
 			if (!empty($html)) {
-				$this->_renderer->addHeaderData($html);
+				$renderer->addHeaderData($html);
 			}
 			// render includes
 			$html = &$block->getIncludes();
 			if (!empty($html)) {
-				$this->_renderer->addHeaderData($html);
+				$renderer->addHeaderData($html);
 			}
 		} catch (Exception $e) {
 			// close the interface

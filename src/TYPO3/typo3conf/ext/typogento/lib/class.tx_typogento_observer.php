@@ -15,14 +15,24 @@ class tx_typogento_observer implements t3lib_Singleton {
 	protected $_hasFailed = false;
 	
 	/**
-	 * @var bool
-	 */
-	protected $_isInitialized = false;
-	
-	/**
 	 * @var tx_typogento_configuration
 	 */
 	protected $_configuration = null;
+	
+	/**
+	 * @var tx_typogento_header
+	 */
+	protected $_header = null;
+	
+	/**
+	 * @var tx_typogento_interface
+	 */
+	protected $_interface = null;
+	
+	/**
+	 * @var array
+	 */
+	protected $_registers = null;
 	
 	
 	/**
@@ -50,32 +60,19 @@ class tx_typogento_observer implements t3lib_Singleton {
 	 * @param array $params
 	 * @param t3lib_pagerenderer $pObj
 	 */
-	public function renderPreProcess($params, t3lib_pagerenderer &$pObj) {
-		// configuration
-		$configuration = $this->_configuration;
+	public function renderPreProcess($params, t3lib_PageRenderer &$renderer) {
+		// initialize
+		$this->_initialize();
 		// skip
-		if (!$configuration->get('header', false)) {
+		if ($this->_header == null) {
 			return;
 		}
-		// start interface
+		// render
 		try {
-			t3lib_div::makeInstance('tx_typogento_interface');
-		} catch (Exception $e) {
-			// re-throw exception
-			// @todo typoscript configuration
-			throw $e;
-		}
-		// skip
-		if (Mage::app()->getResponse()->isRedirect()) {
-			// invalidate output
-			$this->_hasFailed = true;
-			return;
-		} 
-		// start
-		try {
-			// page header
-			$block = $configuration->get('header.block', 'head');
-			$header = t3lib_div::makeInstance('tx_typogento_header', $block);
+			// configuration
+			$configuration = $this->_configuration;
+			// header
+			$header = $this->_header;
 			// render flags
 			$compress = 0;
 			$import = 0;
@@ -93,11 +90,7 @@ class tx_typogento_observer implements t3lib_Singleton {
 				$import ^= tx_typogento_header::IMPORT_CSS;
 			}
 			// render header
-			$header->render($compress, $import);
-			// register fields
-			if ($configuration->get('header.register', false)) {
-				$this->_registerHeaderFields();
-			}
+			$header->render($renderer, $compress, $import);
 		} catch (Exception $e) {
 			// re-throw exception
 			// @todo typoscript configuration
@@ -108,17 +101,25 @@ class tx_typogento_observer implements t3lib_Singleton {
 	/**
 	 * Validate page cache
 	 * 
-	 * @param tslib_fe $pObj
+	 * @param tslib_fe $frontend
 	 * @param int $timeOutTime
 	 * 
-	 * @see renderPreProcess()
+	 * @see _initialize()
 	 */
-	public function insertPageIncache(tslib_fe &$pObj, $timeOutTime) {
+	public function insertPageIncache(tslib_fe &$frontend, $timeOutTime) {
 		// invalidate page cache
 		try {
+			// check
 			if ($this->_hasFailed) {
-				$pObj->clearPageCacheContent();
-				error_log('Invalidate '.$_SERVER['REQUEST_URI']);
+				// log
+				t3lib_div::sysLog('Page rendering has failed for the request "'
+					. t3lib_div::getIndpEnv('TYPO3_REQUEST_URL')
+					. '" Clearing the cache content.', 'typogento',
+					t3lib_div::SYSLOG_SEVERITY_WARNING
+				);
+				// invalidate
+				$frontend->clearPageCacheContent();
+				// reset
 				$this->_hasFailed = false;
 			}
 		} catch (Exception $e) {
@@ -130,36 +131,53 @@ class tx_typogento_observer implements t3lib_Singleton {
 	 * Prepare page configuration register
 	 * 
 	 * @param array $params
-	 * @param tslib_fe $pObj
+	 * @param tslib_fe $frontend
 	 */
-	public function configArrayPostProc($params, tslib_fe &$pObj) {
-		// skip
-		if ($this->_isInitialized) {
+	public function configArrayPostProc($params, tslib_fe &$frontend) {
+		// skip initialized
+		if ($this->_interface != null
+			|| $this->_registers != null) {
 			return;
 		}
-		// start
-		try {
-			// configuration
-			$configuration = $this->_configuration;
-			// flexform fields
-			if ($configuration->get('content.register', false)) {
-				// cache
-				if (!$configuration->has('content.register.', tx_typogento_configuration::CACHE)) {
-					$this->_prefetchContentFields();
-				}
-				// load
-				$register = $configuration->get('content.register.', array(), tx_typogento_configuration::CACHE);
-				// register
-				if (!empty($register)) {
-					$this->_registerContentFields();
+		// providers
+		$providers = array(
+			'tx_typogento_register_header',
+			'tx_typogento_register_content'
+		);
+		// registers
+		$this->_registers = array();
+		// pre load
+		foreach ($providers as $provider) {
+			$register = t3lib_div::makeInstance($provider, $frontend);
+			$register->preLoad();
+			$this->_registers[] = $register;
+		}
+		// user int
+		if ($frontend->isINTincScript()) {
+			// include scripts
+			$scripts = $frontend->config['INTincScript'];
+			// search
+			foreach ($scripts as &$script) {
+				if (isset($script['file'])
+					&& strpos($script['file'], 'tx_typogento_pi1') !== false) {
+					$found = true;
+					break;
 				}
 			}
-			// success
-			$this->_isInitialized = true;
-		} catch(Exception $e) {
-			throw tx_typogento_div::exception('lib_initalizing_routing_system_failed_error', 
-				array($_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), $e
-			);
+			// skip
+			if (!isset($found)) {
+				return;
+			}
+		}
+		// initialize
+		$this->_initialize();
+		// skip uninitialized
+		if ($this->_interface == null) {
+			return;
+		}
+		// post load
+		foreach ($this->_registers as $register) {
+			$register->postLoad();
 		}
 	}
 	
@@ -187,83 +205,44 @@ class tx_typogento_observer implements t3lib_Singleton {
 		$session->logout();
 	}
 	
-	/**
-	 * Load 'default' content plugin configuration into page configuration
-	 * 
-	 * @see _registerContentFields()
-	 */
-	protected function _prefetchContentFields() {
-		// configuration
-		$configuration = $this->_configuration;
-		// flexform fields
-		$fields = (string)$configuration->get('content.register.fields', 'id,route,controller,action,cache');
-		$fields = explode(',', $fields);
+	protected function _initialize() {
 		// skip
-		if (count($fields) < 1) {
+		if ($this->_header != null) {
 			return;
 		}
-		// flexform selectors
-		$column = (int)$configuration->get('content.register.column', 0);
-		$position = (int)$configuration->get('content.register.position', 0);
-		$type = 'typogento_pi1';
-		$page = $GLOBALS['TSFE'];
-		// select
-		$flexform = &tx_typogento_div::getContentFlexForm($page, $type, $column, $position);
 		// skip
-		if (count($flexform) < 1) {
-			$configuration->set('content.register.', array(), tx_typogento_configuration::CACHE);
+		if (!(bool)$this->_configuration->get('header', false)
+			|| (bool)$this->_configuration->get('disableAllHeaderCode', false, tx_typogento_configuration::SYSTEM)) {
 			return;
 		}
-		// transform
-		$registers = t3lib_div::makeInstance('tx_typogento_pi1_helper')->getFlexFormConfiguration($flexform);
-		$registers = &tx_typogento_div::getFlatArray($registers, 'tx_typogento.content.');
-		// cache
-		$configuration->set('content.register.', $registers, tx_typogento_configuration::CACHE);
-	}
-	
-	/**
-	 * Load 'default' content plugin configuration into page register
-	 * 
-	 */
-	protected function _registerHeaderFields() {
-		// configuration
-		$configuration = $this->_configuration;
-		// header fields
-		$fields = (string)$configuration->get('header.register.fields', 'title,description,keywords');
-		$fields = explode(',', $fields);
-		// skip
-		if (count($fields) < 1) {
-			return;
-		}
-		// header block
-		$block = $configuration->get('header.block', 'head');
-		$block = Mage::app()->getLayout()->getBlock($block);
-		// result
-		$registers = array();
-		// collect
-		foreach ($fields as $field) {
-			if ($block->hasData($field)) {
-				$registers[$field] = (string)$block->getData($field);
+		// interface
+		if ($this->_interface == null) {
+			try {
+				// initialize
+				$this->_interface = t3lib_div::makeInstance('tx_typogento_interface');
+			} catch (Exception $e) {
+				// re-throw exception
+				// @todo typoscript configuration
+				throw $e;
 			}
 		}
-		// transform
-		$registers = &tx_typogento_div::getFlatArray($registers, 'tx_typogento.header');
-		// publish
-		$GLOBALS['TSFE']->register += $registers;
-	}
-	
-	/**
-	 * Load 'default' content plugin configuration into page register
-	 * 
-	 * @see _prefetchContentFields()
-	 */
-	protected function _registerContentFields() {
-		// configuration
-		$configuration = $this->_configuration;
-		// collect
-		$registers = &$configuration->get('content.register.', array(), tx_typogento_configuration::CACHE);
-		// publish
-		$GLOBALS['TSFE']->register += $registers;
+		// skip
+		if (Mage::app()->getResponse()->isRedirect()) {
+			// invalidate output
+			$this->_hasFailed = true;
+			return;
+		}
+		// header
+		if ($this->_header == null) {
+			try {
+				$block = $this->_configuration->get('header.block', 'head');
+				$this->_header = t3lib_div::makeInstance('tx_typogento_header', $block);
+			} catch (Exception $e) {
+				// re-throw exception
+				// @todo typoscript configuration
+				throw $e;
+			}
+		}
 	}
 }
 

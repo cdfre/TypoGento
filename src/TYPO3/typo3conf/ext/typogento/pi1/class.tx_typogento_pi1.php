@@ -38,11 +38,6 @@ class tx_typogento_pi1 extends tslib_pibase {
 	protected $_section = -1;
 	
 	/**
-	 * @var bool
-	 */
-	protected $_isInitialized = false;
-	
-	/**
 	 * Constructor
 	 * 
 	 * Disables the parent constructor and thus skips cache hash checking.
@@ -64,7 +59,7 @@ class tx_typogento_pi1 extends tslib_pibase {
 		// initialize
 		$this->_initialize($typoscript);
 		// skip
-		if ($this->_isInitialized) {
+		if ($this->_interface != null) {
 			// response
 			$response = Mage::app()->getResponse();
 			// check response
@@ -101,7 +96,7 @@ class tx_typogento_pi1 extends tslib_pibase {
 	 */
 	protected function _initialize(array &$typoscript) {
 		// skip
-		if ($this->_isInitialized) {
+		if ($this->_interface != null) {
 			return;
 		}
 		// configuration
@@ -161,8 +156,6 @@ class tx_typogento_pi1 extends tslib_pibase {
 			// @todo typoscript configuration
 			throw $e;
 		}
-		// success
-		$this->_isInitialized = true;
 	}
 	
 	/**

@@ -16,31 +16,59 @@ class tx_typogento_configuration implements t3lib_Singleton {
 	const EXTENSION = 0;
 	
 	/**
-	 * In $GLOBALS['TSFE']->config['config']['tx_typogento.']
+	 * In $this->_frontend->config['config']['tx_typogento.']
 	 * 
 	 * @var int
 	 */
 	const PAGE = 1;
 	
 	/**
-	 * In $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_typogento_pi1.]
+	 * In $this->_frontend->tmpl->setup['plugin.']['tx_typogento_pi1.]
 	 * 
 	 * @var int
 	 */
 	const PLUGIN = 2;
 	
 	/**
-	 * In $GLOBALS['TSFE']->config['tx_typogento_cache']
+	 * In $this->_frontend->config['tx_typogento_cache']
 	 * 
 	 * @var int
 	 */
 	const CACHE = 3;
+	
+	/**
+	 * In $this->_frontend->config['config']
+	 *
+	 * @var int
+	 */
+	const SYSTEM = 4;
 
+	/**
+	 * @var array
+	 */
 	protected $_sections = array();
 	
+	/**
+	 * @var array
+	 */
 	protected $_merges = array();
+	
+	/**
+	 * @var tslib_fe
+	 */
+	protected $_frontend = null;
 
-	public function __construct() {
+	/**
+	 * Constructor
+	 * 
+	 * @param tslib_fe $frontend The page frontend
+	 */
+	public function __construct(tslib_fe $frontend = null) {
+		if ($frontend == null) {
+			$this->_frontend = $GLOBALS['TSFE'];
+		} else {
+			$this->_frontend = $frontend;
+		}
 	}
 	
 	public function has($path, $section = self::PAGE) {
@@ -80,7 +108,7 @@ class tx_typogento_configuration implements t3lib_Singleton {
 		
 		$this->_initialize($section);
 		
-		$next = count($this->_sections) + 4;
+		$next = count($this->_sections) + 5;
 		
 		$this->_sections[$next] = t3lib_div::array_merge_recursive_overrule(
 			$this->_sections[$section], $entries
@@ -95,7 +123,7 @@ class tx_typogento_configuration implements t3lib_Singleton {
 		
 		$entries = &$this->_sections[$section];
 		
-		if ($section > 4) {
+		if ($section > 5) {
 			$section = $this->_merges[$section];
 		}
 
@@ -121,7 +149,7 @@ class tx_typogento_configuration implements t3lib_Singleton {
 	
 		$entries = &$this->_sections[$section];
 	
-		if ($section > 4) {
+		if ($section > 5) {
 			$section = $this->_merges[$section];
 		}
 	
@@ -162,38 +190,49 @@ class tx_typogento_configuration implements t3lib_Singleton {
 				$this->_sections[$section] = &$configuration;
 				break;
 			case self::PAGE:
-				if (!isset($GLOBALS['TSFE']->config)) {
+				if (!isset($this->_frontend->config)) {
 					throw tx_typogento_div::exception('lib_unknown_error');
 				}
 				
-				if (!isset($GLOBALS['TSFE']->config['config']['tx_typogento.'])) {
+				if (!isset($this->_frontend->config['config']['tx_typogento.'])) {
 					throw tx_typogento_div::exception('lib_typoscript_setup_not_set_error');
 				}
 			
-				$this->_sections[$section] = &$GLOBALS['TSFE']->config['config']['tx_typogento.'];
+				$this->_sections[$section] = &$this->_frontend->config['config']['tx_typogento.'];
 				break;
 			case self::PLUGIN:
-				if (!isset($GLOBALS['TSFE']->tmpl->setup)) {
+				if (!isset($this->_frontend->tmpl->setup)) {
 					throw tx_typogento_div::exception('lib_typoscript_not_initialized_error');
 				}
 			
-				if (!isset($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_typogento_pi1.'])) {
+				if (!isset($this->_frontend->tmpl->setup['plugin.']['tx_typogento_pi1.'])) {
 					throw tx_typogento_div::exception('lib_typoscript_setup_not_set_error');
 				}
 			
-				$this->_sections[$section] = &$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_typogento_pi1.'];
+				$this->_sections[$section] = &$this->_frontend->tmpl->setup['plugin.']['tx_typogento_pi1.'];
 				break;
 			case self::CACHE:
-				if (!isset($GLOBALS['TSFE']->config)) {
+				if (!isset($this->_frontend->config)) {
 					throw tx_typogento_div::exception('lib_unknown_error');
 				}
 				
-				if (!isset($GLOBALS['TSFE']->config['tx_typogento_cache.'])) {
-					$GLOBALS['TSFE']->config['tx_typogento_cache.'] = array();
+				if (!isset($this->_frontend->config['tx_typogento_cache.'])) {
+					$this->_frontend->config['tx_typogento_cache.'] = array();
 				}
 					
-				$this->_sections[$section] = &$GLOBALS['TSFE']->config['tx_typogento_cache.'];
+				$this->_sections[$section] = &$this->_frontend->config['tx_typogento_cache.'];
 				break;
+			case self::SYSTEM:
+					if (!isset($this->_frontend->config)) {
+						throw tx_typogento_div::exception('lib_unknown_error');
+					}
+				
+					if (!isset($this->_frontend->config['config'])) {
+						throw tx_typogento_div::exception('lib_typoscript_setup_not_set_error');
+					}
+						
+					$this->_sections[$section] = &$this->_frontend->config['config'];
+					break;
 		}
 		// vallidate
 		if (!isset($this->_sections[$section])) {

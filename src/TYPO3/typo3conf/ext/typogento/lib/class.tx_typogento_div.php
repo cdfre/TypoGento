@@ -44,18 +44,7 @@ class tx_typogento_div {
 	public static function &getTypoScriptValue(array &$array, $path, $default = null) {
 		// prepare path
 		$path = str_replace('.', '.#', $path);
-		$path = rtrim($path, '#');
-		$keys = explode('#', $path);
-		// iterate parts
-		foreach ($keys as &$key) {
-			//
-			if (isset($array[$key])) {
-				$array = &$array[$key];
-			} else {
-				return $default;
-			}
-		}
-		// return result
+		$array = &self::getArrayValue($array, $path, $default, '#');
 		return $array;
 	}
 	
@@ -69,17 +58,7 @@ class tx_typogento_div {
 	public static function setTypoScriptValue(array &$array, $path, $value) {
 		// prepare path
 		$path = str_replace('.', '.#', $path);
-		$path = rtrim($path, '#');
-		$keys = explode('#', $path);
-		// loop through each part and extract its value
-		while(count($keys) > 1) {
-			// next key
-			$key = array_shift($keys);
-			$array = &$array[$key];
-		}
-		// set value
-		$key = reset($keys);
-		$array[$key] = $value;
+		self::setArrayValue($array, $path, $value, '#');
 	}
 	
 	/**
@@ -91,20 +70,25 @@ class tx_typogento_div {
 	 * 
 	 * @return mixed
 	 */
-	public static function &getArrayValue(array &$array, $path, $default = null) {
+	public static function &getArrayValue(array &$array, $path, $default = null, $delimiter = '.') {
 		// prepare path
-		$path = rtrim($path, '.');
-		$keys = explode('.', $path);
+		$path = rtrim($path, $delimiter);
+		$keys = explode($delimiter, $path);
 		// iterate parts
-		while(count($keys) > 0) {
+		while(count($keys) > 1) {
+			// next key
 			$key = array_shift($keys);
-			if (!isset($array[$key])) {
+			// check key
+			if (!isset($array[$key]) 
+			|| !is_array($array[$key])) {
 				return $default;
 			}
+			// next value
 			$array = &$array[$key];
 		}
-		// return result
-		return $array;
+		// return value
+		$key = reset($keys);
+		return $array[$key];
 	}
 	
 	/**
@@ -116,18 +100,21 @@ class tx_typogento_div {
 	 *
 	 * @return mixed
 	 */
-	public static function setArrayValue(array &$array, $path, &$value) {
+	public static function setArrayValue(array &$array, $path, &$value, $delimiter = '.') {
 		// prepare path
-		$path = rtrim($path, '.');
-		$keys = explode('.', $path);
+		$path = rtrim($path, $delimiter);
+		$keys = explode($delimiter, $path);
 		// loop through each part and extract its value
 		while(count($keys) > 1) {
 			// next key
 			$key = array_shift($keys);
-			//
-			if(isset($array[$key]) && !is_array($array[$key])) {
-				throw new Exception("Invalid path '{$path}'");
+			// check key
+			if (!isset($array[$key])) {
+				$array[$key] = array();
+			} else if (!is_array($array[$key])) {
+				throw self::exception('lib_configuration_key_not_found_error', array($path));
 			}
+			// next value
 			$array = &$array[$key];
 		}
 		// set value
@@ -178,15 +165,15 @@ class tx_typogento_div {
 	/**
 	 * Get FlexForm array from content object
 	 * 
-	 * @param tslib_fe $page Page of the content object
+	 * @param tslib_fe $frontend The page frontend
 	 * @param unknown_type $type List type of the content object
 	 * @param unknown_type $column Page column of the content object
 	 * @param unknown_type $position Position of the content object
 	 */
-	public static function &getContentFlexForm(tslib_fe $page, $type, $column = 0, $position = 0) {
+	public static function &getContentFlexForm(tslib_fe $frontend, $type, $column = 0, $position = 0) {
 		// select
-		$where = 'pid=\'' . $page->id . '\' AND colPos = ' . $column . ' AND list_type=\'' . $type . '\' ';
-		$where .= $page->sys_page->enableFields('tt_content');
+		$where = 'pid=\'' . $frontend->id . '\' AND colPos = ' . $column . ' AND list_type=\'' . $type . '\' ';
+		$where .= $frontend->sys_page->enableFields('tt_content');
 		$limit = $position . ',1';
 		$row = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'pi_flexform', 'tt_content', $where, '', 'sorting', $limit
