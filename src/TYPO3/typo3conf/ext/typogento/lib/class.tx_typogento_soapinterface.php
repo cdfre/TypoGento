@@ -7,7 +7,7 @@
  */
 class tx_typogento_soapinterface implements t3lib_Singleton {
 
-	const WSDL_URI = '/api/soap/?wsdl';
+	const WSDL_URI = '/index.php/api/soap/?wsdl';
 	
 	const CACHE_TAG = 'typogento_soap_results';
 	
