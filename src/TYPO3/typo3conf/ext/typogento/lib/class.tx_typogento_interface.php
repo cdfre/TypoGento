@@ -67,7 +67,7 @@ class tx_typogento_interface implements t3lib_Singleton {
 			// lookup matching route
 			return $router->lookup(tx_typogento_router::ROUTE_SECTION_DISPATCH, null, $target);
 		} catch (Exception $e) {
-			throw tx_typogento_div::exception('lib_unresolved_target_url_error',
+			throw tx_typogento_div::exception('lib_target_url_not_resolved_error',
 				array(), $e
 			);
 		}
