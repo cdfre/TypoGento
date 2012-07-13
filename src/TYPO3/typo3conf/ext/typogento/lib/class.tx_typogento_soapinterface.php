@@ -84,19 +84,33 @@ class tx_typogento_soapinterface implements t3lib_Singleton {
 				|| !isset($this->_session)) {
 					// get configuration helper
 					$helper = t3lib_div::makeInstance('tx_typogento_magentoHelper');
+					// get base url
 					$url = $helper->getBaseUrl();
+					// adds the wsdl uri
+					$url .= self::WSDL_URI;
+					try {
+						// xdebug workaround (see http://bugs.xdebug.org/view.php?id=609)
+						if (function_exists('xdebug_disable')) {
+							xdebug_disable();
+						}
+						// start soap client
+						$this->client = new SoapClient($url, array('exceptions' => true, 'cache_wsdl' => WSDL_CACHE_MEMORY));
+						// xdebug workaround
+						if (function_exists('xdebug_enable')) {
+							xdebug_enable();
+						}
+					} catch (Exception $e) {
+						// xdebug workaround
+						if (function_exists('xdebug_enable')) {
+							xdebug_enable();
+						}
+						// re-throw exception
+						throw $e;
+					}
+					// get credentials
 					$user = $helper->getApiAccount();
 					$password = $helper->getApiPassword();
-					// adds the wsdl path
-					$url .= self::WSDL_URI;
-					// xdebug work arround (see https://bugs.php.net/bug.php?id=34657)
-					if (!@file_get_contents($url)) {
-						throw tx_typogento_div::exception(
-							'lib_wsdl_resource_not_found_error', array($url)
-						);
-					}
-					// start soap client
-					$this->client = new SoapClient($url, array('exceptions' => true, 'cache_wsdl' => WSDL_CACHE_MEMORY));
+					// get client session
 					$this->_session = $this->client->login($user, $password);
 					// unset credentials
 					unset($password);
