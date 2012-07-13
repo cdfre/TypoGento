@@ -89,6 +89,7 @@ config.tx_typogento {
 		register = 1
 		register.fields = title,description
 	}
+}
 ```
 
 ## Routing
