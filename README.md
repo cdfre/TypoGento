@@ -36,20 +36,42 @@ The minimum requirements for a installation are:
 
 ## Installation
 
-The installation of this fork is very similar to Flagbit's TypoGento (see [how to install TypoGento](http://www.typogento.com/documentation/how-to-install-typogento.html)). It is highly recommended become familiar with the administration of Magento and TYPO3 before you start installing TypoGento:
+The installation of this fork is very similar to Flagbit's TypoGento (see [how to install TypoGento](http://www.typogento.com/documentation/how-to-install-typogento.html)). _It is highly recommended become familiar with the administration of Magento and TYPO3 before you start installing TypoGento_:
 
-1. [Download](https://github.com/witrin/TypoGento/zipball/develop) the package
-2. Unpack the downloaded package
-3. Install the Magento module
- 1. Place the content of [`src/Magento`](https://github.com/witrin/TypoGento/tree/develop/src/Magento) into the Magento root directory
- 2. If caching is enabled, clear `Configuration`, `EAV types and attributes` and `Web Services Configuration` in `System > Cache Management`
- 3. Grant access to `TypoGento Settings` for the `Administrators` in `System > Permissions > Roles` 
- 4. Setup the configuration in `System > Configuration > TypoGento`
- 5. Create the Magento API account for TypoGento in `System > Web Services > User`
-4. Install the TYPO3 extension
- 1. Place the content of [`src/TYPO3`](https://github.com/witrin/TypoGento/tree/develop/src/TYPO3) into your TYPO3 root directory
- 2. Activate the extension in `Admin Tools > Extension Manager`, update the database and setup the configuration
- 3. Setup the Magento role for the TYPO3 backend accounts in `Edit > Extended > Magento Role`
+### Download
+
+[Download](https://github.com/witrin/TypoGento/zipball/develop) the extension package from GitHub and unzip it. _Please notice that this is the latest development version; the first release will be coming soon._
+
+### Magento module
+
+1. Place the content of [`src/Magento`](https://github.com/witrin/TypoGento/tree/develop/src/Magento) into the Magento root directory
+2. Clear the caches in `System > Cache Management` if enabled
+	* `Configuration`
+	* `EAV types and attributes`
+	* `Web Services Configuration` 
+3. Grant access to `TypoGento Settings` for the `Administrators` in `System > Permissions > Roles`
+4. Setup the configuration in `System > Configuration > TypoGento`
+5. Create the Magento API role for TypoGento in `System > Web Services > SOAP/XML-RPC - Roles`
+	* `Catalog > Product > URL Key > List`
+	* `Catalog > Product > Retrieve products data`
+	* `Catalog > Category > URL Key > List`
+	* `Catalog > Category > Retrieve categories tree`
+	* `Core > Role > List`
+	* `Core > Magento info > Module > List`
+	* `Core > Magento info > Module > Controller > List`
+	* `Core > Magento info > Module > Controller > Action >List`
+	* `Core > Store > List of stores`
+	* `TypoGento > Replication > Target > List`
+	* `TypoGento > Replication > Source > List`
+6. Create the Magento API user for TypoGento in `System > Web Services > SOAP/XML-RPC - Users` by using the previous created Magento API role
+
+### TYPO3 extension
+
+1. Place the content of [`src/TYPO3`](https://github.com/witrin/TypoGento/tree/develop/src/TYPO3) into the TYPO3 root directory
+2. Activate the extension in `Admin Tools > Extension Manager`, update the database and setup the configuration
+3. Setup the Magento role for the TYPO3 backend users in `Edit > Extended > Magento Role`
+4. Add the scheduled task for clearing the Magento API cache in `Admin Tools > Scheduler`
+5. Check the installation in `Admin Tools > Reports > Status Report`
 
 ## Usage
 
