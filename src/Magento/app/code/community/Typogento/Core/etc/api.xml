@@ -2,8 +2,7 @@
 <config>
 	<api>
 		<resources>
-			<typogento_catalog_product translate="title"
-				module="typogento">
+			<typogento_catalog_product translate="title" module="typogento">
 				<model>Typogento_Core_Model_Catalog_Product_Api</model>
 				<title>TypoGento API</title>
 				<acl>typogento/urlkeys</acl>
@@ -25,8 +24,7 @@
 					</list>
 				</methods>
 			</typogento_stores>
-			<typogento_catalog_category translate="title"
-				module="typogento">
+			<typogento_catalog_category translate="title" module="typogento">
 				<model>Typogento_Core_Model_Catalog_Category_Api</model>
 				<title>TypoGento API</title>
 				<acl>typogento/urlkeys</acl>
@@ -37,8 +35,7 @@
 					</urlkeys>
 				</methods>
 			</typogento_catalog_category>
-			<typogento_admin_roles translate="title"
-				module="typogento">
+			<typogento_admin_roles translate="title" module="typogento">
 				<model>Typogento_Core_Model_Admin_Roles_Api</model>
 				<title>TypoGento API</title>
 				<acl>typogento/roles</acl>
@@ -68,8 +65,7 @@
 					</actions>
 				</methods>
 			</typogento_modules>
-			<typogento_replication translate="title"
-				module="typogento">
+			<typogento_replication translate="title" module="typogento">
 				<model>Typogento_Core_Model_Replication_Api</model>
 				<title>TypoGento API</title>
 				<acl>typogento/replication</acl>
@@ -87,27 +83,25 @@
 		</resources>
 		<acl>
 			<resources>
-				<all>
-					<typogento translate="title" module="typogento">
-						<title>TypoGento</title>
-						<sort_order>5</sort_order>
-						<storeviews translate="title" module="typogento">
-							<title>Stores</title>
-						</storeviews>
-						<urlkeys translate="title" module="typogento">
-							<title>Category and Product URLs</title>
-						</urlkeys>
-						<roles translate="title" module="typogento">
-							<title>Admin Roles</title>
-						</roles>
-						<modules translate="title" module="typogento">
-							<title>Modules</title>
-						</modules>
-						<replication translate="title" module="typogento">
-							<title>Replication</title>
-						</replication>
-					</typogento>
-				</all>
+				<typogento translate="title" module="typogento">
+					<title>TypoGento</title>
+					<sort_order>5</sort_order>
+					<storeviews translate="title" module="typogento">
+						<title>Stores</title>
+					</storeviews>
+					<urlkeys translate="title" module="typogento">
+						<title>Category and Product URLs</title>
+					</urlkeys>
+					<roles translate="title" module="typogento">
+						<title>Admin Roles</title>
+					</roles>
+					<modules translate="title" module="typogento">
+						<title>Modules</title>
+					</modules>
+					<replication translate="title" module="typogento">
+						<title>Replication</title>
+					</replication>
+				</typogento>
 			</resources>
 		</acl>
 	</api>
