@@ -88,7 +88,7 @@ class tx_typogento_div {
 		}
 		// return value
 		$key = reset($keys);
-		return $array[$key];
+		return (isset($array[$key]) ? $array[$key] : $default);
 	}
 	
 	/**
