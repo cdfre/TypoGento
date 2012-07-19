@@ -146,13 +146,13 @@ class tx_typogento_observer implements t3lib_Singleton {
 		);
 		// registers
 		$this->_registers = array();
-		// pre load
+		// pre load registers
 		foreach ($providers as $provider) {
 			$register = t3lib_div::makeInstance($provider, $frontend);
 			$register->preLoad();
 			$this->_registers[] = $register;
 		}
-		// user int
+		// search user int plugins
 		if ($frontend->isINTincScript()) {
 			// include scripts
 			$scripts = $frontend->config['INTincScript'];
@@ -160,22 +160,24 @@ class tx_typogento_observer implements t3lib_Singleton {
 			foreach ($scripts as &$script) {
 				if (isset($script['file'])
 					&& strpos($script['file'], 'tx_typogento_pi1') !== false) {
-					$found = true;
+					$hasUncachedPlugins = true;
 					break;
 				}
 			}
-			// skip
-			if (!isset($found)) {
-				return;
-			}
 		}
-		// initialize
+		// skip cached content
+		if (is_array($frontend->config)
+			&& !isset($hasUncachedPlugins) 
+			&& !$frontend->forceTemplateParsing) {
+			return;
+		}
+		// initialize interface and header
 		$this->_initialize();
 		// skip uninitialized
 		if ($this->_interface == null) {
 			return;
 		}
-		// post load
+		// post load registers
 		foreach ($this->_registers as $register) {
 			$register->postLoad();
 		}
