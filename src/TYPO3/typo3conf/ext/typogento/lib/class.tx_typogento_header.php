@@ -50,7 +50,7 @@ class tx_typogento_header {
 	
 	protected static $_types = array(
 		'skin_js'  => array('skin', 'js'),
-		'skin_css' => array('skin', 'js'),
+		'skin_css' => array('skin', 'css'),
 		'js'       => array('static', 'js'),
 		'js_css'   => array('static', 'css'),
 		'rss'      => array('other', 'rss'),
