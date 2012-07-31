@@ -159,8 +159,10 @@ class tx_typogento_pi1 extends tslib_pibase {
 	}
 	
 	/**
+	 * Render the plugin
 	 * 
-	 * @param unknown_type $content
+	 * @todo http://forge.typo3.org/issues/19809
+	 * @param string $content
 	 */
 	protected function _render(&$content) {
 		// application
@@ -172,14 +174,11 @@ class tx_typogento_pi1 extends tslib_pibase {
 		// configuration
 		$configuration = $this->_configuration;
 		// render block
-		if (!$response->isAjax()) {
+		if (!(bool)$configuration->get('ajax', false, $this->_section) 
+			&& !$response->isAjax()) {
 			// block name
 			$name = $configuration->get(
 				'block', 'content', $this->_section
-			);
-			// wrap flag
-			$wrap = !(bool)$configuration->get(
-				'noWrap', true, $this->_section
 			);
 			// retrive block
 			$block = $layout->getBlock($name);
@@ -196,7 +195,7 @@ class tx_typogento_pi1 extends tslib_pibase {
 			// render html
 			$content .= $block->toHtml();
 			// wrap html
-			if ($wrap) {
+			if ((bool)$configuration->get('pluginWrap', false, $this->_section)) {
 				$content = $this->pi_wrapInBaseClass($content);
 			}
 		// render response
