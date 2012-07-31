@@ -131,6 +131,7 @@ class tx_typogento_configuration implements t3lib_Singleton {
 			case self::PAGE:
 			case self::PLUGIN:
 			case self::CACHE:
+			case self::SYSTEM:
 				$default = &tx_typogento_div::getTypoScriptValue(
 					$entries, $path, $default
 				);
@@ -157,6 +158,7 @@ class tx_typogento_configuration implements t3lib_Singleton {
 			case self::PAGE:
 			case self::PLUGIN:
 			case self::CACHE:
+			case self::SYSTEM:
 				tx_typogento_div::setTypoScriptValue(
 					$entries, $path, $value
 				);
