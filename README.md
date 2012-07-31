@@ -49,7 +49,7 @@ The installation of this fork is very similar to Flagbit's TypoGento (see [how t
 	* `Configuration`
 	* `EAV types and attributes`
 	* `Web Services Configuration` 
-3. Grant access to `TypoGento Settings` for the `Administrators` in `System > Permissions > Roles`
+3. Grant access to `TypoGento Settings` for the `Administrators` in `System > Permissions > Roles` if necessary
 4. Setup the configuration in `System > Configuration > TypoGento`
 5. Create the Magento API role for TypoGento in `System > Web Services > SOAP/XML-RPC - Roles`
 	* `Catalog > Product > URL Key > List`
@@ -59,7 +59,7 @@ The installation of this fork is very similar to Flagbit's TypoGento (see [how t
 	* `Core > Role > List`
 	* `Core > Magento info > Module > List`
 	* `Core > Magento info > Module > Controller > List`
-	* `Core > Magento info > Module > Controller > Action >List`
+	* `Core > Magento info > Module > Controller > Action > List`
 	* `Core > Store > List of stores`
 	* `TypoGento > Replication > Target > List`
 	* `TypoGento > Replication > Source > List`
@@ -69,9 +69,10 @@ The installation of this fork is very similar to Flagbit's TypoGento (see [how t
 
 1. Place the content of [`src/TYPO3`](https://github.com/witrin/TypoGento/tree/develop/src/TYPO3) into the TYPO3 root directory
 2. Activate the extension in `Admin Tools > Extension Manager`, update the database and setup the configuration
-3. Setup the Magento role for the TYPO3 backend users in `Edit > Extended > Magento Role`
-4. Add the scheduled task for clearing the Magento API cache in `Admin Tools > Scheduler`
-5. Check the installation in `Admin Tools > Reports > Status Report`
+3. Check the installation in `Admin Tools > Reports > Status Report`
+4. Setup the Magento role for the TYPO3 backend users in `Edit > Extended > Magento Role`
+5. Add the scheduled task for clearing the Magento API cache in `Admin Tools > Scheduler`
+6. Setup the TypoGento routing system
 
 ## Usage
 
@@ -79,11 +80,9 @@ The usage of this fork is currently also similar to Flagbit's TypoGento. This me
 
 You should prefer using TypoScript to put Magento blocks beside `content` (i.e. `top.search`) on your TYPO3 pages:
 ```text
-temp.search = USER
+temp.search < plugin.tx_typogento_pi1
 temp.search {
-	
 	 # Render Magento block 'top.search'
-	userFunc = tx_typogento_pi1->main
 	block = top.search
 }
 ```
