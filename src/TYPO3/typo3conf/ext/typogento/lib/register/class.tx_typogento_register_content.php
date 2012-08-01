@@ -15,7 +15,7 @@ class tx_typogento_register_content extends tx_typogento_register_abstract {
 		// configuration
 		$configuration = $this->_configuration;
 		// skip disabled
-		if (!$configuration->get('content.register', false)) {
+		if (!(bool)$configuration->get('content.register.enable', false)) {
 			return;
 		}
 		// cached

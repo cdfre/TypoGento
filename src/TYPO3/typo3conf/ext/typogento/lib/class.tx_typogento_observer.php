@@ -213,7 +213,7 @@ class tx_typogento_observer implements t3lib_Singleton {
 			return;
 		}
 		// skip
-		if (!(bool)$this->_configuration->get('header', false)
+		if (!(bool)$this->_configuration->get('header.enable', false)
 			|| (bool)$this->_configuration->get('disableAllHeaderCode', false, tx_typogento_configuration::SYSTEM)) {
 			return;
 		}

@@ -92,11 +92,10 @@ The Magento HTML header can be integrated easily as follows into a TYPO3 page us
 ```text
 config.tx_typogento {
 	
-	header = 1
 	header {
 		
-		 # Render Magento block 'head'
-		block = head
+		 # Enable page header integration
+		enable = 1
 		
 		 # Compress resources (see http://wiki.typo3.org/TSref/CONFIG)
 		compressJs = 1
@@ -106,9 +105,11 @@ config.tx_typogento {
 		importJs = 1
 		importCss = 1
 		
-		 # Enable register:tx_typogento.header.<field>
-		register = 1
-		register.fields = title,description
+		 # Use register:tx_typogento.header.<field>
+		register {
+			enable = 1
+			fields = title,description
+		}
 	}
 }
 ```
@@ -130,9 +131,11 @@ config.tx_typogento {
 		 # First frontend plugin
 		position = 0
 	
-		 # Enable register:tx_typogento.content.<field>
-		register = 1
-		register.fields = id,route,controller,action,cache
+		 # Use register:tx_typogento.content.<field>
+		register {
+			enable = 1
+			fields = id,route,controller,action,cache
+		}
 	}
 }
 ```

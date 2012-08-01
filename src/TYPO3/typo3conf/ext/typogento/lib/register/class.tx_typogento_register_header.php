@@ -11,7 +11,7 @@ class tx_typogento_register_header extends tx_typogento_register_abstract {
 		// configuration
 		$configuration = $this->_configuration;
 		// skip disabled
-		if (!$configuration->get('header.register', false)) {
+		if (!(bool)$configuration->get('header.register.enable', false)) {
 			return;
 		}
 		// data
@@ -44,7 +44,7 @@ class tx_typogento_register_header extends tx_typogento_register_abstract {
 		// configuration
 		$configuration = $this->_configuration;
 		// skip disabled
-		if ($configuration->get('header.register', false)) {
+		if (!(bool)$configuration->get('header.register.enable', false)) {
 			return;
 		}
 		// cached
