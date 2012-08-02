@@ -174,7 +174,7 @@ class tx_typogento_pi1 extends tslib_pibase {
 		// configuration
 		$configuration = $this->_configuration;
 		// render block
-		if (!(bool)$configuration->get('ajax', false, $this->_section) 
+		if ($configuration->get('mode', 'block', $this->_section) == 'block'
 			&& !$response->isAjax()) {
 			// block name
 			$name = $configuration->get(
@@ -195,9 +195,7 @@ class tx_typogento_pi1 extends tslib_pibase {
 			// render html
 			$content .= $block->toHtml();
 			// wrap html
-			if ((bool)$configuration->get('pluginWrap', false, $this->_section)) {
-				$content = $this->pi_wrapInBaseClass($content);
-			}
+			// $content = $this->pi_wrapInBaseClass($content);
 		// render response
 		} else {
 			// render body
