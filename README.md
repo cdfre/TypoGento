@@ -231,7 +231,7 @@ config.tx_typogento {
 
 ## Contributing
 
-Please report issues on the [GitHub issue tracker](https://github.com/witrin/TypoGento/issues). Patches are preferred as GitHub pull requests.
+Please report issues on the [GitHub issue tracker](https://github.com/witrin/TypoGento/issues). Personal emails are not appropriate for bug reports. Patches are preferred as GitHub pull requests. Please use the [develop branch](https://github.com/witrin/TypoGento/tree/develop) when sending pull requests.
 
 ## License
 
