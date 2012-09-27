@@ -80,7 +80,7 @@ class tx_typogento_soapinterface implements t3lib_Singleton {
 			$lock = $this->_acquireLock($hash);
 			try {
 				// init session if not set
-				if (!isset($this->client)
+				if (!isset($this->_client)
 				|| !isset($this->_session)) {
 					// get configuration helper
 					$helper = t3lib_div::makeInstance('tx_typogento_magentoHelper');
@@ -94,7 +94,7 @@ class tx_typogento_soapinterface implements t3lib_Singleton {
 							xdebug_disable();
 						}
 						// start soap client
-						$this->client = new SoapClient($url, array('exceptions' => true, 'cache_wsdl' => WSDL_CACHE_MEMORY));
+						$this->_client = new SoapClient($url, array('exceptions' => true, 'cache_wsdl' => WSDL_CACHE_MEMORY));
 						// xdebug workaround
 						if (function_exists('xdebug_enable')) {
 							xdebug_enable();
@@ -111,13 +111,13 @@ class tx_typogento_soapinterface implements t3lib_Singleton {
 					$user = $helper->getApiAccount();
 					$password = $helper->getApiPassword();
 					// get client session
-					$this->_session = $this->client->login($user, $password);
+					$this->_session = $this->_client->login($user, $password);
 					// unset credentials
 					unset($password);
 					unset($user);
 				}
 				// perform soap query
-				$result = $this->client->call($this->_session, $resource, $parameters);
+				$result = $this->_client->call($this->_session, $resource, $parameters);
 				// cache the result
 				$this->_cache->set($hash, $result, array(self::CACHE_TAG));
 			} catch (Exception $e) {
@@ -151,8 +151,8 @@ class tx_typogento_soapinterface implements t3lib_Singleton {
 				);
 			}
 			// start soap client
-			$client = new SoapClient($url, array('exceptions' => true, 'cache_wsdl' => WSDL_CACHE_MEMORY));
-			$client->login($user, $password);
+			$this->_client = new SoapClient($url, array('exceptions' => true, 'cache_wsdl' => WSDL_CACHE_MEMORY));
+			$this->_client->login($user, $password);
 			// unset credentials
 			unset($password);
 			unset($user);
