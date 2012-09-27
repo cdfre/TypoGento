@@ -58,6 +58,7 @@ class tx_typogento_magentoHelper implements t3lib_Singleton {
 				? '' : ':'.$components['port'];
 			$components['scheme'] = trim($components['scheme']) === ''
 				? '' : $components['scheme'].'://';
+			$components['path'] = rtrim($components['path'], '/').'/';
 			
 			self::$_data['base_url'] = $components['scheme'].$components['host'].$components['port'].$components['path'];
 		}
