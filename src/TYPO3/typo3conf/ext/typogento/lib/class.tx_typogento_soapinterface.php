@@ -58,9 +58,62 @@ class tx_typogento_soapinterface implements t3lib_Singleton {
 		$serialized = serialize(array_filter($parameters));
 		return sha1($resource.$serialized);
 	}
+	
+	protected function _init() {
+		// init client
+		if (!isset($this->_client)) {
+			// get configuration helper
+			$helper = t3lib_div::makeInstance('tx_typogento_magentoHelper');
+			// get base url
+			$url = $helper->getBaseUrl();
+			// adds the wsdl uri
+			$url .= self::WSDL_URI;
+			try {
+				// xdebug workaround (see http://bugs.xdebug.org/view.php?id=609)
+				if (function_exists('xdebug_disable')) {
+					xdebug_disable();
+				}
+				// start soap client
+				$this->_client = new SoapClient($url, array('exceptions' => true, 'cache_wsdl' => WSDL_CACHE_MEMORY));
+				// xdebug workaround
+				if (function_exists('xdebug_enable')) {
+					xdebug_enable();
+				}
+			} catch (Exception $e) {
+				// xdebug workaround
+				if (function_exists('xdebug_enable')) {
+					xdebug_enable();
+				}
+				// reset client
+				$this->_client = null;
+				// re-throw exception
+				throw $e;
+			}
+		}
+		// init session
+		if (!isset($this->_session)) {
+			try {
+				// get configuration helper
+				$helper = t3lib_div::makeInstance('tx_typogento_magentoHelper');
+				// get credentials
+				$user = $helper->getApiAccount();
+				$password = $helper->getApiPassword();
+				// get client session
+				$this->_session = $this->_client->login($user, $password);
+				// unset credentials
+				unset($password);
+				unset($user);
+			} catch (Exception $e) {
+				// reset session
+				$this->_session = null;
+				// re-throw exception
+				throw $e;
+			}
+		}
+	}
 
 	/**
-	 * call Soap Interface
+	 * Call SOAP interface
 	 *
 	 * @param string $resource
 	 * @param array $params
@@ -79,43 +132,8 @@ class tx_typogento_soapinterface implements t3lib_Singleton {
 			// lock request before start
 			$lock = $this->_acquireLock($hash);
 			try {
-				// init session if not set
-				if (!isset($this->_client)
-				|| !isset($this->_session)) {
-					// get configuration helper
-					$helper = t3lib_div::makeInstance('tx_typogento_magentoHelper');
-					// get base url
-					$url = $helper->getBaseUrl();
-					// adds the wsdl uri
-					$url .= self::WSDL_URI;
-					try {
-						// xdebug workaround (see http://bugs.xdebug.org/view.php?id=609)
-						if (function_exists('xdebug_disable')) {
-							xdebug_disable();
-						}
-						// start soap client
-						$this->_client = new SoapClient($url, array('exceptions' => true, 'cache_wsdl' => WSDL_CACHE_MEMORY));
-						// xdebug workaround
-						if (function_exists('xdebug_enable')) {
-							xdebug_enable();
-						}
-					} catch (Exception $e) {
-						// xdebug workaround
-						if (function_exists('xdebug_enable')) {
-							xdebug_enable();
-						}
-						// re-throw exception
-						throw $e;
-					}
-					// get credentials
-					$user = $helper->getApiAccount();
-					$password = $helper->getApiPassword();
-					// get client session
-					$this->_session = $this->_client->login($user, $password);
-					// unset credentials
-					unset($password);
-					unset($user);
-				}
+				// init interface
+				$this->_init();
 				// perform soap query
 				$result = $this->_client->call($this->_session, $resource, $parameters);
 				// cache the result
@@ -137,25 +155,8 @@ class tx_typogento_soapinterface implements t3lib_Singleton {
 	
 	public function isAvailable() {
 		try {
-			// get configuration helper
-			$helper = t3lib_div::makeInstance('tx_typogento_magentoHelper');
-			$url = $helper->getBaseUrl();
-			$user = $helper->getApiAccount();
-			$password = $helper->getApiPassword();
-			// adds the wsdl path
-			$url .= self::WSDL_URI;
-			// xdebug work arround (see https://bugs.php.net/bug.php?id=34657)
-			if (!@file_get_contents($url)) {
-				throw tx_typogento_div::exception(
-					'lib_wsdl_resource_not_found_error', array($url)
-				);
-			}
-			// start soap client
-			$this->_client = new SoapClient($url, array('exceptions' => true, 'cache_wsdl' => WSDL_CACHE_MEMORY));
-			$this->_client->login($user, $password);
-			// unset credentials
-			unset($password);
-			unset($user);
+			// init interface
+			$this->_init();
 		} catch (Exception $e) {
 			// throw exception
 			throw $e;
