@@ -210,12 +210,10 @@ class tx_typogento_tcafields {
 		$walk = function (&$value, $key = null) use(&$params, &$walk) {
 			$params['items'][] = array(str_repeat('-', $value['level']*1) . $value['name'], $value['category_id']);
 			
-			if (!is_array($value['children'])) {
-				return;
-			}
-			
-			foreach ($value['children'] as $child) {
-				return $walk($child);
+			if (is_array($value['children'])) {
+				foreach ($value['children'] as $child) {
+					$walk($child);
+				}
 			}
 		};
 		$this->_getSoapItems(
