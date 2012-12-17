@@ -2,18 +2,18 @@
 <T3locallang>
 	<meta type="array">
 		<type>module</type>
-		<description>Language labels for module &quot;txtypogentoMgroup&quot; - header, description</description>
+		<description>Language labels for module &quot;magento&quot; - header, description</description>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="mlang_tabs_tab">Magento</label>
-			<label index="mlang_labels_tabdescr">Magento backend</label>
-			<label index="mlang_labels_tablabel">Magento backend</label>
+			<label index="mlang_labels_tabdescr">Magento tools</label>
+			<label index="mlang_labels_tablabel">Magento tools</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="mlang_tabs_tab">Magento</label>
-			<label index="mlang_labels_tabdescr">Magento Backend</label>
-			<label index="mlang_labels_tablabel">Magento Backend</label>
+			<label index="mlang_labels_tabdescr">Magento Tools</label>
+			<label index="mlang_labels_tablabel">Magento Tools</label>
 		</languageKey>
 	</data>
 </T3locallang>

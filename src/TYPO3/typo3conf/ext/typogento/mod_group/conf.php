@@ -9,6 +9,6 @@ $MCONF['name']='txtypogentoMgroup';
 $MCONF['access']='user,group';
 $MCONF['script']='index.php';
 
-$MLANG['default']['tabs_images']['tab'] = 'moduleicon.gif';
+$MLANG['default']['tabs_images']['tab'] = 'res/images/module-icon.png';
 $MLANG['default']['ll_ref']='LLL:EXT:typogento/mod_group/locallang_mod.xml';
 ?>

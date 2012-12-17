@@ -19,7 +19,7 @@ $TCA['tx_typogento_replication_links'] = array (
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
 		'default_sortby' => 'ORDER BY tstamp',
-		'iconfile' => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_replication_link.gif'
+		'iconfile' => t3lib_extMgm::extRelPath($_EXTKEY).'res/images/replication-icon.png'
 	),
 	'interface' => array (
 		'maxDBListItems' => 60,
