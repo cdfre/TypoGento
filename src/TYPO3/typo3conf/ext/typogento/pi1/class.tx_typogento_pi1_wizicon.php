@@ -3,9 +3,10 @@
 /**
  * Class that adds the wizard icon.
  *
- * @author	Joerg Weller <weller@flagbit.de>
- * @package	TYPO3
- * @subpackage	tx_typogento
+ * @author Joerg Weller <weller@flagbit.de>
+ * @author Artus Kolanowski <artus@ionoi.net>
+ * @package TYPO3
+ * @subpackage tx_typogento
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 class tx_typogento_pi1_wizicon {
@@ -13,10 +14,10 @@ class tx_typogento_pi1_wizicon {
 	/**
 	 * Processing the wizard items array
 	 *
-	 * @param	array		$wizardItems: The wizard items
-	 * @return	Modified array with wizard items
+	 * @param array $wizardItems: The wizard items
+	 * @return Modified array with wizard items
 	 */
-	function proc($wizardItems)	{
+	function proc($wizardItems) {
 		global $LANG;
 
 		$LL = $this->includeLocalLang();
@@ -34,13 +35,18 @@ class tx_typogento_pi1_wizicon {
 	/**
 	 * Reads the [extDir]/locallang.xml and returns the $LOCAL_LANG array found in that file.
 	 *
-	 * @return	The array with language labels
+	 * @return The array with language labels
 	 */
-	function includeLocalLang()	{
-		$llFile = t3lib_extMgm::extPath('typogento').'locallang.xml';
-		$LOCAL_LANG = t3lib_div::readLLXMLfile($llFile, $GLOBALS['LANG']->lang);
+	function includeLocalLang() {
+		$language = $GLOBALS['LANG']->lang;
+		$resource = t3lib_extMgm::extPath('typogento').'locallang.xml';
 		
-		return $LOCAL_LANG;
+		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4006000) {
+			$parser = t3lib_div::makeInstance('t3lib_l10n_parser_Llxml');
+			return $parser->getParsedData($resource, $language);
+		} else {
+			return t3lib_div::readLLXMLfile($resource, $language);
+		}
 	}
 }
 

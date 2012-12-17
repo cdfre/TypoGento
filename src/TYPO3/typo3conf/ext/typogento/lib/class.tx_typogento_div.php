@@ -143,7 +143,7 @@ class tx_typogento_div {
 		$keys = explode('.', $path);
 		
 		foreach($keys as $k => $v) {
-			if (t3lib_div::testInt($v)) {
+			if (t3lib_utility_Math::canBeInterpretedAsInteger($v)) {
 				if (is_array($array)) {
 					$c = 0;
 					foreach($array as $item) {

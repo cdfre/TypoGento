@@ -7,7 +7,6 @@
  * 
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
-
 class tx_typogento_languageHelper implements t3lib_Singleton {
 	
 	protected static $_localLanguage = null;
@@ -35,7 +34,6 @@ class tx_typogento_languageHelper implements t3lib_Singleton {
 		if (trim($value) === '') {
 			$value = is_string(self::$_localLanguage['default'][$index]) 
 				? self::$_localLanguage['default'][$index] : self::$_localLanguage['default'][$index][0]['target'];
-				
 		}
 		if (trim($value) === '') {
 			$value = $index;
@@ -51,9 +49,15 @@ class tx_typogento_languageHelper implements t3lib_Singleton {
 		}
 		// get current language
 		$language = $this->_getLanguage();
-		// load the resource
+		// get resource path
 		$resource = t3lib_extMgm::extPath('typogento') . 'locallang.xml';
-		self::$_localLanguage = t3lib_div::readLLXMLfile($resource, $language);
+		// load the resource
+		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4006000) {
+			$parser = t3lib_div::makeInstance('t3lib_l10n_parser_Llxml');
+			self::$_localLanguage = $parser->getParsedData($resource, $language);
+		} else {
+			self::$_localLanguage = t3lib_div::readLLXMLfile($resource, $language);
+		}
 	}
 	
 	protected function _getLanguage() {
