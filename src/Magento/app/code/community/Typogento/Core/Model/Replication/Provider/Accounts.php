@@ -175,7 +175,7 @@ class Typogento_Core_Model_Replication_Provider_Accounts extends Typogento_Core_
 			} else if ($object->getData('email')) {
 				$select = $read->select()
 					->from(array('t' => $table), array('id' => 'entity_id'))
-					->where('t.email = ?', $source->getData('email'))
+					->where('t.email = ?', $object->getData('email'))
 					->where('t.website_id = ?', Mage::helper('typogento/typo3')->getWebsiteId())
 					->limit(1);
 				
