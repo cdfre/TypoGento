@@ -67,7 +67,7 @@ class tx_typogento_magentoHelper implements t3lib_Singleton {
 	}
 	
 	public function getApiAccount() {
-		return self::$_helper->get('username', '', tx_typogento_configuration::EXTENSION);
+		return self::$_helper->get('user', '', tx_typogento_configuration::EXTENSION);
 	}
 	
 	public function getApiPassword() {

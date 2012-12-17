@@ -4,14 +4,14 @@ path =
 # cat=basic; type=text; label=Frontend URL: Absolute URL locating the Magento frontend.
 url = 
 
-# cat=basic;type=text; label=API User: Service account for accessing the Magento API.
-username = 
+# cat=basic; type=text; label=API User: Service account for accessing the Magento API.
+user = 
 
-# cat=basic;type=text; label=API Password: Password of the specified service account above.
+# cat=basic; type=text; label=API Password: Password of the specified service account above.
 password = 
 
-# cat=basic;type=text; label=Modul Namespace: Namespace where the Magento module is placed (community, local).
+# cat=basic; type=text; label=Modul Namespace: Namespace where the Magento module is placed (community, local).
 namespace = community
 
-# cat=basic;type=text; label=Website ID: Identifier of the Magento store website to connect with.
+# cat=basic; type=text; label=Website ID: Identifier of the Magento store website to connect with.
 website = 1
