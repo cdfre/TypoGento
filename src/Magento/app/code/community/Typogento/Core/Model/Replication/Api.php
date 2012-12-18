@@ -1,20 +1,24 @@
 <?php
 
 /**
- * TypoGento catalog category API model
+ * TypoGento replication API
  *
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 class Typogento_Core_Model_Replication_Api extends Mage_Api_Model_Resource_Abstract {
 	
+	/**
+	 * 
+	 */
 	public function providers() {
 		
 	}
+	
 	/**
-	 * Retrieve category urlKeys
+	 * Retrieve replication sources
 	 *
-	 * @param string|int $store
-	 * @return array
+	 * @param int $provider The provider id
+	 * @return array The sources of the given provider or null
 	 */
 	public function sources($provider) {
 		// get replication manager
@@ -35,24 +39,27 @@ class Typogento_Core_Model_Replication_Api extends Mage_Api_Model_Resource_Abstr
 	}
 	
 	/**
-	 * Retrieve category urlKeys
+	 * Retrieve replication targets
 	 *
-	 * @param string|int $store
-	 * @return array
+	 * @param int $provider The provider id
+	 * @return array The target of the given provider or null
 	 */
 	public function targets($provider) {
 		// get replication manager
 		$manager = Mage::getSingleton('typogento/replication_manager');
-		$provider = $manager->getProviderById($provider);
-		$model = $provider->getModel(false);
-		$provider = $manager->getProviderByObject($model);
 		$sources = array();
-	
+		$provider = $manager->getProviderById($provider);
+		
 		if ($provider instanceof Typogento_Core_Model_Replication_Provider_Abstract) {
-			$collection = $provider->getCollection();
-			
-			foreach ($collection as $target) {
-				$sources[] = array('id' => $target->getId(), 'display' => $provider->getDisplay($target));
+			$model = $provider->getModel(false);
+			$provider = $manager->getProviderByObject($model);
+		
+			if ($provider instanceof Typogento_Core_Model_Replication_Provider_Abstract) {
+				$collection = $provider->getCollection();
+				
+				foreach ($collection as $target) {
+					$sources[] = array('id' => $target->getId(), 'display' => $provider->getDisplay($target));
+				}
 			}
 		}
 	
