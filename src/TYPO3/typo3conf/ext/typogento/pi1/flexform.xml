@@ -7,13 +7,13 @@
 		<display>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:typogento/locallang_db.xml:flexform.sheet_display</sheetTitle>
+					<sheetTitle>LLL:EXT:typogento/res/language/locallang_db.xml:flexform.sheet_display</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
 					<type>
 						<TCEforms>
-							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_type</label>
+							<label>LLL:EXT:typogento/res/language/locallang_db.xml:flexform.label_type</label>
 							<section>1</section>
 							<onChange>reload</onChange>
 							<config>
@@ -22,19 +22,19 @@
 								<size>1</size>
 								<items type="array">
 									<numIndex index="0" type="array">
-										<numIndex index="0">LLL:EXT:typogento/locallang_db.xml:flexform.label_type.0</numIndex>
+										<numIndex index="0">LLL:EXT:typogento/res/language/locallang_db.xml:flexform.label_type.0</numIndex>
 										<numIndex index="1"></numIndex>
 									</numIndex>
 									<numIndex index="1" type="array">
-										<numIndex index="0">LLL:EXT:typogento/locallang_db.xml:flexform.label_type.1</numIndex>
+										<numIndex index="0">LLL:EXT:typogento/res/language/locallang_db.xml:flexform.label_type.1</numIndex>
 										<numIndex index="1">PRODUCT</numIndex>
 									</numIndex>
 									<numIndex index="2" type="array">
-										<numIndex index="0">LLL:EXT:typogento/locallang_db.xml:flexform.label_type.2</numIndex>
+										<numIndex index="0">LLL:EXT:typogento/res/language/locallang_db.xml:flexform.label_type.2</numIndex>
 										<numIndex index="1">CATEGORY</numIndex>
 									</numIndex>
 									<numIndex index="3" type="array">
-										<numIndex index="0">LLL:EXT:typogento/locallang_db.xml:flexform.label_type.3</numIndex>
+										<numIndex index="0">LLL:EXT:typogento/res/language/locallang_db.xml:flexform.label_type.3</numIndex>
 										<numIndex index="1">USER</numIndex>
 									</numIndex>
 								</items>
@@ -43,7 +43,7 @@
 					</type>
 					<product>
 						<TCEforms>
-							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_product_list</label>
+							<label>LLL:EXT:typogento/res/language/locallang_db.xml:flexform.label_product_list</label>
 							<displayCond>FIELD:type:=:PRODUCT</displayCond>
 							<config>
 								<type>select</type>
@@ -55,7 +55,7 @@
 					</product>
 					<category>
 						<TCEforms>
-							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_category_list</label>
+							<label>LLL:EXT:typogento/res/language/locallang_db.xml:flexform.label_category_list</label>
 							<displayCond>FIELD:type:=:CATEGORY</displayCond>
 							<config>
 								<type>select</type>
@@ -67,7 +67,7 @@
 					</category>
 					<route>
 						<TCEforms>
-							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_route</label>
+							<label>LLL:EXT:typogento/res/language/locallang_db.xml:flexform.label_route</label>
 							<displayCond>FIELD:type:=:USER</displayCond>
 							<onChange>reload</onChange>
 							<config>
@@ -80,7 +80,7 @@
 					</route>
 					<controller>
 						<TCEforms>
-							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_controller</label>
+							<label>LLL:EXT:typogento/res/language/locallang_db.xml:flexform.label_controller</label>
 							<displayCond>FIELD:type:=:USER</displayCond>
 							<onChange>reload</onChange>
 							<config>
@@ -93,7 +93,7 @@
 					</controller>
 					<action>
 						<TCEforms>
-							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_action</label>
+							<label>LLL:EXT:typogento/res/language/locallang_db.xml:flexform.label_action</label>
 							<displayCond>FIELD:type:=:USER</displayCond>
 							<config>
 								<type>select</type>
@@ -109,13 +109,13 @@
 		<cache>
 			<ROOT>
 				<TCEforms>
-					<sheetTitle>LLL:EXT:typogento/locallang_db.xml:flexform.sheet_cache</sheetTitle>
+					<sheetTitle>LLL:EXT:typogento/res/language/locallang_db.xml:flexform.sheet_cache</sheetTitle>
 				</TCEforms>
 				<type>array</type>
 				<el>
 					<disable>
 						<TCEforms>
-							<label>LLL:EXT:typogento/locallang_db.xml:flexform.label_disable</label>
+							<label>LLL:EXT:typogento/res/language/locallang_db.xml:flexform.label_disable</label>
 							<config>
 								<type>check</type>
 							</config>

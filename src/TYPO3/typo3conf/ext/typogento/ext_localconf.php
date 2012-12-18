@@ -148,8 +148,8 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['tce']['formevals']['tx_typogento_uniqueemail'] =
  */
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_typogento_clearSoapCacheTask'] = array(
 	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:lib_clear_soap_cache_task_name',
-	'description'      => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:lib_clear_soap_cache_task_description'
+	'title'            => 'LLL:EXT:' . $_EXTKEY . '/res/language/locallang.xml:lib_clear_soap_cache_task_name',
+	'description'      => 'LLL:EXT:' . $_EXTKEY . '/res/language/locallang.xml:lib_clear_soap_cache_task_description'
 );
 
 ?>

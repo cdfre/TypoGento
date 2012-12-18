@@ -3,8 +3,6 @@
 /**
  * TypoGento language helper
  * 
- * 
- * 
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 class tx_typogento_languageHelper implements t3lib_Singleton {
@@ -50,7 +48,7 @@ class tx_typogento_languageHelper implements t3lib_Singleton {
 		// get current language
 		$language = $this->_getLanguage();
 		// get resource path
-		$resource = t3lib_extMgm::extPath('typogento') . 'locallang.xml';
+		$resource = t3lib_extMgm::extPath('typogento') . 'res/language/locallang.xml';
 		// load the resource
 		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4006000) {
 			$parser = t3lib_div::makeInstance('t3lib_l10n_parser_Llxml');

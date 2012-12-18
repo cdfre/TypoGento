@@ -8,6 +8,7 @@ require ($BACK_PATH.'template.php');
 $BE_USER->modAccess($MCONF, 1);
 
 require_once(t3lib_extmgm::extPath('typogento').'lib/class.tx_typogento_div.php');
+require_once(t3lib_extmgm::extPath('typogento').'lib/class.tx_typogento_languagehelper.php');
 require_once(t3lib_extmgm::extPath('typogento').'lib/class.tx_typogento_autoloader.php');
 
 /**
@@ -16,7 +17,7 @@ require_once(t3lib_extmgm::extPath('typogento').'lib/class.tx_typogento_autoload
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 
-class tx_typogento_modadmin  extends t3lib_SCbase {
+class tx_typogento_mod2  extends t3lib_SCbase {
 	
 	/**
 	 * Current user
@@ -31,6 +32,13 @@ class tx_typogento_modadmin  extends t3lib_SCbase {
 	 * @var Mage_Admin_Model_Session
 	 */
 	protected $_session = null;
+	
+	/**
+	 * Language helper
+	 * 
+	 * @var tx_typogento_languageHelper
+	 */
+	protected $_language = null;
 
 	/**
 	 * The main method of the plugin
@@ -39,13 +47,13 @@ class tx_typogento_modadmin  extends t3lib_SCbase {
 	public function main() {
 		// force typo3 account data are set
 		if (!isset($GLOBALS['BE_USER']->user)) {
-			$this->_addMessage('access_denied_title', 'be_user_not_set_error', 
+			$this->_addMessage('mod2_access_denied_title', 'mod2_be_user_not_set_error', 
 				t3lib_message_AbstractMessage::ERROR
 			);
 		}
 		// force magento group membership for the typo3 account is set
 		if (empty($GLOBALS['BE_USER']->user['tx_typogento_group'])) {
-			$this->_addMessage('access_denied_title', 'account_membership_not_set_error', 
+			$this->_addMessage('mod2_access_denied_title', 'mod2_account_membership_not_set_error', 
 				t3lib_message_AbstractMessage::ERROR
 			);
 		}
@@ -74,7 +82,7 @@ class tx_typogento_modadmin  extends t3lib_SCbase {
 		// init template for messages if any
 		$this->doc = t3lib_div::makeInstance('template');
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
-		$this->doc->setModuleTemplate(t3lib_extMgm::extRelPath('typogento') . 'mod_admin/info.html');
+		$this->doc->setModuleTemplate(t3lib_extMgm::extRelPath('typogento') . 'mod2/mod_template.html');
 		// 
 		try {
 			// init the parent
@@ -89,7 +97,7 @@ class tx_typogento_modadmin  extends t3lib_SCbase {
 		} catch(Exception $e) {
 			// log error
 			$this->_addMessage(
-				'initalizing_failed_title', 
+				'mod2_initalizing_failed_title', 
 				$e->getMessage(), 
 				t3lib_message_AbstractMessage::ERROR
 			);
@@ -146,7 +154,7 @@ class tx_typogento_modadmin  extends t3lib_SCbase {
 			$this->_user->saveRelations();
 		} catch(Exception $e) {
 			// log error
-			$this->_addMessage('access_failed_title', $e->getMessage(), 
+			$this->_addMessage('mod2_access_failed_title', $e->getMessage(), 
 				t3lib_message_AbstractMessage::ERROR
 			);
 		}
@@ -162,14 +170,14 @@ class tx_typogento_modadmin  extends t3lib_SCbase {
 			// force accounts exist
 			if (!isset($this->_user) 
 			|| !$this->_user->getId()) {
-				$this->_addMessage('login_failed_title', 'account_not_found_error', 
+				$this->_addMessage('mod2_login_failed_title', 'mod2_account_not_found_error', 
 					t3lib_message_AbstractMessage::ERROR
 				);
 				return;
 			}
 			// force session exist
 			if (!isset($this->_session)) {
-				$this->_addMessage('login_failed_title', 'initializing_session_failed_error', 
+				$this->_addMessage('mod2_login_failed_title', 'mod2_initializing_session_failed_error', 
 					t3lib_message_AbstractMessage::ERROR
 				);
 				return;
@@ -179,22 +187,22 @@ class tx_typogento_modadmin  extends t3lib_SCbase {
 			// force account roles equal
 			if ($this->_user->getRole()->getId() != $data['tx_typogento_group']) {
 				$this->_addMessage(
-					'access_denied_title', 
-					'account_group_not_set_error', 
+					'mod2_access_denied_title', 
+					'mod2_account_group_not_set_error', 
 					t3lib_message_AbstractMessage::ERROR
 				);
 				return;
 			}
 			// force magento account is active
 			if ($this->_user->getIsActive() != '1') {
-				$this->_addMessage('access_denied_title', 'account_not_active_error', 
+				$this->_addMessage('mod2_access_denied_title', 'mod2_account_not_active_error', 
 					t3lib_message_AbstractMessage::ERROR);
 			}
 			// don't get it ...
 			if (!$this->_user->hasAssigned2Role($this->_user->getId())) {
 				$this->_addMessage(
-					'access_denied_title', 
-					'account_role_not_set_error', 
+					'mod2_access_denied_title', 
+					'mod2_account_role_not_set_error', 
 					t3lib_message_AbstractMessage::ERROR
 				);
 			}
@@ -231,7 +239,7 @@ class tx_typogento_modadmin  extends t3lib_SCbase {
 				$this->session->unsIsFirstPageAfterLogin();
 			}
 			// log error
-			$this->_addMessage('login_failed_title', $e->getMessage(), 
+			$this->_addMessage('mod2_login_failed_title', $e->getMessage(), 
 				t3lib_message_AbstractMessage::ERROR
 			);
 		}
@@ -259,7 +267,7 @@ class tx_typogento_modadmin  extends t3lib_SCbase {
 			exit;
 		} catch(Exception $e) {
 			// log error
-			$this->_addMessage('redirect_failed_title', $e->getMessage(), 
+			$this->_addMessage('mod2_redirect_failed_title', $e->getMessage(), 
 				t3lib_message_AbstractMessage::ERROR
 			);
 		}
@@ -291,19 +299,17 @@ class tx_typogento_modadmin  extends t3lib_SCbase {
 		if (!isset($message)) {
 			return;
 		}
-		// get current language and include resource
-		$language = $GLOBALS['LANG'];
-		$language->includeLLFile('EXT:typogento/mod_admin/locallang.xml');
+		
+		if (!isset($this->_language)) {
+			$this->_language = t3lib_div::makeInstance('tx_typogento_languageHelper');
+		}
+		
 		// get title label
-		$value = $language->getLL($title);
-		if (!empty($value)) {
-			$title = $value;
-		}
+		$title = $this->_language->getLabel($title);
+
 		// get message label
-		$value = $language->getLL($message);
-		if (!empty($value)) {
-			$message = $value;
-		}
+		$message = $this->_language->getLabel($message);
+
 		// create flash message
 		$message = t3lib_div::makeInstance('t3lib_FlashMessage', $message, $title, $severity);
 		// add flash message to the queue
@@ -314,7 +320,7 @@ class tx_typogento_modadmin  extends t3lib_SCbase {
 /**
  * Create the instance
  */
-$SOBE = t3lib_div::makeInstance('tx_typogento_modadmin');
+$SOBE = t3lib_div::makeInstance('tx_typogento_mod2');
 $SOBE->init();
 $SOBE->main();
 $SOBE->printContent();

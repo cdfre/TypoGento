@@ -11,7 +11,7 @@ t3lib_extMgm::allowTableOnStandardPages('tx_typogento_replication_links');
 
 $TCA['tx_typogento_replication_links'] = array (
 	'ctrl' => array (
-		'title' => 'LLL:EXT:typogento/locallang_db.php:tx_typogento_replication_links',
+		'title' => 'LLL:EXT:typogento/res/language/locallang_db.xml:tx_typogento_replication_links',
 		'label' => 'uid',
 		//'label_userFunc' => 'EXT:typogento/lib/class.tx_typogento_tcafields.php:tx_typogento_tcafields->itemsProcFunc_replicationLinkLabel',
 		'deleted' => 'deleted',
@@ -19,7 +19,8 @@ $TCA['tx_typogento_replication_links'] = array (
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
 		'default_sortby' => 'ORDER BY tstamp',
-		'iconfile' => t3lib_extMgm::extRelPath($_EXTKEY).'res/images/replication-icon.png'
+		'iconfile' => t3lib_extMgm::extRelPath($_EXTKEY).'res/images/replication-icon.png',
+		//'requestUpdate' => 'provider'
 	),
 	'interface' => array (
 		'maxDBListItems' => 60,
@@ -31,26 +32,27 @@ $TCA['tx_typogento_replication_links'] = array (
 	'columns' => array (
 		'provider' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:typogento/locallang_db.xml:tx_typogento_replication_links.provider',
+			'label' => 'LLL:EXT:typogento/res/language/locallang_db.xml:tx_typogento_replication_links.provider',
 			'config' => array (
 				'type' => 'select',
 				'items' => array (
-					array('LLL:EXT:typogento/locallang_db.xml:tx_typogento_replication_links.provider.1', '1'),
-					array('LLL:EXT:typogento/locallang_db.xml:tx_typogento_replication_links.provider.2', '2'),
+					array('LLL:EXT:typogento/res/language/locallang_db.xml:tx_typogento_replication_links.provider.1', '1'),
+					array('LLL:EXT:typogento/res/language/locallang_db.xml:tx_typogento_replication_links.provider.2', '2'),
 				),
 				'size' => 1,
 				'maxitems' => 1,
+				'minitems' => 1,
 				'default' => 0
 			)
 		),
 		'source' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:typogento/locallang_db.xml:tx_typogento_replication_links.source',
+			'label' => 'LLL:EXT:typogento/res/language/locallang_db.xml:tx_typogento_replication_links.source',
 			'config' => array (
 				'eval' => 'unique',
 				'type' => 'select',
 				'items' => array(
-					array('LLL:EXT:typogento/locallang_db.xml:tx_typogento_replication_links.source.0', '')
+					array('LLL:EXT:typogento/res/language/locallang_db.xml:tx_typogento_replication_links.source.0', '')
 				),
 				'itemsProcFunc' => 'EXT:typogento/lib/class.tx_typogento_tcafields.php:tx_typogento_tcafields->itemsProcFunc_replicationSources',
 				'size' => 1,
@@ -60,12 +62,12 @@ $TCA['tx_typogento_replication_links'] = array (
 		),
 		'target' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:typogento/locallang_db.xml:tx_typogento_replication_links.target',
+			'label' => 'LLL:EXT:typogento/res/language/locallang_db.xml:tx_typogento_replication_links.target',
 			'config' => array (
 				'eval' => 'unique',
 				'type' => 'select',
 				'items' => array(
-					array('LLL:EXT:typogento/locallang_db.xml:tx_typogento_replication_links.source.0', '')
+					array('LLL:EXT:typogento/res/language/locallang_db.xml:tx_typogento_replication_links.source.0', '')
 				),
 				'itemsProcFunc' => 'EXT:typogento/lib/class.tx_typogento_tcafields.php:tx_typogento_tcafields->itemsProcFunc_replicationTargets',
 				'size' => 1,
@@ -75,7 +77,7 @@ $TCA['tx_typogento_replication_links'] = array (
 		),
 		'disable' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:typogento/locallang_db.xml:tx_typogento_replication_links.disable',
+			'label' => 'LLL:EXT:typogento/res/language/locallang_db.xml:tx_typogento_replication_links.disable',
 			'config' => array (
 				'type' => 'check'
 			)
@@ -100,7 +102,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1'] = '
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1'] = 'layout,select_key, pages, recursive';
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_pi1'] = 'pi_flexform';
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:typogento/locallang_db.xml:tt_content.list_type_pi1', $_EXTKEY.'_pi1'), 'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:typogento/res/language/locallang_db.xml:tt_content.list_type_pi1', $_EXTKEY.'_pi1'), 'list_type');
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY .'_pi1', 'FILE:EXT:typogento/pi1/flexform.xml');
 t3lib_extMgm::addStaticFile($_EXTKEY,'pi1/static/','TypoGento');
 
@@ -111,7 +113,7 @@ t3lib_extMgm::addStaticFile($_EXTKEY,'pi1/static/','TypoGento');
 $columns = array (
 	'static_info_country' => array (
 		'exclude' => 1,
-		'label' => 'LLL:EXT:typogento/locallang_db.xml:fe_users.static_info_country',
+		'label' => 'LLL:EXT:typogento/res/language/locallang_db.xml:fe_users.static_info_country',
 		'config' => array (
 			'type' => 'input',
 			'size' => '5',
@@ -122,7 +124,7 @@ $columns = array (
 	),
 	'date_of_birth' => array (
 		'exclude' => 1,
-		'label' => 'LLL:EXT:typogento/locallang_db.xml:fe_users.date_of_birth',
+		'label' => 'LLL:EXT:typogento/res/language/locallang_db.xml:fe_users.date_of_birth',
 		'config' => array (
 			'type' => 'input',
 			'size' => '10',
@@ -134,24 +136,24 @@ $columns = array (
 	),
 	'gender' => array (
 		'exclude' => 1,
-		'label' => 'LLL:EXT:typogento/locallang_db.xml:fe_users.gender',
+		'label' => 'LLL:EXT:typogento/res/language/locallang_db.xml:fe_users.gender',
 		'config' => array (
 			'type' => 'select',
 			'items' => array (
-				array('LLL:EXT:typogento/locallang_db.xml:fe_users.gender.I.99', '99'),
-				array('LLL:EXT:typogento/locallang_db.xml:fe_users.gender.I.0', '0'),
-				array('LLL:EXT:typogento/locallang_db.xml:fe_users.gender.I.1', '1')
+				array('LLL:EXT:typogento/res/language/locallang_db.xml:fe_users.gender.I.99', '99'),
+				array('LLL:EXT:typogento/res/language/locallang_db.xml:fe_users.gender.I.0', '0'),
+				array('LLL:EXT:typogento/res/language/locallang_db.xml:fe_users.gender.I.1', '1')
 			),
 		)
 	),
 	'tx_typogento_customer' => array (
 		'exclude' => 1,
-		'label' => 'LLL:EXT:typogento/locallang_db.xml:fe_users.tx_typogento_customer',
+		'label' => 'LLL:EXT:typogento/res/language/locallang_db.xml:fe_users.tx_typogento_customer',
 		'config' => array (
 			'eval' => 'unique',
 			'type' => 'select',
 			'items' => array(
-				array('LLL:EXT:typogento/locallang_db.xml:be_users.tx_typogento_customer.0', '')
+				array('LLL:EXT:typogento/res/language/locallang_db.xml:be_users.tx_typogento_customer.0', '')
 			),
 			'readOnly' => 1,
 			'itemsProcFunc' => 'EXT:typogento/lib/class.tx_typogento_tcafields.php:tx_typogento_tcafields->itemsProcFunc_customers',
@@ -204,7 +206,7 @@ $TCA['fe_users']['columns']['email']['config']['eval'] = 'trim, lower, tx_typoge
 $columns = array (
 	'tx_typogento_store' => array(
 		'exclude' => 0,
-		'label' => 'LLL:EXT:typogento/locallang_db.xml:sys_language.tx_typogento_store',
+		'label' => 'LLL:EXT:typogento/res/language/locallang_db.xml:sys_language.tx_typogento_store',
 		'config' => array (
 			'type' => 'select',
 			'itemsProcFunc' => 'EXT:typogento/lib/class.tx_typogento_tcafields.php:tx_typogento_tcafields->itemsProcFunc_languages',
@@ -224,11 +226,11 @@ t3lib_extMgm::addToAllTCAtypes('sys_language', 'tx_typogento_store;;;;1-1-1');
 $columns = array (
 	'tx_typogento_group' => array(
 		'exclude' => 0,
-		'label' => 'LLL:EXT:typogento/locallang_db.xml:be_users.tx_typogento_group',
+		'label' => 'LLL:EXT:typogento/res/language/locallang_db.xml:be_users.tx_typogento_group',
 		'config' => array (
 			'type' => 'select',
 			'items' => array(
-				array('LLL:EXT:typogento/locallang_db.xml:be_users.tx_typogento_group.0', '')
+				array('LLL:EXT:typogento/res/language/locallang_db.xml:be_users.tx_typogento_group.0', '')
 			),
 			'itemsProcFunc' => 'EXT:typogento/lib/class.tx_typogento_tcafields.php:tx_typogento_tcafields->itemsProcFunc_usergroups',
 			'maxitems' => 1
@@ -254,12 +256,12 @@ if (TYPO3_MODE=='BE') {
 	/**
 	 * Adds module after 'Web'
 	 */
-	if (!isset($TBE_MODULES['txtypogentoMgroup'])) {
+	if (!isset($TBE_MODULES['magento'])) {
 		$temp_TBE_MODULES = array();
 		foreach ($TBE_MODULES as $key => $val) {
 			$temp_TBE_MODULES[$key] = $val;
 			if ($key == 'web') {
-				$temp_TBE_MODULES['txtypogentoMgroup'] = $val;
+				$temp_TBE_MODULES['magento'] = $val;
 			}
 		}
 		$TBE_MODULES = $temp_TBE_MODULES;
@@ -268,12 +270,12 @@ if (TYPO3_MODE=='BE') {
 	/**
 	 * Adds group module
 	 */
-	t3lib_extMgm::addModule('txtypogentoMgroup', '', '', t3lib_extmgm::extPath($_EXTKEY).'mod_group/');
+	t3lib_extMgm::addModule('magento', '', '', t3lib_extmgm::extPath($_EXTKEY).'mod1/');
 
 	/**
 	 * Adds admin module
 	 */
-	t3lib_extMgm::addModule('txtypogentoMgroup', 'txtypogentoMadmin', '', t3lib_extmgm::extPath($_EXTKEY).'mod_admin/');
+	t3lib_extMgm::addModule('magento', 'admin', '', t3lib_extmgm::extPath($_EXTKEY).'mod2/');
 
 	/**
 	 * Registers status provider

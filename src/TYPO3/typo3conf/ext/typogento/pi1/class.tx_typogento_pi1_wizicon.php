@@ -14,39 +14,20 @@ class tx_typogento_pi1_wizicon {
 	/**
 	 * Processing the wizard items array
 	 *
-	 * @param array $wizardItems: The wizard items
+	 * @param array $items The wizard items
 	 * @return Modified array with wizard items
 	 */
-	function proc($wizardItems) {
-		global $LANG;
+	function proc($items) {
+		$helper = t3lib_div::makeInstance('tx_typogento_languageHelper');
 
-		$LL = $this->includeLocalLang();
-
-		$wizardItems['plugins_tx_typogento_pi1'] = array(
+		$items['plugins_tx_typogento_pi1'] = array(
 			'icon' => t3lib_extMgm::extRelPath('typogento').'res/images/wizard-icon.png',
-			'title' => $LANG->getLLL('pi1_title', $LL),
-			'description' => $LANG->getLLL('pi1_plus_wiz_description', $LL),
+			'title' => $helper->getLabel('pi1_title'),
+			'description' => $helper->getLabel('pi1_description'),
 			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=typogento_pi1'
 		);
 
-		return $wizardItems;
-	}
-
-	/**
-	 * Reads the [extDir]/locallang.xml and returns the $LOCAL_LANG array found in that file.
-	 *
-	 * @return The array with language labels
-	 */
-	function includeLocalLang() {
-		$language = $GLOBALS['LANG']->lang;
-		$resource = t3lib_extMgm::extPath('typogento').'locallang.xml';
-		
-		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4006000) {
-			$parser = t3lib_div::makeInstance('t3lib_l10n_parser_Llxml');
-			return $parser->getParsedData($resource, $language);
-		} else {
-			return t3lib_div::readLLXMLfile($resource, $language);
-		}
+		return $items;
 	}
 }
 
