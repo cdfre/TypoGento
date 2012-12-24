@@ -1,9 +1,15 @@
 <?xml version="1.0"?>
 <config>
-	<sections>
-		<typogento translate="label" module="typogento">
+	<tabs>
+		<typogento translate="label" module="typogento_core">
 			<label>TypoGento</label>
-			<tab>service</tab>
+			<sort_order>99999</sort_order>
+		</typogento>
+	</tabs> 
+	<sections>
+		<typogento translate="label" module="typogento_core">
+			<label>TypoGento</label>
+			<tab>typogento</tab>
 			<frontend_type>text</frontend_type>
 			<sort_order>200</sort_order>
 			<show_in_default>1</show_in_default>
@@ -48,8 +54,19 @@
 						</redirect_url>
 					</fields>
 				</config>
-				<typo3_db translate="label">
-					<label>TYPO3 Database</label>
+			</groups>
+		</typogento>
+		<typo3 translate="label" module="typogento_core">
+			<label>TYPO3</label>
+			<tab>typogento</tab>
+			<frontend_type>text</frontend_type>
+			<sort_order>200</sort_order>
+			<show_in_default>1</show_in_default>
+			<show_in_website>1</show_in_website>
+			<show_in_store>1</show_in_store>
+			<groups>
+				<database translate="label">
+					<label>Database</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>10</sort_order>
 					<show_in_default>1</show_in_default>
@@ -64,14 +81,14 @@
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
 						</host>
-						<dbname translate="label">
+						<name translate="label">
 							<label>Name</label>
 							<frontend_type>text</frontend_type>
 							<sort_order>20</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
-						</dbname>
+						</name>
 						<charset translate="label">
 							<label>Charset</label>
 							<frontend_type>text</frontend_type>
@@ -80,14 +97,14 @@
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
 						</charset>
-						<username translate="label">
+						<user translate="label">
 							<label>User</label>
 							<frontend_type>text</frontend_type>
 							<sort_order>40</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
-						</username>
+						</user>
 						<password translate="label">
 							<label>Password</label>
 							<frontend_type>text</frontend_type>
@@ -97,9 +114,9 @@
 							<show_in_store>0</show_in_store>
 						</password>
 					</fields>
-				</typo3_db>
-				<typo3_fe translate="label">
-					<label>TYPO3 Frontend</label>
+				</database>
+				<frontend translate="label">
+					<label>Frontend</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>30</sort_order>
 					<show_in_default>1</show_in_default>
@@ -125,9 +142,9 @@
 							<show_in_store>1</show_in_store>
 						</group_uid>
 					</fields>
-				</typo3_fe>
-				<typo3_be translate="label">
-					<label>TYPO3 Backend</label>
+				</frontend>
+				<backend translate="label">
+					<label>Backend</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>30</sort_order>
 					<show_in_default>1</show_in_default>
@@ -144,8 +161,8 @@
 							<show_in_store>0</show_in_store>
 						</base_url>
 					</fields>
-				</typo3_be>
+				</backend>
 			</groups>
-		</typogento>
+		</typo3>
 	</sections>
 </config>

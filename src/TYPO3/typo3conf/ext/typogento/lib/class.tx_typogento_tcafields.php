@@ -11,6 +11,17 @@ class tx_typogento_tcafields {
 		$params['title'] = $GLOBALS['LANG']->sL("LLL:EXT:typogento/locallang_db.xml:tx_typogento_replication_links.provider.{$params['row']['provider']}");
 	}
 
+	public function itemsProcFunc_replicationProviders(&$params, &$pObj) {
+		$this->_getSoapItems(
+				function ($soap) use (&$params) {
+					return $soap->typogento_replication()->providers();
+				},
+				function (&$value, $key) use (&$params) {
+					$params['items'][] = array($value['display'], $value['id']);
+				}
+		);
+	}
+	
 	public function itemsProcFunc_replicationSources(&$params, &$pObj) {
 		$this->_getSoapItems(
 			function ($soap) use (&$params) {

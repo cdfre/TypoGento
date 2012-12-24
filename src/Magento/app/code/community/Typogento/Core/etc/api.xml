@@ -2,106 +2,89 @@
 <config>
 	<api>
 		<resources>
-			<typogento_catalog_product translate="title" module="typogento">
+			<typogento_catalog_product translate="title" module="typogento_core">
 				<model>Typogento_Core_Model_Catalog_Product_Api</model>
 				<title>TypoGento API</title>
 				<acl>catalog/product/url_key/list</acl>
 				<methods>
-					<urlkeys translate="title" module="typogento">
+					<urlkeys translate="title" module="typogento_core">
 						<title>List of product URL keys</title>
 						<method>urlkeys</method>
 					</urlkeys>
 				</methods>
 			</typogento_catalog_product>
-			<typogento_stores translate="title" module="typogento">
+			<typogento_stores translate="title" module="typogento_core">
 				<model>Typogento_Core_Model_Store_Api</model>
 				<title>TypoGento API</title>
 				<acl>core/store/list</acl>
 				<methods>
-					<list translate="title" module="typogento">
+					<list translate="title" module="typogento_core">
 						<title>List of stores</title>
 						<method>items</method>
 					</list>
 				</methods>
 			</typogento_stores>
-			<typogento_catalog_category translate="title" module="typogento">
+			<typogento_catalog_category translate="title" module="typogento_core">
 				<model>Typogento_Core_Model_Catalog_Category_Api</model>
 				<title>TypoGento API</title>
 				<acl>catalog/category/url_key/list</acl>
 				<methods>
-					<urlkeys translate="title" module="typogento">
+					<urlkeys translate="title" module="typogento_core">
 						<title>List of category URL keys</title>
 						<method>urlkeys</method>
 					</urlkeys>
 				</methods>
 			</typogento_catalog_category>
-			<typogento_admin_roles translate="title" module="typogento">
+			<typogento_admin_roles translate="title" module="typogento_core">
 				<model>Typogento_Core_Model_Admin_Roles_Api</model>
 				<title>TypoGento API</title>
 				<acl>core/role</acl>
 				<methods>
-					<list translate="title" module="typogento">
+					<list translate="title" module="typogento_core">
 						<title>List of roles</title>
 						<method>items</method>
 						<acl>core/role/list</acl>
 					</list>
 				</methods>
 			</typogento_admin_roles>
-			<typogento_modules translate="title" module="typogento">
+			<typogento_modules translate="title" module="typogento_core">
 				<model>Typogento_Core_Model_Modules_Api</model>
 				<title>TypoGento API</title>
 				<acl>core/magento/module</acl>
 				<methods>
-					<list translate="title" module="typogento">
+					<list translate="title" module="typogento_core">
 						<title>List of modules</title>
 						<method>items</method>
 						<acl>core/magento/module/list</acl>
 					</list>
-					<controllers translate="title" module="typogento">
+					<controllers translate="title" module="typogento_core">
 						<title>List of modul controllers</title>
 						<method>controllers</method>
 						<acl>core/magento/module/controller/list</acl>
 					</controllers>
-					<actions translate="title" module="typogento">
+					<actions translate="title" module="typogento_core">
 						<title>List of module controller actions</title>
 						<method>actions</method>
 						<acl>core/magento/module/controller/action/list</acl>
 					</actions>
 				</methods>
 			</typogento_modules>
-			<typogento_replication translate="title" module="typogento">
-				<model>Typogento_Core_Model_Replication_Api</model>
-				<title>TypoGento API</title>
-				<acl>typogento/replication</acl>
-				<methods>
-					<sources translate="title" module="typogento">
-						<title>List of replication sources</title>
-						<method>sources</method>
-						<acl>typogento/replication/source/list</acl>
-					</sources>
-					<targets translate="title" module="typogento">
-						<title>List of replication targets</title>
-						<method>targets</method>
-						<acl>typogento/replication/target/list</acl>
-					</targets>
-				</methods>
-			</typogento_replication>
 		</resources>
 		<acl>
 			<resources>
 				<catalog translate="title" module="catalog">
 					<category translate="title" module="catalog">
-						<url_key translate="title" module="typogento">
+						<url_key translate="title" module="typogento_core">
 							<title>URL Key</title>
-							<list translate="title" module="typogento">
+							<list translate="title" module="typogento_core">
 								<title>List</title>
 							</list>
 						</url_key>
 					</category>
 					<product translate="title" module="catalog">
-						<url_key translate="title" module="typogento">
+						<url_key translate="title" module="typogento_core">
 							<title>URL Key</title>
-							<list translate="title" module="typogento">
+							<list translate="title" module="typogento_core">
 								<title>List</title>
 							</list>
 						</url_key>
@@ -109,23 +92,23 @@
 				</catalog>
 				<core translate="title" module="core">
 					<magento translate="title" module="core">
-						<module translate="title" module="typogento">
+						<module translate="title" module="typogento_core">
 							<title>Module</title>
-							<list translate="title" module="typogento">
+							<list translate="title" module="typogento_core">
 								<title>List</title>
 								<sort_order>1</sort_order>
 							</list>
-							<controller translate="title" module="typogento">
+							<controller translate="title" module="typogento_core">
 								<title>Controller</title>
 								<sort_order>2</sort_order>
-								<list translate="title" module="typogento">
+								<list translate="title" module="typogento_core">
 									<title>List</title>
 									<sort_order>1</sort_order>
 								</list>
-								<action translate="title" module="typogento">
+								<action translate="title" module="typogento_core">
 									<title>Actions</title>
 									<sort_order>2</sort_order>
-									<list translate="title" module="typogento">
+									<list translate="title" module="typogento_core">
 										<title>List</title>
 										<sort_order>1</sort_order>
 									</list>
@@ -133,33 +116,14 @@
 							</controller>
 						</module>
 					</magento>
-					<role translate="title" module="typogento">
+					<role translate="title" module="typogento_core">
 						<title>Role</title>
-						<list translate="title" module="typogento">
+						<list translate="title" module="typogento_core">
 							<title>List</title>
 							<sort_order>1</sort_order>
 						</list>
 					</role>
 				</core>
-				<typogento translate="title" module="typogento">
-					<title>TypoGento</title>
-					<sort_order>10</sort_order>
-					<replication translate="title" module="typogento">
-						<title>Replication</title>
-						<source translate="title" module="typogento">
-							<title>Source</title>
-							<list translate="title" module="typogento">
-								<title>List</title>
-							</list>
-						</source>
-						<target translate="title" module="typogento">
-							<title>Target</title>
-							<list translate="title" module="typogento">
-								<title>List</title>
-							</list>
-						</target>
-					</replication>
-				</typogento>
 			</resources>
 		</acl>
 	</api>

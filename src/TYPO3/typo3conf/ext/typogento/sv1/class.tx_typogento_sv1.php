@@ -172,7 +172,7 @@ class tx_typogento_sv1 extends tx_sv_auth {
 	
 	protected function _getFrontendUser() {
 		// get frontend user model
-		$user = Mage::getModel('typogento/typo3_frontend_user');
+		$user = Mage::getModel('typogento_replication/typo3_frontend_user');
 		return $user;
 	}
 

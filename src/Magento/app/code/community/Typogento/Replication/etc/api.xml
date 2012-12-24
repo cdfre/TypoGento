@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<config>
+	<api>
+		<resources>
+			<typogento_replication translate="title" module="typogento_replication">
+				<model>Typogento_Replication_Model_Api</model>
+				<title>TypoGento API</title>
+				<acl>typogento/replication</acl>
+				<methods>
+					<providers translate="title" module="typogento_replication">
+						<title>List of replication sources</title>
+						<method>providers</method>
+						<acl>typogento/replication/source/list</acl>
+					</providers>
+					<sources translate="title" module="typogento_replication">
+						<title>List of replication sources</title>
+						<method>sources</method>
+						<acl>typogento/replication/source/list</acl>
+					</sources>
+					<targets translate="title" module="typogento_replication">
+						<title>List of replication targets</title>
+						<method>targets</method>
+						<acl>typogento/replication/target/list</acl>
+					</targets>
+				</methods>
+			</typogento_replication>
+		</resources>
+		<acl>
+			<resources>
+				<typogento translate="title" module="typogento_core">
+					<title>TypoGento</title>
+					<sort_order>10</sort_order>
+					<replication translate="title" module="typogento_replication">
+						<title>Replication</title>
+						<source translate="title" module="typogento_replication">
+							<title>Source</title>
+							<list translate="title" module="typogento_replication">
+								<title>List</title>
+							</list>
+						</source>
+						<target translate="title" module="typogento_replication">
+							<title>Target</title>
+							<list translate="title" module="typogento_replication">
+								<title>List</title>
+							</list>
+						</target>
+					</replication>
+				</typogento>
+			</resources>
+		</acl>
+	</api>
+</config>

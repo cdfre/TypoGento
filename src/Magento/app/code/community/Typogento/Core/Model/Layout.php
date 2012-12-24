@@ -23,7 +23,7 @@ class Typogento_Core_Model_Layout extends Mage_Core_Model_Layout {
 	 */
 	public function getOutput() {
 		// get typo3 helper
-		$typo3 = Mage::helper('typogento/typo3');
+		$typo3 = Mage::helper('typogento_core/typo3');
 		// use default behaviour if typo3 is not enabled
 		if (!$typo3->isFrontendActive()) {
 			return parent::getOutput();

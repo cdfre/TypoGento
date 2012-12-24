@@ -7,83 +7,47 @@
 	</modules>
 	<global>
 		<helpers>
-			<typogento>
+			<typogento_core>
 				<class>Typogento_Core_Helper</class>
-			</typogento>
+			</typogento_core>
 		</helpers>
 		<events>
 			<admin_system_config_changed_section_typogento>
 				<observers>
-					<typogento>
+					<typogento_core>
 						<type>singleton</type>
 						<class>Typogento_Core_Model_Observer</class>
 						<method>adminSystemConfigChanged</method>
-					</typogento>
+					</typogento_core>
 				</observers>
 			</admin_system_config_changed_section_typogento>
-			<typogento_replication_manager_initialize>
-				<observers>
-					<typogento>
-						<type>singleton</type>
-						<class>Typogento_Core_Model_Observer</class>
-						<method>replicationManagerInitialize</method>
-					</typogento>
-				</observers>
-			</typogento_replication_manager_initialize>
-			<customer_save_after>
-				<observers>
-					<typogento>
-						<type>singleton</type>
-						<class>Typogento_Core_Model_Observer</class>
-						<method>customerSaveAfter</method>
-					</typogento>
-				</observers>
-			</customer_save_after>
-			<customer_address_save_after>
-				<observers>
-					<typogento>
-						<type>singleton</type>
-						<class>Typogento_Core_Model_Observer</class>
-						<method>customerAddressSaveAfter</method>
-					</typogento>
-				</observers>
-			</customer_address_save_after>
 			<customer_login>
 				<observers>
-					<typogento>
+					<typogento_core>
 						<type>singleton</type>
 						<class>Typogento_Core_Model_Observer</class>
 						<method>customerLogin</method>
-					</typogento>
+					</typogento_core>
 				</observers>
 			</customer_login>
 			<customer_logout>
 				<observers>
-					<typogento>
+					<typogento_core>
 						<type>singleton</type>
 						<class>Typogento_Core_Model_Observer</class>
 						<method>customerLogout</method>
-					</typogento>
+					</typogento_core>
 				</observers>
 			</customer_logout>
 			<controller_action_predispatch>
 				<observers>
-					<typogento>
+					<typogento_core>
 						<type>singleton</type>
 						<class>Typogento_Core_Model_Observer</class>
 						<method>controllerActionPredispatch</method>
-					</typogento>
+					</typogento_core>
 				</observers>
 			</controller_action_predispatch>
-			<customer_group_save_before>
-				<observers>
-					<typogento>
-						<type>singleton</type>
-						<class>Typogento_Core_Model_Observer</class>
-						<method>customerGroupSaveBefore</method>
-					</typogento>
-				</observers>
-			</customer_group_save_before>
 		</events>
 		<models>
 			<core>
@@ -93,32 +57,16 @@
 					<layout>Typogento_Core_Model_Layout</layout>
 				</rewrite>
 			</core>
-			<customer>
-				<rewrite>
-					<customer>Typogento_Core_Model_Customer</customer>
-				</rewrite>
-			</customer>
-			<typogento>
+			<typogento_core>
 				<class>Typogento_Core_Model</class>
-				<resourceModel>typogento_mysql4</resourceModel>
-			</typogento>
-			<typogento_mysql4>
-				<class>Typogento_Core_Model_Mysql4</class>
-				<entities>
-					<typo3_frontend_user>
-						<table>fe_users</table>
-					</typo3_frontend_user>
-					<typo3_frontend_group>
-						<table>fe_groups</table>
-					</typo3_frontend_group>
-					<typo3_replication_link>
-						<table>tx_typogento_replication_links</table>
-					</typo3_replication_link>
-				</entities>
-			</typogento_mysql4>
+				<resourceModel>typogento_core_resource</resourceModel>
+			</typogento_core>
+			<typogento_core_resource>
+				<class>Typogento_Core_Model_Resource</class>
+			</typogento_core_resource>
 		</models>
 		<resources>
-			<typogento_setup>
+			<typogento_core_setup>
 				<setup>
 					<module>Typogento_Core</module>
 					<class>Mage_Eav_Model_Entity_Setup</class>
@@ -126,19 +74,19 @@
 				<connection>
 					<use>default_setup</use>
 				</connection>
-			</typogento_setup>
-			<typogento_read>
+			</typogento_core_setup>
+			<typogento_core_read>
 				<connection>
 					<active>1</active>
 					<model>mysql4</model>
 					<type>pdo_mysql</type>
 				</connection>
-			</typogento_read>
-			<typogento_write>
+			</typogento_core_read>
+			<typogento_core_write>
 				<connection>
-					<use>typogento_read</use>
+					<use>typogento_core_read</use>
 				</connection>
-			</typogento_write>
+			</typogento_core_write>
 		</resources>
 		<blocks>
 			<adminhtml>
@@ -151,11 +99,11 @@
 	<adminhtml>
 		<translate>
 		<modules>
-			<typogento>
+			<typogento_core>
 				<files>
 					<default>Typogento_Core.csv</default>
 				</files>
-			</typogento>
+			</typogento_core>
 		</modules>
 	</translate>
 	</adminhtml>

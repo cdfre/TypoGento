@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<Typogento_Replication>
+			<active>true</active>
+			<codePool>community</codePool>
+		</Typogento_Replication>
+	</modules>
+</config>

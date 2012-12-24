@@ -9,7 +9,7 @@
 class Typogento_Core_Model_Store extends Mage_Core_Model_Store {
 	
 	public function getBaseUrl($type = self::URL_TYPE_LINK, $secure = null) {
-		$typo3 = Mage::helper('typogento/typo3');
+		$typo3 = Mage::helper('typogento_core/typo3');
 		$reflection = new ReflectionClass($this);
 	
 		$cacheKey = $type.'/'.(is_null($secure)?'null':($secure?'true':'false'));

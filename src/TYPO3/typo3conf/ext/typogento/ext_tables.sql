@@ -37,7 +37,7 @@ CREATE TABLE tx_typogento_replication_links (
 	disable tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	source int(11) unsigned DEFAULT '0' NOT NULL,
 	target int(11) unsigned DEFAULT '0' NOT NULL,
-	provider tinyint(3) DEFAULT '0' NOT NULL,
+	provider char(32) DEFAULT 'd41d8cd98f00b204e9800998ecf8427e' NOT NULL,
 	PRIMARY KEY (uid),
 	UNIQUE KEY replication_link_id (source,target,provider)
 	UNIQUE KEY target_id (target,provider),

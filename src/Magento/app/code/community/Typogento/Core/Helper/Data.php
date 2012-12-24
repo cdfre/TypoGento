@@ -20,7 +20,7 @@ class Typogento_Core_Helper_Data extends Mage_Core_Helper_Abstract {
 	}
 	
 	public function isDirectAccessAllowed() {
-		$helper = Mage::helper('typogento/typo3');
+		$helper = Mage::helper('typogento_core/typo3');
 		$store = Mage::app()->getStore();
 		$request = Mage::app()->getRequest();
 		

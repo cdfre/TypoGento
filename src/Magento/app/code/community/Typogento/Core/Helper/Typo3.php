@@ -7,16 +7,16 @@
  */
 class Typogento_Core_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	
-	const XML_PATH_DATABASE_HOST                    = 'typogento/typo3_db/host';
-	const XML_PATH_DATABASE_USER                    = 'typogento/typo3_db/username';
-	const XML_PATH_DATABASE_PASSWORD                = 'typogento/typo3_db/password';
-	const XML_PATH_DATABASE_NAME                    = 'typogento/typo3_db/dbname';
-	const XML_PATH_DATABASE_CHARSET                 = 'typogento/typo3_db/charset';
+	const XML_PATH_DATABASE_HOST                    = 'typo3/database/host';
+	const XML_PATH_DATABASE_USER                    = 'typo3/database/user';
+	const XML_PATH_DATABASE_PASSWORD                = 'typo3/database/password';
+	const XML_PATH_DATABASE_NAME                    = 'typo3/database/name';
+	const XML_PATH_DATABASE_CHARSET                 = 'typo3/database/charset';
 	
-	const XML_PATH_BACKEND_BASE_URL                 = 'typogento/typo3_be/base_url';
+	const XML_PATH_BACKEND_BASE_URL                 = 'typo3/backend/base_url';
 	
-	const XML_PATH_FRONTEND_USERS_PAGE_ID           = 'typogento/typo3_fe/users_pid';
-	const XML_PATH_FRONTEND_USERS_GROUP_ID          = 'typogento/typo3_fe/group_uid';
+	const XML_PATH_FRONTEND_USERS_PAGE_ID           = 'typo3/frontend/users_pid';
+	const XML_PATH_FRONTEND_USERS_GROUP_ID          = 'typo3/frontend/group_uid';
 	
 	const REGISTRY_KEY_DATABASE_CONNECTION_IS_VALID = 'typo3_database_connection_is_valid';
 	
@@ -65,7 +65,7 @@ class Typogento_Core_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 			// 
 			try {
 				// test database connection
-				$database = Mage::getResourceModel('typogento/typo3_replication_link')
+				$database = Mage::getResourceModel('typogento_replication/link')
 					->getReadConnection()
 					->fetchOne('SELECT database();');
 				// set result

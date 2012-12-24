@@ -72,13 +72,13 @@ class tx_typogento_sv2 extends tx_sv_auth {
 	 */
 	public function getUser() {
 		// get frontend user model
-		$user = Mage::getModel('typogento/typo3_frontend_user');
+		$user = Mage::getModel('typogento_replication/typo3_frontend_user');
 		// load frontend user
 		$user->load($this->login['uname'], 'email');
 		// validate user
 		if (!$user->getId()) {
 			// discover possible customer
-			$manager = Mage::getSingleton('typogento/replication_manager');
+			$manager = Mage::getSingleton('typogento_replication/manager');
 			$customer = $manager->discover($user);
 			// validate customer
 			if (isset($customer) && $customer->getId()) {
@@ -125,8 +125,8 @@ class tx_typogento_sv2 extends tx_sv_auth {
 				throw tx_typogento_div::exception('lib_unknown_error');
 			}
 			// replicate frontend user
-			$manager = Mage::getSingleton('typogento/replication_manager');
-			$user = Mage::getModel('typogento/typo3_frontend_user');
+			$manager = Mage::getSingleton('typogento_replication/manager');
+			$user = Mage::getModel('typogento_replication/typo3_frontend_user');
 			$user->setData($pObj->user);
 			$manager->replicate($user);
 		} catch (Exception $e) {

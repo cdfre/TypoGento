@@ -19,7 +19,7 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	 */
 	public function getUrl($path = null, $parameters = null) {
 		// get typo3 helper
-		$typo3 = Mage::helper('typogento/typo3');
+		$typo3 = Mage::helper('typogento_core/typo3');
 		// it's neccessary in both cases to process the passed arguments
 		$url = parent::getUrl($path, $parameters);
 		// check if typo3 is disabled or default behaviour is requested
@@ -46,7 +46,7 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	 */
 	public function getRebuiltUrl($url) {
 		// get typo3 helper
-		$typo3 = Mage::helper('typogento/typo3');
+		$typo3 = Mage::helper('typogento_core/typo3');
 		// check if typo3 is disabled or default behaviour is requested
 		if (!$typo3->isFrontendActive() 
 			|| $this->_getData('force_default_behaviour')) {
@@ -69,7 +69,7 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	 */
 	public function getRouteUrl($path = null, $parameters = null) {
 		// get typo3 helper
-		$typo3 = Mage::helper('typogento/typo3');
+		$typo3 = Mage::helper('typogento_core/typo3');
 		// check if typo3 is disabled or default behaviour is requested
 		if (!$typo3->isFrontendActive() 
 			|| $this->_getData('force_default_behaviour')) {
@@ -117,7 +117,7 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 			$domains[] = parse_url($store->getBaseUrl(), PHP_URL_HOST);
 			$domains[] = parse_url($store->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true), PHP_URL_HOST);
 			// using additional domain related settings from typogento
-			$valiate = Mage::helper('typogento/typo3')->getBackendBaseUrl();
+			$valiate = Mage::helper('typogento_core/typo3')->getBackendBaseUrl();
 			// and put them into the valid domains
 			if (isset($valiate)) {
 				$domains[] = parse_url($valiate, PHP_URL_HOST);
@@ -178,7 +178,7 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 		// get typolink data
 		$data = $this->_getTypolinkData();
 		// get typo3 helper
-		$typo3 = Mage::helper('typogento/typo3');
+		$typo3 = Mage::helper('typogento_core/typo3');
 		// get typo3 router
 		$router = $typo3->getRouter();
 		// prepare filter environment

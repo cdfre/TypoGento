@@ -71,7 +71,7 @@ class tx_typogento_statusReport implements tx_reports_StatusProvider {
 				throw new Exception($GLOBALS['LANG']->getLL('status_connector_not_installed_or_enabled'));
 			}
 			// get helpers
-			$helper = Mage::helper('typogento/typo3');
+			$helper = Mage::helper('typogento_core/typo3');
 			$select = t3lib_div::makeInstance('t3lib_pageSelect');
 			// validate database connection
 			if ($helper->validateDatabaseConnection() === false) {
@@ -117,7 +117,7 @@ class tx_typogento_statusReport implements tx_reports_StatusProvider {
 				throw new Exception($GLOBALS['LANG']->getLL('status_connector_not_available'));
 			}
 			// get frontend user model
-			$user = Mage::getModel('typogento/typo3_frontend_user');
+			$user = Mage::getModel('typogento_replication/typo3_frontend_user');
 			// validate frontend users data
 			if ($user->findEmailDuplicates()) {
 				$message .= $this->_renderFlashMessage(

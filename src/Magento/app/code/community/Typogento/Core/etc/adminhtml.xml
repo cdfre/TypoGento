@@ -9,8 +9,11 @@
 							<config>
 								<children>
 									<typogento>
-										<title>TypoGento Settings</title>
+										<title>TypoGento Section</title>
 									</typogento>
+									<typo3>
+										<title>TYPO3 Section</title>
+									</typo3>
 								</children>
 							</config>
 						</children>

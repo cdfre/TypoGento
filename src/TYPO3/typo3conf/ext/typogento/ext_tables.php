@@ -20,7 +20,7 @@ $TCA['tx_typogento_replication_links'] = array (
 		'cruser_id' => 'cruser_id',
 		'default_sortby' => 'ORDER BY tstamp',
 		'iconfile' => t3lib_extMgm::extRelPath($_EXTKEY).'res/images/replication-icon.png',
-		//'requestUpdate' => 'provider'
+		'requestUpdate' => 'provider'
 	),
 	'interface' => array (
 		'maxDBListItems' => 60,
@@ -36,9 +36,9 @@ $TCA['tx_typogento_replication_links'] = array (
 			'config' => array (
 				'type' => 'select',
 				'items' => array (
-					array('LLL:EXT:typogento/res/language/locallang_db.xml:tx_typogento_replication_links.provider.1', '1'),
-					array('LLL:EXT:typogento/res/language/locallang_db.xml:tx_typogento_replication_links.provider.2', '2'),
+					array('LLL:EXT:typogento/res/language/locallang_db.xml:tx_typogento_replication_links.provider.0', '')
 				),
+				'itemsProcFunc' => 'EXT:typogento/lib/class.tx_typogento_tcafields.php:tx_typogento_tcafields->itemsProcFunc_replicationProviders',
 				'size' => 1,
 				'maxitems' => 1,
 				'minitems' => 1,
