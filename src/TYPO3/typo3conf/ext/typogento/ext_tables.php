@@ -268,15 +268,33 @@ if (TYPO3_MODE=='BE') {
 	}
 
 	/**
-	 * Adds group module
+	 * Register module area
 	 */
-	t3lib_extMgm::addModule('magento', '', '', t3lib_extmgm::extPath($_EXTKEY).'mod1/');
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+		'magento', 
+		'', 
+		'', 
+		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'Configuration/Module/'
+	);
 
 	/**
-	 * Adds admin module
+	 * Register administration module
 	 */
-	t3lib_extMgm::addModule('magento', 'admin', '', t3lib_extmgm::extPath($_EXTKEY).'mod2/');
-
+	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+		'Tx.'.$_EXTKEY,
+		'magento',
+		'administration',
+		'',
+		array(
+			'Administration' => 'index',
+		),
+		array(
+			'access' => 'user,group',
+			'icon'   => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/module.png',
+			'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_administration.xml',
+		)
+	);
+	
 	/**
 	 * Registers status provider
 	 */
