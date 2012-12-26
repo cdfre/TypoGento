@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Common language labels for TypoGento</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="report.status.system.title">Magento System</label>
+			<label index="report.status.system.has_issues">During the initialization of the Magento system the following issues have been found:</label>
+			<label index="report.status.system.not_available">The Magento system is not available.</label>
+			<label index="report.status.api.title">Magento API</label>
+			<label index="report.status.api.has_issues">During the configuration check of the Magento API the following issues have been found:</label>
+			<label index="report.status.not_available">Not Available</label>
+			<label index="report.status.available">Available</label>
+			<label index="report.status.unknown">Unknown</label>
+			<label index="report.status.connector.not_available">The Magento connector module is not available.</label>
+			<label index="report.status.connector.not_installed_or_enabled">The Magento connector module is not installed or enabled.</label>
+			<label index="report.status.connector.title">Magento Connector</label>
+			<label index="report.status.connector.has_issues">During the configuration check of the Magento connector module the following issues have been found:</label>
+			<label index="report.status.connector.invalid_frontend_users_folder">The system folder for the TYPO3 frontend users is not valid.</label>
+			<label index="report.status.connector.invalid_frontend_users_group">The default group for the TYPO3 frontend users is not valid.</label>
+			<label index="report.status.connector.invalid_database_connection">The database connection settings are not valid.</label>			
+			<label index="report.status.replication.has_issues">During the data check of the replicated sources the following issues have been found:</label>
+			<label index="report.status.replication.title">Magento Replication</label>
+			<label index="report.status.replication.duplicate_frontend_users_emails">TYPO3 frontend users with duplicate email addresses exist.</label>
+			<label index="report.status.replication.duplicate_frontend_users_customer_link">TYPO3 frontend users with duplicate customer links exist.</label>
+			
+			<label index="pi1_title">TypoGento</label>
+			<label index="pi1_description">Display Magento content</label>
+			<label index="mod1_login_failed_title">Loogin failed</label>
+			<label index="mod1_access_denied_title">Access denied</label>
+			<label index="mod1_access_failed_title">Access failed</label>
+			<label index="mod1_initalizing_failed_title">Initializing failed</label>
+			<label index="mod1_redirect_failed_title">Redirect failed</label>
+			<label index="mod1_account_not_found_error">Initializing Magento account failed</label>
+			<label index="mod1_initializing_session_failed_error">Initializing Magento session failed</label>
+			<label index="mod1_account_membership_not_set_error">Magento group membership is invalid</label>
+			<label index="mod1_account_group_not_set_error">Magento account is not active</label>
+			<label index="mod1_account_role_not_set_error">Magento account is not assigned to role</label>
+			<label index="mod1_be_user_not_set_error">TYPO3 account data was not found</label>
+			<label index="lib_unknown_error">Unknown error</label>
+			<label index="lib_file_access_error">Problem accessing file '%s'</label>
+			<label index="lib_file_not_found_error">File '%s' doesn't exist</label>
+			<label index="lib_request_dispatching_failed_error">The requested URL '%s' could not be dispatched: %s</label>
+			<label index="lib_request_routing_failed_error">Unknown error</label>
+			<label index="lib_view_type_not_set_error">The Flexform configuration is not valid</label>
+			<label index="lib_view_type_not_valid_error"></label>
+			<label index="lib_missing_route_filter_error">The route filter is missing in '%s'</label>
+			<label index="lib_missing_route_target_error">The route target is missing in '%s'</label>
+			<label index="lib_unsupported_link_type_error">The link type '%s' is not supported</label>
+			<label index="lib_route_section_not_valid_error">The route section '%s' is not valid</label>
+			<label index="lib_active_route_not_found_error">The route section '%s' has no active entry</label>
+			<label index="lib_document_root_not_valid_error">The document root '%s' is not valid</label>
+			<label index="lib_configuration_key_not_set_error">The configuration key is empty</label>
+			<label index="lib_configuration_section_not_found_error">The configuration section '%s' is not valid</label>
+			<label index="lib_configuration_key_not_found_error">The configuration key '%s' is not valid</label>
+			<label index="lib_typoscript_not_initialized_error">The TypoScript setup is not initialized</label>
+			<label index="lib_typoscript_setup_not_set_error">The TypoScript setup is not set</label>
+			<label index="lib_extension_configuration_not_set_error">The extension configuration is not set</label>
+			<label index="lib_extension_configuration_not_valid_error">The extension configuration is damaged</label>
+			<label index="lib_target_url_not_resolved_error">The routing system is unable to resolve the action URL: '%s'</label>
+			<label index="lib_request_processing_failed_error">An error has occurred during processing the action URL '%s': %s</label>
+			<label index="lib_application_initializing_failed_error">The following error has occurred during initializing the application: %s</label>
+			<label index="lib_base_url_not_valid_error">The base URL '%s' is not valid</label>
+			<label index="lib_page_head_rendering_failed_error">The requested URL '%s' could not be retrieved: %s</label>
+			<label index="lib_page_head_not_initialized_error">The page header is not initialized: %s</label>
+			<label index="lib_initalizing_routing_system_failed_error">The routing system could not be initialized properly for the requested URL '%s': '%s'</label>
+			<label index="lib_initializing_content_object_failed_error">The content object could not be created for the requested URL '%s': '%s'</label>
+			<label index="lib_block_not_available_error">The block '%2$s' was not rendered for the requested URL '%1$s'</label>
+			<label index="lib_interface_access_failed_error">...</label>
+			<label index="lib_block_type_not_supported_error">The Block type '%s' is not supported</label>
+			<label index="lib_soap_request_failed_error">The SOAP request has failed: %s</label>
+			<label index="lib_wsdl_resource_not_found_error">The WSDL file could not be loaded from '%s'</label>
+			<label index="lib_store_not_resolved_error">The store '%s' could not be resolved: %s</label>
+			<label index="lib_clear_soap_cache_task_name">Clear the Magento API cache</label>
+			<label index="lib_clear_soap_cache_task_description">Clears all cached responses of Magento API calls.</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+		</languageKey>
+	</data>
+</T3locallang>

@@ -37,13 +37,6 @@ class AdministrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionC
 	protected $session = null;
 	
 	/**
-	 * Language helper
-	 *
-	 * @var tx_typogento_languageHelper
-	 */
-	protected $helper = null;
-	
-	/**
 	 * Loads the Magento account or creates one if necessary.
 	 * 
 	 * @todo This is safety-critical and must be documented and maybe redesigned.
@@ -241,14 +234,10 @@ class AdministrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionC
 		if (!isset($message)) {
 			return;
 		}
-		// init language helper
-		if (!isset($this->helper)) {
-			$this->helper = GeneralUtility::makeInstance('tx_typogento_languageHelper');
-		}
-		// get title label
-		$title = $this->helper->getLabel($title);
-		// get message label
-		$message = $this->helper->getLabel($message);
+		// translate title
+		$title = \Tx\Typogento\Utility\LocalizationUtility::translate($title);
+		// translate message
+		$message = \Tx\Typogento\Utility\LocalizationUtility::translate($message);
 		// create flash message
 		$message = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\\FlashMessage', $message, $title, $severity);
 		// add flash message to the queue

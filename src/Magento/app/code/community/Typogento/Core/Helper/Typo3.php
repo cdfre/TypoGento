@@ -70,7 +70,7 @@ class Typogento_Core_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 					->fetchOne('SELECT database();');
 				// set result
 				$valid = ($database == $this->getDatabaseName());
-			} catch (Exception $e) {}
+			} catch (Exception $e) {throw $e;}
 			// register result
 			Mage::register(self::REGISTRY_KEY_DATABASE_CONNECTION_IS_VALID, $valid);
 		}
@@ -127,7 +127,7 @@ class Typogento_Core_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 			return $url;
 		} else {
 			// using constant otherwise
-			return t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR');
+			return \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_REQUEST_DIR');
 		}
 	}
 	
@@ -145,7 +145,7 @@ class Typogento_Core_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	public function getWebsiteId() {
 		$this->_assertIsFrontendActive();
 		
-		return t3lib_div::makeInstance('tx_typogento_magentoHelper')->getWebsiteId();
+		return \Tx\Typogento\Utility\ConfigurationUtility::getWebsiteId();
 	}
 	
 	/**
@@ -156,13 +156,13 @@ class Typogento_Core_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	public function getRouter() {
 		$this->_assertIsFrontendActive();
 		
-		return t3lib_div::makeInstance('tx_typogento_router');
+		return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Routing\\Router');
 	}
 	
 	public function getEnvironment() {
 		$this->_assertIsFrontendActive();
 		
-		return t3lib_div::makeInstance('tx_typogento_environment');
+		return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Environment');
 	}
 	
 	/**

@@ -4,10 +4,12 @@ if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
+use \TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 /**
  * Change caching behaviour of Magento Frontend Plugin
  */
-t3lib_extMgm::addPItoST43(
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
 	$_EXTKEY, 
 	'pi1/class.tx_typogento_pi1.php','_pi1','list_type', 
 	1
@@ -16,7 +18,7 @@ t3lib_extMgm::addPItoST43(
 /**
  * Extend TypoScript from static template uid=43 to set up userdefined tag
  */
-t3lib_extMgm::addTypoScript(
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
 	$_EXTKEY, 
 	'editorcfg', 
 	'tt_content.CSS_editor.ch.tx_typogento_pi1 = < plugin.tx_typogento_pi1.CSS_editor', 
@@ -26,7 +28,7 @@ t3lib_extMgm::addTypoScript(
 /**
  * Adds default frontend user single sign-on service
  */
-t3lib_extMgm::addService(
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
 	$_EXTKEY, 
 	'auth', 
 	'tx_typogento_sv1',
@@ -39,15 +41,15 @@ t3lib_extMgm::addService(
 		'quality' => 50,
 		'os' => '',
 		'exec' => '',
-		'classFile' => t3lib_extMgm::extPath($_EXTKEY).'sv1/class.tx_typogento_sv1.php',
-		'className' => 'tx_typogento_sv1'
+		'classFile' => ExtensionManagementUtility::extPath($_EXTKEY).'sv1/class.tx_typogento_sv1.php',
+		'className' => 'Tx\\Typogento\\Service\\System\\AuthenticationService'
 	)
 );
 
 /**
  * Adds default frontend user replication service
  */
-t3lib_extMgm::addService(
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
 	$_EXTKEY,
 	'auth',
 	'tx_typogento_sv2',
@@ -60,42 +62,36 @@ t3lib_extMgm::addService(
 		'quality' => 100,
 		'os' => '',
 		'exec' => '',
-		'classFile' => t3lib_extMgm::extPath($_EXTKEY).'sv2/class.tx_typogento_sv2.php',
-		'className' => 'tx_typogento_sv2'
+		'classFile' => ExtensionManagementUtility::extPath($_EXTKEY).'sv2/class.tx_typogento_sv2.php',
+		'className' => 'Tx\\Typogento\\Service\\System\\ReplicationService'
 	)
 );
 
 /**
- * Register system hooks
+ * Registers hooks
  */
 if (TYPO3_MODE === 'FE') {
 	/**
-	 *
+	 * Adds frontend user single sign-off feature
 	 */
 	$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['logoff_pre_processing']['typogento'] =
-		'EXT:typogento/lib/class.tx_typogento_observer.php:tx_typogento_observer->logoffPreProcessing';
+		'EXT:'.$_EXTKEY.'/Classes/Hook/AuthenticationHook.php:&Tx\Typogento\Hook\AuthenticationHook->logoffPreProcessing';
 	/**
-	 * Improves TypoGento automatic header integration
+	 * Renders the Magento page header
 	 */
 	$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['typogento'] =
-		'EXT:typogento/lib/class.tx_typogento_observer.php:&tx_typogento_observer->renderPreProcess';
+		'EXT:'.$_EXTKEY.'/Classes/Hook/TypoScriptHook.php:&Tx\Typogento\Hook\TypoScriptHook->renderPreProcess';
 	/**
-	 * Improves internal FlexForm access and its caching
+	 * Integrates TypoScript registers
 	 */
 	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc']['typogento'] =
-		'EXT:typogento/lib/class.tx_typogento_observer.php:&tx_typogento_observer->configArrayPostProc';
+		'EXT:'.$_EXTKEY.'/Classes/Hook/TypoScriptHook.php:&Tx\Typogento\Hook\TypoScriptHook->configArrayPostProc';
 	
 	/**
-	 * Provides auto login for Magento customer
-	 */
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp']['typogento_sv1'] =
-		'EXT:typogento/sv1/class.tx_typogento_sv1.php:&tx_typogento_sv1->postUserLookUp';
-	
-	/**
-	 * Provides page cache validation on redirects
+	 * Invalidates cache on redirects
 	 */
 	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['insertPageIncache']['typogento'] = 
-		'EXT:typogento/lib/class.tx_typogento_observer.php:&tx_typogento_observer';
+		'EXT:'.$_EXTKEY.'/Classes/Hook/TypoScriptHook.php:&Tx\Typogento\Hook\TypoScriptHook';
 }
 
 /**
@@ -114,42 +110,24 @@ if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento'
 }
 
 /**
- * Setup the default configuration for 4.5 and bellow
- */
-if (t3lib_div::int_from_ver(TYPO3_version) < '4006000') {
-	/**
-	 * Define database backend as backend (default in 4.6)
-	 */
-	if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento']['backend'])) {
-		$TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento']['backend'] = 't3lib_cache_backend_DbBackend';
-	}
-	/**
-	 * Define data and tags table (obsolete in 4.6)
-	 */
-	if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento']['options'])) {
-		$TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento']['options'] = array();
-	}
-	if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento']['options']['cacheTable'])) {
-		$TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento']['options']['cacheTable'] = 'tx_typogento_cache';
-	}
-	if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento']['options']['tagsTable'])) {
-		$TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento']['options']['tagsTable'] = 'tx_typogento_cache_tags';
-	}
-}
-
-/**
- * Add validator for unique frontend user emails
- */
-$TYPO3_CONF_VARS['SC_OPTIONS']['tce']['formevals']['tx_typogento_uniqueemail'] = 
-	'EXT:typogento/lib/class.tx_typogento_uniqueemail.php';
-
-/**
  * Add SOAP cache cleaning task
  */
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_typogento_clearSoapCacheTask'] = array(
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx\\Typogento\\Task\\ClearSoapCacheTask'] = array(
 	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:' . $_EXTKEY . '/res/language/locallang.xml:lib_clear_soap_cache_task_name',
-	'description'      => 'LLL:EXT:' . $_EXTKEY . '/res/language/locallang.xml:lib_clear_soap_cache_task_description'
+	'title'            => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:lib_clear_soap_cache_task_name',
+	'description'      => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:lib_clear_soap_cache_task_description'
 );
 
+/**
+ * Configures Logger, use this to get more information at runtime
+ */
+$TYPO3_CONF_VARS['LOG']['Tx']['Typogento']['Utility']['LogUtility'] = array(
+	'writerConfiguration' => array(
+		\TYPO3\CMS\Core\Log\LogLevel::ERROR => array(),
+		\TYPO3\CMS\Core\Log\LogLevel::WARNING => array(),
+		\TYPO3\CMS\Core\Log\LogLevel::NOTICE => array(),
+		\TYPO3\CMS\Core\Log\LogLevel::INFO => array(),
+		\TYPO3\CMS\Core\Log\LogLevel::DEBUG => array()
+	)
+);
 ?>
