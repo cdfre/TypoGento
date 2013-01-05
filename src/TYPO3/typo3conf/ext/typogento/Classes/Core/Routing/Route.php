@@ -21,11 +21,18 @@ class Route {
 	protected $handler = null;
 	
 	/**
+	 * 
+	 * @var string
+	 */
+	protected $id = null;
+	
+	/**
 	 * @var int
 	 */
 	protected $priority = null;
 	
-	public function __construct(RouteFilterInterface $filter, RouteHandlerInterface $handler, $priority = 0) {
+	public function __construct($id, RouteFilterInterface $filter, RouteHandlerInterface $handler, $priority = 0) {
+		$this->id = $id;
 		$this->filter = $filter;
 		$this->handler = $handler;
 		$this->priority = (int)$priority;
@@ -51,6 +58,10 @@ class Route {
 	
 	public function getPriority() {
 		return $this->priority;
+	}
+	
+	public function getId() {
+		return $this->id;
 	}
 }
 ?>

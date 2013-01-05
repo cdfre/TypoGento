@@ -4,15 +4,18 @@ if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-use \TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-
 /**
- * Change caching behaviour of Magento Frontend Plugin
+ * Configures the default frontend plugin
  */
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
-	$_EXTKEY, 
-	'pi1/class.tx_typogento_pi1.php','_pi1','list_type', 
-	1
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+	'Tx.' . $_EXTKEY,
+	'Pi1',
+	array(
+		'Block' => 'index',
+	),
+	array(
+		'Block' => '',
+	)
 );
 
 /**
@@ -95,22 +98,21 @@ if (TYPO3_MODE === 'FE') {
 }
 
 /**
- * Register cache
+ * Registers cache
  */
 if (!is_array($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento'])) {
 	$TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento'] = array();
 }
 
 /** 
- * Define variable frontend as default frontend, this must be set with TYPO3 4.5 and below 
- * and overrides the default variable frontend of 4.6
+ * Defines variable frontend as default frontend
  */
 if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento']['frontend'])) {
 	$TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento']['frontend'] = 't3lib_cache_frontend_VariableFrontend';
 }
 
 /**
- * Add SOAP cache cleaning task
+ * Adds SOAP cache cleaning task
  */
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx\\Typogento\\Task\\ClearSoapCacheTask'] = array(
 	'extension'        => $_EXTKEY,

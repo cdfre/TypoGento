@@ -39,8 +39,10 @@ class RouteBuilder implements RouteBuilderInterface {
 			if (strpos($key, '.') === false) {
 				continue;
 			}
+			// create id
+			$id = trim($key, '.');
 			// build route
-			$route = $this->buildRoute($conf);
+			$route = $this->buildRoute($id, $conf);
 			// add route to router
 			$router->add($conf['section'], $route);
 		}
@@ -49,16 +51,17 @@ class RouteBuilder implements RouteBuilderInterface {
 	/**
 	 * Create a single route from TypoScript
 	 *
+	 * @param string The route id
 	 * @param array $config TypoScript setup
 	 * @throws InvalidArgumentException If something is missing in the TypoScript setup
 	 */
-	protected function buildRoute(array &$typoscript) {
+	protected function buildRoute($id, array &$typoscript) {
 		if (!isset($typoscript['filter.'])) {
-			throw new Exception(sprintf('Missing the route filter in "%s"', print_r($typoscript, true)), 1356838587);
+			throw new Exception(sprintf('Missing the route filter in "%s".', print_r($typoscript, true)), 1356838587);
 		}
 
 		if (!isset($typoscript['target.'])) {
-			throw new Exception(sprintf('Missing the route target in "%s"', print_r($typoscript, true)), 1356838639);
+			throw new Exception(sprintf('Missing the route target in "%s".', print_r($typoscript, true)), 1356838639);
 		}
 
 		$priority = $this->buildValue('priority', $typoscript, 0);
@@ -66,7 +69,7 @@ class RouteBuilder implements RouteBuilderInterface {
 		$filter = new RouteFilter($typoscript['filter.']);
 		$handler = new RouteHandler($typoscript['target.']);
 
-		return new Route($filter, $handler, $priority);
+		return new Route($id, $filter, $handler, $priority);
 	}
 
 	/**

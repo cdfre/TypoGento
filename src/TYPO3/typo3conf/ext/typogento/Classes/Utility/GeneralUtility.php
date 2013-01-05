@@ -141,7 +141,7 @@ class GeneralUtility {
 			return $default;
 		}
 		
-		$keys = explode('.', $path);
+		$keys = explode('/', $path);
 		
 		foreach($keys as $k => $v) {
 			if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($v)) {

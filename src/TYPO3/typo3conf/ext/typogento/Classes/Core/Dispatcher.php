@@ -5,13 +5,12 @@ namespace Tx\Typogento\Core;
 use \Tx\Typogento\Core\Routing\Route;
 use \Tx\Typogento\Core\Routing\Router;
 use \Tx\Typogento\Utility\GeneralUtility;
+use \Tx\Typogento\Utility\LogUtility;
 use \Tx\Typogento\Core\Bootstrap;
 
 use Mage;
 
 /**
- * Frontend dispatcher
- * 
  * Dispatches the TYPO3 frontend request to Magento, by using the routing configuation.
  *
  * @author Artus Kolanowski <artus@ionoi.net>
@@ -20,20 +19,16 @@ use Mage;
 class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 	
 	/**
-	 * 
 	 * @var \Tx\Typogento\Core\Environment
 	 */
 	protected $environment = null;
 	
 	/**
-	 * 
 	 * @var string
 	 */
 	protected $url = null;
 	
 	/**
-	 * Constructor
-	 * 
 	 * Initializes the application and processes the frontend request. 
 	 * 
 	 * @remarks Requires a fully loaded TypoScript template.
@@ -41,10 +36,10 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 	public function __construct() {
 		// initialize framework
 		Bootstrap::initialize();
-		// target url
-		$this->url = $this->lookupUrl();
-		// target environment
-		$this->environment = $this->buildEnvironment($this->url);
+		// setup target url
+		$this->lookup();
+		// setup target environment
+		$this->build();
 		// initialize target environment
 		$this->environment->initialize();
 		// try to dispatch the target url
@@ -68,7 +63,7 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 	 * 
 	 * @throws Exception If routing fails
 	 */
-	protected function lookupUrl() {
+	protected function lookup() {
 		// try lookup
 		try {
 			// router
@@ -84,7 +79,9 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 			//$target->postVars = isset($_POST['tx_typogento'])?$_POST['tx_typogento']:array();
 			$target->queryString = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $target->getVars, '', false, true);
 			// lookup matching route
-			return $router->lookup(Router::ROUTE_SECTION_DISPATCH, null, $target);
+			$route = $router->lookup(Router::ROUTE_SECTION_DISPATCH, null);
+			// set result
+			$this->url = $router->process($route, $target);
 		} catch (\Exception $e) {
 			throw new Exception(sprintf('The routing system is unable to resolve the action URL: %s', $e->getMessage()), 1356845494, $e);
 		}
@@ -93,11 +90,10 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 	/**
 	 * Build the target environment
 	 * 
-	 * @param string $url
 	 */
-	protected function buildEnvironment($url) {
+	protected function build() {
 		// url components
-		$components = parse_url($url);
+		$components = parse_url($this->url);
 		$path = $components['path'];
 		$query = array();
 		parse_str($components['query'], $query);
@@ -113,8 +109,8 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 		//$environment->postVars = isset($_POST['tx_typogento'])?$_POST['tx_typogento']:array();
 		$environment->queryString = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $environment->getVars, '', false, true);
 		$environment->requestUri = $path.'?'.trim($environment->queryString, '&');
-		// return result
-		return $environment;
+		// set result
+		$this->environment = $environment;
 	}
 	/**
 	 * Process the frontend request

@@ -29,7 +29,7 @@ class ConfigurationManager implements \TYPO3\CMS\Core\SingletonInterface {
 	const PAGE = 1;
 	
 	/**
-	 * In \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::tmpl::setup['plugin.']['tx_typogento_pi1.]
+	 * In \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::tmpl::setup['plugin.']['tx_typogento_pi1.][settings.]
 	 * 
 	 * @var int
 	 */
@@ -213,11 +213,11 @@ class ConfigurationManager implements \TYPO3\CMS\Core\SingletonInterface {
 					throw new Exception('The TypoScript frontend setup is not initialized.', 1356837053);
 				}
 			
-				if (!isset($this->frontend->tmpl->setup['plugin.']['tx_typogento_pi1.'])) {
-					throw new Exception('Missing the plugin related configuration (plugin.tx_typogento_pi1) in the TypoScript frontend setup.', 1356837022);
+				if (!isset($this->frontend->tmpl->setup['plugin.']['tx_typogento_pi1.']['settings.'])) {
+					throw new Exception('Missing the plugin related configuration (plugin.tx_typogento_pi1.settings) in the TypoScript frontend setup.', 1356837022);
 				}
 			
-				$this->sections[$section] = &$this->frontend->tmpl->setup['plugin.']['tx_typogento_pi1.'];
+				$this->sections[$section] = &$this->frontend->tmpl->setup['plugin.']['tx_typogento_pi1.']['settings.'];
 				break;
 			case self::CACHE:
 				if (!isset($this->frontend->config)) {

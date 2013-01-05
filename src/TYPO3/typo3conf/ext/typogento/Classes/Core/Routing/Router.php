@@ -7,38 +7,33 @@ use \Tx\Typogento\Configuration\TypoScript\Routing\RouteBuilder;
 use \Tx\Typogento\Core\Environment;
 
 /**
-* Basic router
-*
-* Routes between TYPO3 Pages and Magento Route Paths.
-* 
-* @author Artus Kolanowski <artus@ionoi.net>
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
-*/
+ * Routes between TYPO3 Pages and Magento Route Paths.
+ * 
+ * @author Artus Kolanowski <artus@ionoi.net>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
+ */
 class Router implements \TYPO3\CMS\Core\SingletonInterface {
 	
 	/**
-	 * 
 	 * @var string
 	 */
 	const ROUTE_SECTION_RENDER = 'render';
 	
 	/**
-	 * 
 	 * @var string
 	 */
 	const ROUTE_SECTION_DISPATCH = 'dispatch';
 	
 	/**
-	 * 
 	 * @var array
 	 */
 	protected $sections = array();
 	
 	/**
-	 * Constructor
+	 * Creates the router and setup its routes.
 	 *
 	 * @see typogento_Controller_Router, typogento_Model_Url
-	 * @param RouteBuilderInterface $builder Builder to setup routing for the current page
+	 * @param RouteBuilderInterface $builder Builder to setup the routes
 	 * @return void
 	 */
 	public function __construct(RouteBuilderInterface $builder = null) {
@@ -51,14 +46,14 @@ class Router implements \TYPO3\CMS\Core\SingletonInterface {
 	}
 	
 	/**
-	 * Lookup the active route and process it
+	 * Find the matching route.
 	 * 
 	 * @param string $section The route section to search in
-	 * @param array $source The source route set to lookup
+	 * @param Environment $filter The filter environment to initialize before
 	 * @throws Exception If no matching route was found or the given route section doesn't exist
 	 * @return void
 	 */
-	public function lookup($section, Environment $filter = null, Environment $target = null) {
+	public function lookup($section, Environment $filter = null) {
 		// assert section exists in route tree
 		if (!array_key_exists($section, $this->sections)) {
 			throw new Exception(sprintf('The route section "%s" is not valid', $section), 1356843514);
@@ -79,17 +74,7 @@ class Router implements \TYPO3\CMS\Core\SingletonInterface {
 					if (isset($filter)) {
 						$filter->deinitialize();
 					}
-					// initialize target environment
-					if (isset($target)) {
-						$target->initialize();
-					}
-					// process matching route
-					$result = $route->getHandler()->process();
-					// deinitialize target environment
-					if (isset($target)) {
-						$target->deinitialize();
-					}
-					return $result;
+					return $route;
 				}
 			}
 		}
@@ -97,19 +82,36 @@ class Router implements \TYPO3\CMS\Core\SingletonInterface {
 		if (isset($filter)) {
 			$filter->deinitialize();
 		}
+		//
+		throw new Exception(sprintf('The route section "%s" has no matching entry', $section), 1356843144);
+	}
+	
+	/**
+	 * Process a route.
+	 * 
+	 * @param Route $route The route to process
+	 * @param Environment $target The target environment to initialize before
+	 * @return mixed The processing result
+	 */
+	public function process(Route $route, Environment $target = null) {
+		// initialize target environment
+		if (isset($target)) {
+			$target->initialize();
+		}
+		// process matching route
+		$result = $route->getHandler()->process();
 		// deinitialize target environment
 		if (isset($target)) {
 			$target->deinitialize();
 		}
-		//
-		throw new Exception(sprintf('The route section "%s" has no matching entry', $section), 1356843144);
+		return $result;
 	}
 
 	/**
-	 * Adds a route to the router into the specified section
+	 * Adds a route.
 	 * 
 	 * @param Route $route The route to add
-	 * @param string $section The route section for the added route
+	 * @param string $section The route section
 	 * @return void
 	 */
 	public function add($section, Route $route) {
