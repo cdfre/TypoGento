@@ -119,17 +119,4 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx\\Typogento\\
 	'title'            => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:lib_clear_soap_cache_task_name',
 	'description'      => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:lib_clear_soap_cache_task_description'
 );
-
-/**
- * Configures Logger, use this to get more information at runtime
- */
-$TYPO3_CONF_VARS['LOG']['Tx']['Typogento']['Utility']['LogUtility'] = array(
-	'writerConfiguration' => array(
-		\TYPO3\CMS\Core\Log\LogLevel::ERROR => array(),
-		\TYPO3\CMS\Core\Log\LogLevel::WARNING => array(),
-		\TYPO3\CMS\Core\Log\LogLevel::NOTICE => array(),
-		\TYPO3\CMS\Core\Log\LogLevel::INFO => array(),
-		\TYPO3\CMS\Core\Log\LogLevel::DEBUG => array()
-	)
-);
 ?>

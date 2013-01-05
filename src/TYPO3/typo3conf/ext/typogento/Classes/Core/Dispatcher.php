@@ -82,6 +82,13 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 			$route = $router->lookup(Router::ROUTE_SECTION_DISPATCH, null);
 			// set result
 			$this->url = $router->process($route, $target);
+			// log result
+			LogUtility::debug(
+				sprintf(
+					'[Routing] Rewrite URL "%s" to "%s" using dispatch route "%s".', 
+					urldecode($_SERVER['QUERY_STRING']), urldecode($this->url), $route->getId()
+				)
+			);
 		} catch (\Exception $e) {
 			throw new Exception(sprintf('The routing system is unable to resolve the action URL: %s', $e->getMessage()), 1356845494, $e);
 		}

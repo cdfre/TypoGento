@@ -3,6 +3,7 @@
 /**
  * URL model overrides
  *
+ * @author Artus Kolanowski <artus@ionoi.net>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
@@ -15,21 +16,39 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	 * @param string $path Path to the route
 	 * @param array $arameters Parameters for the route
 	 * 
-	 * @return  string
+	 * @return string
 	 */
 	public function getUrl($path = null, $parameters = null) {
-		// get typo3 helper
-		$typo3 = Mage::helper('typogento_core/typo3');
 		// it's neccessary in both cases to process the passed arguments
 		$url = parent::getUrl($path, $parameters);
 		// check if typo3 is disabled or default behaviour is requested
-		if ($typo3->isFrontendActive() 
+		if (Mage::helper('typogento_core/typo3')->isFrontendActive() 
 			&& !$this->_getData('force_default_behaviour')) {
-			// rerender link for typo3 frontend
-			$url = $this->_getTypolink();
+			// get router
+			$router = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Routing\\Router');
+			// get environment data
+			$data = $this->_collectEnvironmentData();
+			// build filter environment
+			$filter = $this->_buildFilterEnvironment($data);
+			// build filter environment
+			$target = $this->_buildTargetEnvironment($data);
+			// lookup matching route
+			$route = $router->lookup(\Tx\Typogento\Core\Routing\Router::ROUTE_SECTION_RENDER, $filter);
+			// rebuild url
+			$rebuild = $router->process($route, $target);
+			// log debug
+			\Tx\Typogento\Utility\LogUtility::debug(
+				sprintf(
+					'[Routing] Rewrite URL "%s" to "%s" using render route "%s".', 
+					urldecode($url), urldecode($rebuild), $route->getId()
+				), 
+				$data
+			);
 			// save last url in response for the _isurlinternal workaround
 			$response = Mage::app()->getResponse();
-			$response->lastUrl = $url;
+			$response->lastUrl = $rebuild;
+			// replace url
+			$url = $rebuild;
 		}
 		// return url
 		return $url;
@@ -45,10 +64,8 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	 * @return string
 	 */
 	public function getRebuiltUrl($url) {
-		// get typo3 helper
-		$typo3 = Mage::helper('typogento_core/typo3');
 		// check if typo3 is disabled or default behaviour is requested
-		if (!$typo3->isFrontendActive() 
+		if (!Mage::helper('typogento_core/typo3')->isFrontendActive() 
 			|| $this->_getData('force_default_behaviour')) {
 			$url = parent::getRebuiltUrl($url);
 		}
@@ -57,54 +74,54 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	}
 	
 	/**
-	 * Retrieve route URL
+	 * Retrieve the route URL
 	 * 
 	 * If TYPO3 is activated this doesn't use the store base url. 
 	 * If _direct is set path is replaced by its target path.
 	 *  
-	 * @param string $routePath
-	 * @param array $routeParams
+	 * @param string $path
+	 * @param array $params
 	 *
 	 * @return string
 	 */
 	public function getRouteUrl($path = null, $parameters = null) {
-		// get typo3 helper
-		$typo3 = Mage::helper('typogento_core/typo3');
 		// check if typo3 is disabled or default behaviour is requested
-		if (!$typo3->isFrontendActive() 
+		if (!Mage::helper('typogento_core/typo3')->isFrontendActive() 
 			|| $this->_getData('force_default_behaviour')) {
 			return parent::getRouteUrl($path, $parameters);
 		}
 		// unset previous route parameters
 		$this->unsetData('route_params');
-		// resolve url in _direct if set to get full qualified urls
+		// try to resolve url for _direct parameters using url rewrites
 		if (isset($parameters['_direct'])) {
-			// get current store for rewrite
+			// get current store
 			$store = Mage::app()->getStore()->getId();
-			// rewrite route using _direct
+			// load rewrite
 			$rewrite = Mage::getModel('core/url_rewrite');
 			$rewrite->setStoreId($store);
 			$rewrite->loadByRequestPath($parameters['_direct']);
-			// remove processed parameter
-			unset($parameters['_direct']);
-			// set rewritten path
+			// get rewriten path
 			$path = $rewrite->getTargetPath();
+			// remove _direct parameter on success
+			if (!is_null($path)) {
+				unset($parameters['_direct']);
+			}
 		}
-		// 
+		// reset path and parameters
 		if (!is_null($path)) {
 			$this->setRoutePath($path);
 		}
 		if (is_array($parameters)) {
 			$this->setRouteParams($parameters, false);
 		}
-		// 
+		// don't use base url
 		$url = $this->getRoutePath($parameters);
-		// 
+		// return result
 		return $url;
 	}
 	
 	/**
-	 * Check if users originated URL is one of the domain URLs assigned to stores
+	 * Checks if users originated URL is one of the domain URLs assigned to stores
 	 *
 	 * @return boolean
 	 */
@@ -137,13 +154,11 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	}
 	
 	/**
-	 * Collect URL data for rendering TYPO3 frontend URL
+	 * Collects the data for filter and target environment
 	 * 
-	 * @see _getTypolink()
-	 * 
-	 * @return array
+	 * @return array The colltected data
 	 */
-	protected function _getTypolinkData() {
+	protected function _collectEnvironmentData() {
 		// collect route data
 		$data = array(
 			'route' => $this->getRouteName(),
@@ -168,34 +183,36 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	}
 	
 	/**
-	 * Render TYPO3 frontend URL
-	 *
-	 * @todo Maybe preserving the overriden query params in a typoscript register
+	 * Builds the filter environment
 	 * 
-	 * @return string
+	 * @param array $data The environment data
+	 * @return \Tx\Typogento\Core\Environment
 	 */
-	protected function _getTypolink() {
-		// get typolink data
-		$data = $this->_getTypolinkData();
-		// get typo3 helper
-		$typo3 = Mage::helper('typogento_core/typo3');
-		// get typo3 router
-		$router = $typo3->getRouter();
+	protected function _buildFilterEnvironment(&$data) {
 		// prepare filter environment
-		$filter = $typo3->getEnvironment();
+		$filter = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Environment');
 		$filter->register('getVars', $_GET);
 		$filter->register('queryString', $_SERVER['QUERY_STRING']);
 		$filter->getVars = $data;
 		$filter->queryString = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $filter->getVars, '', false, true);
+		// return result
+		return $filter;
+	}
+	
+	/**
+	 * Builds the target environment
+	 *
+	 * @param array $data The environment data
+	 * @return \Tx\Typogento\Core\Environment
+	 */
+	protected function _buildTargetEnvironment(&$data) {
 		// prepare target environment
-		$target = $typo3->getEnvironment();
+		$target = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Environment');
 		$target->register('getVars', $_GET);
 		$target->register('queryString', $_SERVER['QUERY_STRING']);
 		$target->getVars = array('tx_typogento' => $data);
 		$target->queryString = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $target->getVars, '', false, true);
-		// render url
-		$url = $router->lookup(\Tx\Typogento\Core\Routing\Router::ROUTE_SECTION_RENDER, $filter, $target);
 		// return result
-		return $url;
+		return $target;
 	}
 }

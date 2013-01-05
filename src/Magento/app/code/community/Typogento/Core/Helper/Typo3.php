@@ -149,23 +149,6 @@ class Typogento_Core_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	}
 	
 	/**
-	 * Get the TypoGento router
-	 * 
-	 * @return tx_typogento_router The TypoGento router
-	 */
-	public function getRouter() {
-		$this->_assertIsFrontendActive();
-		
-		return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Routing\\Router');
-	}
-	
-	public function getEnvironment() {
-		$this->_assertIsFrontendActive();
-		
-		return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Environment');
-	}
-	
-	/**
 	 * Assert TYPO3 frontend is anabled
 	 * 
 	 * @throws Exception Throws if TYPO3 frontend is not enabled
