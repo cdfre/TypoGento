@@ -1,6 +1,6 @@
 <?php
 
-namespace Tx\Typogento\Domain\Service;
+namespace Tx\Typogento\Hook;
 
 use \Tx\Typogento\Utility\GeneralUtility;
 use \Tx\Typogento\Utility\PluginUtility;
@@ -11,7 +11,7 @@ use \Tx\Typogento\Utility\PluginUtility;
  * @author Artus Kolanowski <artus@ionoi.net>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
-class TceFormService {
+class ItemsProcFuncHook {
 
 	public function getReplicationProviders(&$params, &$pObj) {
 		$this->getSoapItems(

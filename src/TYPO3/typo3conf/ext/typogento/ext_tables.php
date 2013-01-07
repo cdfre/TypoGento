@@ -37,7 +37,7 @@ $TCA['tx_typogento_replication_links'] = array (
 				'items' => array (
 					array('LLL:EXT:'.$_EXTKEY.'/Resources/Private/Language/locallang_db.xml:tx_typogento_replication_links.provider.0', '')
 				),
-				'itemsProcFunc' => 'Tx\\Typogento\\Domain\\Service\\TceFormService->getReplicationProviders',
+				'itemsProcFunc' => 'Tx\\Typogento\\Hook\\ItemsProcFuncHook->getReplicationProviders',
 				'size' => 1,
 				'maxitems' => 1,
 				'minitems' => 1,
@@ -53,7 +53,7 @@ $TCA['tx_typogento_replication_links'] = array (
 				'items' => array(
 					array('LLL:EXT:'.$_EXTKEY.'/Resources/Private/Language/locallang_db.xml:tx_typogento_replication_links.source.0', '')
 				),
-				'itemsProcFunc' => 'Tx\\Typogento\\Domain\\Service\\TceFormService->getReplicationSources',
+				'itemsProcFunc' => 'Tx\\Typogento\\Hook\\ItemsProcFuncHook->getReplicationSources',
 				'size' => 1,
 				'maxitems' => 1,
 				'default' => 0
@@ -68,7 +68,7 @@ $TCA['tx_typogento_replication_links'] = array (
 				'items' => array(
 					array('LLL:EXT:'.$_EXTKEY.'/Resources/Private/Language/locallang_db.xml:tx_typogento_replication_links.source.0', '')
 				),
-				'itemsProcFunc' => 'Tx\\Typogento\\Domain\\Service\\TceFormService->getReplicationTargets',
+				'itemsProcFunc' => 'Tx\\Typogento\\Hook\\ItemsProcFuncHook->getReplicationTargets',
 				'size' => 1,
 				'maxitems' => 1,
 				'default' => 0
@@ -169,7 +169,7 @@ $columns = array (
 				array('LLL:EXT:'.$_EXTKEY.'/Resources/Private/Language/locallang_db.xml:be_users.tx_typogento_customer.0', '')
 			),
 			'readOnly' => 1,
-			'itemsProcFunc' => 'Tx\\Typogento\\Domain\\Service\\TceFormService->getCustomers',
+			'itemsProcFunc' => 'Tx\\Typogento\\Hook\\ItemsProcFuncHook->getCustomers',
 			'maxitems' => 1,
 			'minitems' => 1
 		)
@@ -222,7 +222,7 @@ $columns = array (
 		'label' => 'LLL:EXT:'.$_EXTKEY.'/Resources/Private/Language/locallang_db.xml:sys_language.tx_typogento_store',
 		'config' => array (
 			'type' => 'select',
-			'itemsProcFunc' => 'Tx\\Typogento\\Domain\\Service\\TceFormService->getStoreViews',
+			'itemsProcFunc' => 'Tx\\Typogento\\Hook\\ItemsProcFuncHook->getStoreViews',
 			'maxitems' => 1
 		)
 	)
@@ -245,7 +245,7 @@ $columns = array (
 			'items' => array(
 				array('LLL:EXT:'.$_EXTKEY.'/Resources/Private/Language/locallang_db.xml:be_users.tx_typogento_group.0', '')
 			),
-			'itemsProcFunc' => 'Tx\\Typogento\\Domain\\Service\\TceFormService->getCustomerGroups',
+			'itemsProcFunc' => 'Tx\\Typogento\\Hook\\ItemsProcFuncHook->getCustomerGroups',
 			'maxitems' => 1
 		)
 	)

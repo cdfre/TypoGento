@@ -47,7 +47,7 @@
 							<displayCond>FIELD:settings.display.type:=:PRODUCT</displayCond>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>Tx\Typogento\Domain\Service\TceFormService->getCatalogProducts</itemsProcFunc>
+								<itemsProcFunc>Tx\Typogento\Hook\ItemsProcFuncHook->getCatalogProducts</itemsProcFunc>
 								<maxitems>1</maxitems>
 								<size>15</size>
 							</config>
@@ -59,7 +59,7 @@
 							<displayCond>FIELD:settings.display.type:=:CATEGORY</displayCond>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>Tx\Typogento\Domain\Service\TceFormService->getCatalogCategories</itemsProcFunc>
+								<itemsProcFunc>Tx\Typogento\Hook\ItemsProcFuncHook->getCatalogCategories</itemsProcFunc>
 								<maxitems>1</maxitems>
 								<size>15</size>
 							</config>
@@ -72,7 +72,7 @@
 							<onChange>reload</onChange>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>Tx\Typogento\Domain\Service\TceFormService->getSystemModules</itemsProcFunc>
+								<itemsProcFunc>Tx\Typogento\Hook\ItemsProcFuncHook->getSystemModules</itemsProcFunc>
 								<maxitems>1</maxitems>
 								<size>1</size>
 							</config>
@@ -85,7 +85,7 @@
 							<onChange>reload</onChange>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>Tx\Typogento\Domain\Service\TceFormService->getSystemControllers</itemsProcFunc>
+								<itemsProcFunc>Tx\Typogento\Hook\ItemsProcFuncHook->getSystemControllers</itemsProcFunc>
 								<maxitems>1</maxitems>
 								<size>1</size>
 							</config>
@@ -97,7 +97,7 @@
 							<displayCond>FIELD:settings.display.type:=:USER</displayCond>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>Tx\Typogento\Domain\Service\TceFormService->getSystemActions</itemsProcFunc>
+								<itemsProcFunc>Tx\Typogento\Hook\ItemsProcFuncHook->getSystemActions</itemsProcFunc>
 								<maxitems>1</maxitems>
 								<size>1</size>
 							</config>
