@@ -44,7 +44,7 @@ if (!defined ('TYPO3_MODE')) {
 		'quality' => 50,
 		'os' => '',
 		'exec' => '',
-		'classFile' => ExtensionManagementUtility::extPath($_EXTKEY).'sv1/class.tx_typogento_sv1.php',
+		'classFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'sv1/class.tx_typogento_sv1.php',
 		'className' => 'Tx\\Typogento\\Service\\System\\AuthenticationService'
 	)
 );
@@ -65,7 +65,7 @@ if (!defined ('TYPO3_MODE')) {
 		'quality' => 100,
 		'os' => '',
 		'exec' => '',
-		'classFile' => ExtensionManagementUtility::extPath($_EXTKEY).'sv2/class.tx_typogento_sv2.php',
+		'classFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'sv2/class.tx_typogento_sv2.php',
 		'className' => 'Tx\\Typogento\\Service\\System\\ReplicationService'
 	)
 );
