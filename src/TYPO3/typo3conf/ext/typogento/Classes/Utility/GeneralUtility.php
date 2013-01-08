@@ -217,11 +217,11 @@ class GeneralUtility {
 	 * @todo Refactor
 	 * @return string
 	 */
-	public static function getFELangStoreCode() {
+	public static function getStoreCode() {
 
 		if (empty($GLOBALS['TSFE']->config['config']['sys_language_uid'])) {
-			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_typogento_pi1.']['storeName']) {
-				return $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_typogento_pi1.']['storeName'];
+			if ($GLOBALS['TSFE']->config['config']['tx_typogento.']['store']) {
+				return $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_typogento_pi1.']['settings']['store'];
 			}
 			return 'default';
 		}
@@ -232,8 +232,8 @@ class GeneralUtility {
 
 		$res = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 		if (!($store = $res['tx_typogento_store'])) {
-			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_typogento_pi1.']['storeName']) {
-				$store = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_typogento_pi1.']['storeName'];
+			if ($GLOBALS['TSFE']->config['config']['tx_typogento.']['store']) {
+				$store = $GLOBALS['TSFE']->config['config']['tx_typogento.']['store'];
 			} else {
 				$store = 'default';
 			}

@@ -134,7 +134,7 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 			// check response type
 			$response = $app->getResponse();
 			// get current store code
-			$code = GeneralUtility::getFELangStoreCode();
+			$code = GeneralUtility::getStoreCode();
 			try {
 				// get store by its code
 				$store = $app->getStore($code);
