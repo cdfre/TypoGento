@@ -34,7 +34,7 @@
 			<label index="flexform.label_route">Route</label>
 			<label index="flexform.label_controller">Controller</label>
 			<label index="flexform.label_action">Action</label>
-			<label index="flexform.label_disable">Disable</label>
+			<label index="flexform.label_enable">Disable</label>
 			<label index="be_users.tx_typogento_group">Magento Role:</label>
 			<label index="be_users.tx_typogentoo_group.0">none</label>
 			<label index="fe_groups.tx_typogento_group">Magento Customer Group:</label>

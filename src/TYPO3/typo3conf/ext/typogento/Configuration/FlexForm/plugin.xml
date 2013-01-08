@@ -11,7 +11,7 @@
 				</TCEforms>
 				<type>array</type>
 				<el>
-					<settings.display.type>
+					<display.type>
 						<TCEforms>
 							<label>LLL:EXT:typogento/Resources/Private/Language/locallang_db.xml:flexform.label_type</label>
 							<section>1</section>
@@ -40,11 +40,11 @@
 								</items>
 							</config>
 						</TCEforms>
-					</settings.display.type>
-					<settings.display.product>
+					</display.type>
+					<display.product>
 						<TCEforms>
 							<label>LLL:EXT:typogento/Resources/Private/Language/locallang_db.xml:flexform.label_product_list</label>
-							<displayCond>FIELD:settings.display.type:=:PRODUCT</displayCond>
+							<displayCond>FIELD:display.type:=:PRODUCT</displayCond>
 							<config>
 								<type>select</type>
 								<itemsProcFunc>Tx\Typogento\Hook\ItemsProcFuncHook->getCatalogProducts</itemsProcFunc>
@@ -52,11 +52,11 @@
 								<size>15</size>
 							</config>
 						</TCEforms>
-					</settings.display.product>
-					<settings.display.category>
+					</display.product>
+					<display.category>
 						<TCEforms>
 							<label>LLL:EXT:typogento/Resources/Private/Language/locallang_db.xml:flexform.label_category_list</label>
-							<displayCond>FIELD:settings.display.type:=:CATEGORY</displayCond>
+							<displayCond>FIELD:display.type:=:CATEGORY</displayCond>
 							<config>
 								<type>select</type>
 								<itemsProcFunc>Tx\Typogento\Hook\ItemsProcFuncHook->getCatalogCategories</itemsProcFunc>
@@ -64,11 +64,11 @@
 								<size>15</size>
 							</config>
 						</TCEforms>
-					</settings.display.category>
-					<settings.display.route>
+					</display.category>
+					<display.route>
 						<TCEforms>
 							<label>LLL:EXT:typogento/Resources/Private/Language/locallang_db.xml:flexform.label_route</label>
-							<displayCond>FIELD:settings.display.type:=:USER</displayCond>
+							<displayCond>FIELD:display.type:=:USER</displayCond>
 							<onChange>reload</onChange>
 							<config>
 								<type>select</type>
@@ -77,11 +77,11 @@
 								<size>1</size>
 							</config>
 						</TCEforms>
-					</settings.display.route>
-					<settings.display.controller>
+					</display.route>
+					<display.controller>
 						<TCEforms>
 							<label>LLL:EXT:typogento/Resources/Private/Language/locallang_db.xml:flexform.label_controller</label>
-							<displayCond>FIELD:settings.display.type:=:USER</displayCond>
+							<displayCond>FIELD:display.type:=:USER</displayCond>
 							<onChange>reload</onChange>
 							<config>
 								<type>select</type>
@@ -90,11 +90,11 @@
 								<size>1</size>
 							</config>
 						</TCEforms>
-					</settings.display.controller>
-					<settings.display.action>
+					</display.controller>
+					<display.action>
 						<TCEforms>
 							<label>LLL:EXT:typogento/Resources/Private/Language/locallang_db.xml:flexform.label_action</label>
-							<displayCond>FIELD:settings.display.type:=:USER</displayCond>
+							<displayCond>FIELD:display.type:=:USER</displayCond>
 							<config>
 								<type>select</type>
 								<itemsProcFunc>Tx\Typogento\Hook\ItemsProcFuncHook->getSystemActions</itemsProcFunc>
@@ -102,7 +102,7 @@
 								<size>1</size>
 							</config>
 						</TCEforms>
-					</settings.display.action>
+					</display.action>
 				</el>
 			</ROOT>
 		</display>
@@ -113,14 +113,15 @@
 				</TCEforms>
 				<type>array</type>
 				<el>
-					<settings.cache.disable>
+					<settings.cache>
 						<TCEforms>
-							<label>LLL:EXT:typogento/Resources/Private/Language/locallang_db.xml:flexform.label_disable</label>
+							<label>LLL:EXT:typogento/Resources/Private/Language/locallang_db.xml:flexform.label_enable</label>
 							<config>
 								<type>check</type>
+								<default>1</default>
 							</config>
 						</TCEforms>
-					</settings.cache.disable>
+					</settings.cache>
 				</el>
 			</ROOT>
 		</cache>

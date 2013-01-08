@@ -6,7 +6,7 @@ use \Tx\Typogento\Configuration\ConfigurationManager;
 use \Tx\Typogento\Utility\PluginUtility;
 
 /**
- * Frontend plugin
+ * The default frontend plugin.
  * 
  * @author Artus Kolanowski <artus@ionoi.net>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
@@ -40,28 +40,18 @@ class BlockController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		}
 		// configuration
 		$this->configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Configuration\\ConfigurationManager');
-		// merge typoscript
-		$this->section = $this->configuration->merge(
-			$this->settings['display'], ConfigurationManager::PLUGIN
-		);
-		// cache flag
-		$cache = $this->settings['cache']['disable'] ? false : (bool)$this->configuration->get(
-			'cache', true, $this->section
-		);
+		// merge settings
+		$this->section = $this->configuration->merge($this->settings, ConfigurationManager::PLUGIN);
 		// content object
 		$content = $this->configurationManager->getContentObject();
-		// content type
-		$type = $content->getUserObjectType();
 		// check caching
-		if ($type == \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::OBJECTTYPE_USER) {
-			// check flag
-			if (!$cache) {
-				// convert to user int
-				$content->convertToUserIntObject();
-				return null;
-			}
+		if ($content->getUserObjectType() == \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::OBJECTTYPE_USER 
+			&& !(bool)$this->configuration->get('cache', true, $this->section)) {
+			// convert to user int
+			$content->convertToUserIntObject();
+			return null;
 		}
-		// initialize interface
+		// initialize dispatcher
 		try {
 			$this->dispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Dispatcher');
 		} catch (Exception $e) {
@@ -85,7 +75,7 @@ class BlockController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			if (!$response->isAvailable()) {
 				$GLOBALS['TSFE']->pageNotFoundAndExit();
 			} else if (!$response->isRedirect()) {
-				// open interface
+				// open dispatcher
 				$this->dispatcher->open();
 				// render content
 				try {
@@ -95,15 +85,11 @@ class BlockController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 					$response = $application->getResponse();
 					// layout
 					$layout = $application->getLayout();
-					// configuration
-					$configuration = $this->configuration;
 					// render block
-					if ($configuration->get('mode', 'block', $this->section) == 'block'
+					if ($this->configuration->get('mode', 'block', $this->section) == 'block'
 						&& !$response->isAjax()) {
 						// block name
-						$name = $configuration->get(
-							'block', 'content', $this->section
-						);
+						$name = $this->configuration->get('block', 'content', $this->section);
 						// retrive block
 						$block = $layout->getBlock($name);
 						// check block
@@ -112,20 +98,20 @@ class BlockController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 						} else if (!($block instanceof \Mage_Core_Block_Abstract)) {
 							throw new Exception(sprintf('The Block type "%s" is not supported.', get_class($name)), 1357002619);
 						}
-						// render html
-						$this->view->assign('block', $block->toHtml());
+						// render raw block
+						$this->view->assign('magento', array('block' => $block->toHtml()));
 					} else {
-						// render body
-						$this->view->assign('body', $response->outputBody());
+						// render raw page
+						$this->view->assign('magento', array('page' => $response->outputBody()));
 					}
 				} catch (\Exception $e) {
-					// close interface
+					// close dispatcher
 					$this->dispatcher->close();
 					// re-throw exception
 					// @todo extend connfiguration
 					throw $e;
 				}
-				// close interface
+				// close dispatcher
 				$this->dispatcher->close();
 			}
 		}

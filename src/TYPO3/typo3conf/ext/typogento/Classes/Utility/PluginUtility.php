@@ -9,17 +9,17 @@ namespace Tx\Typogento\Utility;
  */
 class PluginUtility {
 	
-	const FLEXFORM_FIELD_DISPLAY_TYPE = 'settings.display.type';
+	const FLEXFORM_FIELD_DISPLAY_TYPE = 'display.type';
 	
-	const FLEXFORM_FIELD_DISPLAY_PRODUCT = 'settings.display.product';
+	const FLEXFORM_FIELD_DISPLAY_PRODUCT = 'display.product';
 	
-	const FLEXFORM_FIELD_DISPLAY_CATEGORY = 'settings.display.category';
+	const FLEXFORM_FIELD_DISPLAY_CATEGORY = 'display.category';
 	
-	const FLEXFORM_FIELD_DISPLAY_ROUTE = 'settings.display.route';
+	const FLEXFORM_FIELD_DISPLAY_ROUTE = 'display.route';
 	
-	const FLEXFORM_FIELD_DISPLAY_CONTROLLER = 'settings.display.controller';
+	const FLEXFORM_FIELD_DISPLAY_CONTROLLER = 'display.controller';
 	
-	const FLEXFORM_FIELD_DISPLAY_ACTION = 'settings.display.action';
+	const FLEXFORM_FIELD_DISPLAY_ACTION = 'display.action';
 	
 	const FLEXFORM_FIELD_CACHE_DISABLE = 'settings.cache.disable';
 	

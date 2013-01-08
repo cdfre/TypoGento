@@ -1,1 +1,8 @@
-<f:format.raw>{block}</f:format.raw>
+<f:if condition="{magento.block}">
+	<f:then>
+		<f:format.raw>{magento.block}</f:format.raw>
+	</f:then>
+	<f:else>
+		<f:format.raw>{magento.page}</f:format.raw>
+	</f:else>
+</f:if>
