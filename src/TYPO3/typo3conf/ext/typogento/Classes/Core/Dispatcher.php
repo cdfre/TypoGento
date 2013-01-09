@@ -8,8 +8,6 @@ use \Tx\Typogento\Utility\GeneralUtility;
 use \Tx\Typogento\Utility\LogUtility;
 use \Tx\Typogento\Core\Bootstrap;
 
-use Mage;
-
 /**
  * Dispatches the TYPO3 frontend request to Magento, by using the routing configuation.
  *
@@ -29,37 +27,89 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 	protected $url = null;
 	
 	/**
-	 * Initializes the application and processes the frontend request. 
+	 * Initializes the application. 
 	 * 
-	 * @remarks Requires a fully loaded TypoScript template.
+	 * @return void
 	 */
 	public function __construct() {
 		// initialize framework
 		Bootstrap::initialize();
 		// setup target url
 		$this->lookup();
-		// setup target environment
+		// setup environment
 		$this->build();
-		// initialize target environment
+		// initialize environment
 		$this->environment->initialize();
 		// try to dispatch the target url
 		try {
-			// start application
+			// initialize application
 			$this->initialize();
-			// dispatch target url
-			$this->dispatch();
 		} catch (\Exception $e) {
-			// deinitialize target environment
+			// deinitialize environment
 			$this->environment->deinitialize();
 			// rethrow exception
-			throw new Exception(sprintf('The requested URL "%s" could not be dispatched: %s', $_SERVER['REQUEST_URI'], $e->getMessage()), 1356845349, $e);
+			throw $e;
 		}
-		// deinitialize target environment
+		// deinitialize environment
 		$this->environment->deinitialize();
 	}
 	
 	/**
-	 * Lookup for the target URL
+	 * Processes the frontend request.
+	 *
+	 * @return boolan
+	 */
+	public function dispatch() {
+		// try dispatch
+		try {
+			// get magento application
+			$app = \Mage::app();
+			// skip if already dispatched
+			if(!$app->getRequest()->isDispatched()) {
+				// get current store code
+				$code = GeneralUtility::getStoreCode();
+				// try activate current store
+				try {
+					// get store by its code
+					$store = $app->getStore($code);
+					// activate current store
+					$app->setCurrentStore($store);
+				} catch (\Exception $e) {
+					// rethrow the exception
+					throw new Exception(sprintf('The store "%s" could not be resolved: %s', $code, $e->getMessage()), 1356845586, $e);
+				}
+				// initialize environment
+				$this->environment->initialize();
+				// try dispatch
+				try {
+					// run dispatch
+					$app->getFrontController()->dispatch();
+				} catch (\Exception $e) {
+					// deinitialize environment
+					$this->environment->deinitialize();
+					// rethrow the exception
+					throw $e;
+				}
+				// deinitialize environment
+				$this->environment->deinitialize();
+			}
+		} catch (\Exception $e) {
+			// rethrow the exception
+			throw new Exception(sprintf('An error has occurred during processing the action URL "%s": %s', $this->url, $e->getMessage()), 1356845643, $e);
+		}
+	}
+	
+	/**
+	 * Gets the environment for further usage.
+	 * 
+	 * @return \Tx\Typogento\Core\Environment
+	 */
+	public function getEnvironment() {
+		return $this->environment;
+	}
+	
+	/**
+	 * Lookup for the URL.
 	 * 
 	 * @throws Exception If routing fails
 	 */
@@ -71,13 +121,13 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 			// route environment
 			$target = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Environment');
 			// register variables
-			$target->register('getVars', $_GET);
+			$target->register('_GET', $_GET);
 			//$target->register('postVars', $_POST);
-			$target->register('queryString', $_SERVER['QUERY_STRING']);
+			$target->register('QUERY_STRING', $_SERVER['QUERY_STRING']);
 			// overwrite variables
-			$target->getVars = isset($_GET['tx_typogento'])?$_GET['tx_typogento']:array();
+			$target->set('_GET', ($_GET['tx_typogento'])?$_GET['tx_typogento']:array());
 			//$target->postVars = isset($_POST['tx_typogento'])?$_POST['tx_typogento']:array();
-			$target->queryString = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $target->getVars, '', false, true);
+			$target->set('QUERY_STRING', \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $target->get('_GET'), '', false, true));
 			// lookup matching route
 			$route = $router->lookup(Router::ROUTE_SECTION_DISPATCH, null);
 			// set result
@@ -95,7 +145,7 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 	}
 
 	/**
-	 * Build the target environment
+	 * Build the environment.
 	 * 
 	 */
 	protected function build() {
@@ -107,51 +157,21 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 		// target environment
 		$environment = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Environment');
 		// register variables
-		$environment->register('getVars', $_GET);
+		$environment->register('_GET', $_GET);
 		//$environment->register('postVars', $_POST);
-		$environment->register('queryString', $_SERVER['QUERY_STRING']);
-		$environment->register('requestUri', $_SERVER['REQUEST_URI']);
+		$environment->register('QUERY_STRING', $_SERVER['QUERY_STRING']);
+		$environment->register('REQUEST_URI', $_SERVER['REQUEST_URI']);
 		// overwrite variables
-		$environment->getVars = isset($query)?$query:array();
+		$environment->set('_GET', isset($query)?$query:array());
 		//$environment->postVars = isset($_POST['tx_typogento'])?$_POST['tx_typogento']:array();
-		$environment->queryString = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $environment->getVars, '', false, true);
-		$environment->requestUri = $path.'?'.trim($environment->queryString, '&');
+		$environment->set('QUERY_STRING', \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $environment->get('_GET'), '', false, true));
+		$environment->set('REQUEST_URI', $path.'?'.trim($environment->get('REQUEST_URI'), '&'));
 		// set result
 		$this->environment = $environment;
 	}
-	/**
-	 * Process the frontend request
-	 * 
-	 * @return boolan
-	 */
-	protected function dispatch() {
-		// try dispatch
-		try {
-			// get magento application
-			$app = Mage::app();
-			// get front controller
-			$front = Mage::app()->getFrontController();
-			// check response type
-			$response = $app->getResponse();
-			// get current store code
-			$code = GeneralUtility::getStoreCode();
-			try {
-				// get store by its code
-				$store = $app->getStore($code);
-				// activate current store
-				$app->setCurrentStore($store);
-			} catch (\Exception $e) {
-				throw new Exception(sprintf('The store "%s" could not be resolved: %s', $code, $e->getMessage()), 1356845586, $e);
-			}
-			// run dispatch
-			$front->dispatch();
-		} catch (\Exception $e) {
-			throw new Exception(sprintf('An error has occurred during processing the action URL "%s": %s', $this->target, $e->getMessage()), 1356845643, $e);
-		}
-	}
 	
 	/**
-	 * Initialize the frontend application
+	 * Initialize the frontend application.
 	 *
 	 * @param string $code
 	 * @param string $type
@@ -160,7 +180,7 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 	protected function initialize($code = '', $type = 'store', $options = array()) {
 		try {
 			// reset magento if initialized before
-			Mage::reset();
+			\Mage::reset();
 			// create magento application
 			$app = new \Typogento_Core_Model_App();
 			// load reflection api for property injection
@@ -170,7 +190,7 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 			$property->setAccessible(true);
 			$property->setValue($app);
 			// set magento application root
-			Mage::setRoot();
+			\Mage::setRoot();
 			// inject additional stuff :/
 			$events = new \Varien_Event_Collection();
 			$property = $class->getProperty('_events');
@@ -186,32 +206,9 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 			\Varien_Profiler::stop('self::app::init');
 			// ...
 			$app->loadAreaPart(\Mage_Core_Model_App_Area::AREA_GLOBAL, \Mage_Core_Model_App_Area::PART_EVENTS);
-			//self::$isInitialized = true;
 		} catch (\Exception $e) {
 			throw new Exception(sprintf('The following error has occurred during initializing the application: %s', $e->getMessage()), 1356845702, $e);
 		}
-	}
-	
-	/**
-	 * Open the target environment
-	 * 
-	 * @return tx_typogento_interface
-	 */
-	public function open() {
-		//
-		$this->environment->initialize();
-		return $this;
-	}
-	
-	/**
-	 * Close the target environment
-	 *
-	 * @return tx_typogento_interface
-	 */
-	public function close() {
-		// 
-		$this->environment->deinitialize();
-		return $this;
 	}
 }
 ?>

@@ -62,6 +62,7 @@ class TypoScriptHook implements \TYPO3\CMS\Core\SingletonInterface {
 			try {
 				// initialize
 				$this->dispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Dispatcher');
+				$this->dispatcher->dispatch();
 			} catch (\Exception $e) {
 				// re-throw exception
 				// @todo typoscript configuration

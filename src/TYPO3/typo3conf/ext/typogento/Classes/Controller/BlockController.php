@@ -54,6 +54,7 @@ class BlockController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		// initialize dispatcher
 		try {
 			$this->dispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Dispatcher');
+			$this->dispatcher->dispatch();
 		} catch (Exception $e) {
 			// re-throw exception
 			// @todo typoscript configuration
@@ -76,7 +77,7 @@ class BlockController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 				$GLOBALS['TSFE']->pageNotFoundAndExit();
 			} else if (!$response->isRedirect()) {
 				// open dispatcher
-				$this->dispatcher->open();
+				$this->dispatcher->getEnvironment()->initialize();
 				// render content
 				try {
 					// application
@@ -106,13 +107,13 @@ class BlockController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 					}
 				} catch (\Exception $e) {
 					// close dispatcher
-					$this->dispatcher->close();
+					$this->dispatcher->getEnvironment()->deinitialize();
 					// re-throw exception
 					// @todo extend connfiguration
 					throw $e;
 				}
 				// close dispatcher
-				$this->dispatcher->close();
+				$this->dispatcher->getEnvironment()->deinitialize();
 			}
 		}
 	}

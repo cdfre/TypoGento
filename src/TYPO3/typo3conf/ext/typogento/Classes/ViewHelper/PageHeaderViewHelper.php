@@ -70,8 +70,9 @@ class PageHeaderViewHelper {
 		$name = (string)$name;
 		// get the interface
 		$this->dispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Dispatcher');
+		$this->dispatcher->dispatch();
 		// open the interface
-		$this->dispatcher->open();
+		$this->dispatcher->getEnvironment()->initialize();
 		// initialize
 		try {
 			// base locations
@@ -100,11 +101,11 @@ class PageHeaderViewHelper {
 			}
 		} catch (\Exception $e) {
 			// close the interface
-			$this->dispatcher->close();
+			$this->dispatcher->getEnvironment()->deinitialize();
 			throw $e;
 		}
 		// close the interface
-		$this->dispatcher->close();
+		$this->dispatcher->getEnvironment()->deinitialize();
 	}
 	
 	/**
@@ -135,7 +136,7 @@ class PageHeaderViewHelper {
 				'css' => $import & self::IMPORT_CSS 
 			);
 			// open the interface
-			$this->dispatcher->open();
+			$this->dispatcher->getEnvironment()->initialize();
 			// render items
 			foreach ($items as &$item) {
 				// skip
@@ -192,12 +193,12 @@ class PageHeaderViewHelper {
 			}
 		} catch (\Exception $e) {
 			// close the interface
-			$this->dispatcher->close();
+			$this->dispatcher->getEnvironment()->deinitialize();
 			// re-throw exception
 			throw new Exception(sprintf('The requested URL "%s" could not be retrieved: %s', $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $e->getMessage()), 1356931794, $e);
 		}
 		// close the interface
-		$this->dispatcher->close();
+		$this->dispatcher->getEnvironment()->deinitialize();
 	}
 	
 	/**
