@@ -5,7 +5,6 @@ namespace Tx\Typogento\Hook;
 use \Tx\Typogento\Configuration\ConfigurationManager;
 use \Tx\Typogento\ViewHelper\PageHeaderViewHelper;
 use \Tx\Typogento\Core\Bootstrap;
-use \Tx\Typogento\Utility\LogUtility;
 
 /**
  * Frontend hooks
@@ -41,6 +40,11 @@ class TypoScriptHook implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @var array
 	 */
 	protected $registers = null;
+	
+	/**
+	 * @var \TYPO3\CMS\Core\Log\LogManager
+	 */
+	protected $logger = null;
 	
 	/**
 	 * Initializes the view helper.
@@ -92,6 +96,7 @@ class TypoScriptHook implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	public function __construct() {
 		$this->configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Configuration\\ConfigurationManager');
+		$this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
 	}
 	
 	/**
@@ -150,7 +155,7 @@ class TypoScriptHook implements \TYPO3\CMS\Core\SingletonInterface {
 			// check
 			if (!$this->isCacheable) {
 				// log
-				LogUtility::notice(sprintf('[Rendering] Clearing cache entry for non-cacheable request "%s".'), \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
+				$this->logger->notice(sprintf('Clearing cache entry for non-cacheable request "%s".'), \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
 				// invalidate
 				$controller->clearPageCacheContent();
 				// reset

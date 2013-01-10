@@ -5,7 +5,6 @@ namespace Tx\Typogento\Core;
 use \Tx\Typogento\Core\Routing\Route;
 use \Tx\Typogento\Core\Routing\Router;
 use \Tx\Typogento\Utility\GeneralUtility;
-use \Tx\Typogento\Utility\LogUtility;
 use \Tx\Typogento\Core\Bootstrap;
 
 /**
@@ -27,11 +26,18 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 	protected $url = null;
 	
 	/**
+	 * @var \TYPO3\CMS\Core\Log\LogManager
+	 */
+	protected $logger = null;
+	
+	/**
 	 * Initializes the application. 
 	 * 
 	 * @return void
 	 */
 	public function __construct() {
+		// create logger
+		$this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
 		// initialize framework
 		Bootstrap::initialize();
 		// setup target url
@@ -133,9 +139,9 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 			// set result
 			$this->url = $router->process($route, $target);
 			// log result
-			LogUtility::debug(
+			$this->logger->debug(
 				sprintf(
-					'[Routing] Rewrite URL "%s" to "%s" using dispatch route "%s".', 
+					'Rewrite URL "%s" to "%s" using dispatch route "%s".', 
 					urldecode($_SERVER['QUERY_STRING']), urldecode($this->url), $route->getId()
 				)
 			);

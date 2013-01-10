@@ -2,7 +2,6 @@
 
 namespace Tx\Typogento\Service\Frontend\User;
 
-use \Tx\Typogento\Utility\LogUtility;
 use \Tx\Typogento\Core\Bootstrap;
 
 
@@ -14,6 +13,10 @@ use \Tx\Typogento\Core\Bootstrap;
  */
 class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 
+	/**
+	 * @var \TYPO3\CMS\Core\Log\LogManager
+	 */
+	protected $logger = null;
 	
 	/**
 	 * Initialize service
@@ -23,7 +26,9 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		if (!parent::init()) {
 			return false;
 		}
-		// init magento
+		// create logger
+		$this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+		// init magento framework
 		try {
 			// init the autoloader
 			Bootstrap::initialize();
@@ -37,7 +42,7 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 				'Tx\\Typogento\\Service\\Frontend\\User\\ReplicationService->postUserLookUp';
 		} catch (\Exception $e) {
 			$this->errorPush(T3_ERR_SV_GENERAL, $e->getMessage());
-			LogUtility::error('[Replication] '.$e->getMessage());
+			$this->logger->error($e->getMessage());
 		}
 
 		return ($this->getLastError() === true);
@@ -59,7 +64,7 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		if ($this->db_user['table'] != 'fe_users') {
 			$e = new Exception(sprintf('The data source "%s" is not supported.', $this->db_user['table']), 1357261473);
 			$this->errorPush(T3_ERR_SV_GENERAL, $e->getMessage());
-			LogUtility::error('[Replication] '.$e->getMessage());
+			$this->logger->error($e->getMessage());
 		}
 	}
 
@@ -92,7 +97,7 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 				return $user->getData();
 			}
 		} catch (\Exception $e) {
-			LogUtility::error('[Replication] '.$e->getMessage());
+			$this->logger->error($e->getMessage());
 		}
 		// return data set
 		return false;
@@ -134,7 +139,7 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			$user->setData($pObj->user);
 			$manager->replicate($user);
 		} catch (\Exception $e) {
-			LogUtility::error('[Replication] '.$e->getMessage());
+			$this->logger->error($e->getMessage());
 		}
 	}
 }

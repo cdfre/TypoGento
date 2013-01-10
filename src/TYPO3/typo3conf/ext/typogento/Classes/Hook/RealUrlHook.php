@@ -2,8 +2,6 @@
 
 namespace Tx\Typogento\Hook;
 
-use \Tx\Typogento\Utility\LogUtility;
-
 /**
  * RealURL hooks
  * 

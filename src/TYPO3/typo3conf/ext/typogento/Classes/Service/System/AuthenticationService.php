@@ -2,7 +2,6 @@
 
 namespace Tx\Typogento\Service\Frontend\User;
 
-use \Tx\Typogento\Utility\LogUtility;
 use \Tx\Typogento\Core\Bootstrap;
 
 /**
@@ -14,6 +13,11 @@ use \Tx\Typogento\Core\Bootstrap;
 class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 	
 	/**
+	 * @var \TYPO3\CMS\Core\Log\LogManager
+	 */
+	protected $logger = null;
+	
+	/**
 	 * Initialize service
 	 * 
 	 */
@@ -22,7 +26,9 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		if (!parent::init()) {
 			return false;
 		}
-		// init magento
+		// create logger
+		$this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+		// init magento framework
 		try {
 			// init the autoloader
 			Bootstrap::initialize();
@@ -32,7 +38,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			\Mage::getSingleton('core/session', array('name' => 'frontend'));
 		} catch (\Exception $e) {
 			$this->errorPush(T3_ERR_SV_GENERAL, $e->getMessage());
-			LogUtility::error('[Authentication]'.$e->getMessage());
+			$this->logger->error($e->getMessage());
 		}
 		
 		return ($this->getLastError() === true);
@@ -54,7 +60,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		if ($this->db_user['table'] != 'fe_users') {
 			$e = new Exception(sprintf('The data source "%s" is not supported.', $this->db_user['table']), 1357260871);
 			$this->errorPush(T3_ERR_SV_GENERAL, $e->getMessage());
-			LogUtility::error('[Authentication] '.$e->getMessage());
+			$this->logger->error($e->getMessage());
 		}
 	}
 	
@@ -91,7 +97,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		} catch (\Exception $e) {
 			// 
 			$this->errorPush(T3_ERR_SV_GENERAL, $e->getMessage());
-			LogUtility::error('[Authentication] '.$e->getMessage());
+			$this->logger->error($e->getMessage());
 			// something went wrong
 			return $code;
 		}
@@ -118,7 +124,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 				return $record;
 			}
 		} catch (\Exception $e) {
-			LogUtility::error('[Authentication] '.$e->getMessage());
+			$this->logger->error($e->getMessage());
 		}
 		
 		return false;
@@ -147,7 +153,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			$session->loginById($pObj->user['tx_typogento_customer']);
 		} catch (\Exception $e) {
 			$e = new Exception(sprintf('Single sign-on has failed for "%s" (%s): %s', $pObj->user['email'], $pObj->user['uid'], $e->getMessage()), 1357261148, $e);
-			LogUtility::error('[Authentication] '.$e->getMessage());
+			$this->logger->error($e->getMessage());
 		}
 	}
 	
