@@ -111,7 +111,7 @@ class RouteHandler implements \Tx\Typogento\Core\Routing\RouteHandlerInterface {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($hook, $params, $renderer);
 			}
 		} else {
-			throw new Exception(sprintf('The link type "%s" is not supported', $type), 1356840730);
+			throw new Exception(sprintf('Invalid URL "%s".', $params['linktxt']), 1356840730);
 		}
 	}
 

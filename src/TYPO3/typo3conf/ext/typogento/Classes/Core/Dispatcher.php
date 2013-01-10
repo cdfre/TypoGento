@@ -5,6 +5,7 @@ namespace Tx\Typogento\Core;
 use \Tx\Typogento\Core\Routing\Route;
 use \Tx\Typogento\Core\Routing\Router;
 use \Tx\Typogento\Utility\GeneralUtility;
+use \Tx\Typogento\Utility\LogUtility;
 use \Tx\Typogento\Core\Bootstrap;
 
 /**
@@ -101,7 +102,7 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 			}
 		} catch (\Exception $e) {
 			// rethrow the exception
-			throw new Exception(sprintf('An error has occurred during processing the action URL "%s": %s', $this->url, $e->getMessage()), 1356845643, $e);
+			throw new Exception(sprintf('Processing the action URL "%s" has failed: %s', $this->url, $e->getMessage()), 1356845643, $e);
 		}
 	}
 	
@@ -146,7 +147,7 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 				)
 			);
 		} catch (\Exception $e) {
-			throw new Exception(sprintf('The routing system is unable to resolve the action URL: %s', $e->getMessage()), 1356845494, $e);
+			throw new Exception(sprintf('Unable to resolve the action URL: %s', $e->getMessage()), 1356845494, $e);
 		}
 	}
 
@@ -213,7 +214,7 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 			// ...
 			$app->loadAreaPart(\Mage_Core_Model_App_Area::AREA_GLOBAL, \Mage_Core_Model_App_Area::PART_EVENTS);
 		} catch (\Exception $e) {
-			throw new Exception(sprintf('The following error has occurred during initializing the application: %s', $e->getMessage()), 1356845702, $e);
+			throw new Exception(sprintf('Initializing the application has failed: %s', $e->getMessage()), 1356845702, $e);
 		}
 	}
 }
