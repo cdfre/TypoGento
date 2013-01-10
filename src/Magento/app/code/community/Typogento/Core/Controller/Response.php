@@ -11,37 +11,6 @@ class Typogento_Core_Controller_Response extends Mage_Core_Controller_Response_H
 	
 	/**
 	 * Echo the body segments
-	 *
-	 * @return void
-	 */
-	/*public function appendBody($output, $name = null) {
-		
-		$this->ajaxHandler($output);
-		
-		return parent::appendBody($output, $name);
-	}*/
-	
-	/**
-	 * Handle Ajax Requests
-	 *
-	 * @param string $output
-	 */
-	/*protected function ajaxHandler($output) {
-		// 
-		if (!Mage::app()->getFrontController()->getRequest()->isXmlHttpRequest()) {
-			return;
-		}
-		// 
-		if ($GLOBALS['TSFE']->renderCharset) {
-			header('Content-Type: text/html; charset='.$GLOBALS['TSFE']->renderCharset);
-		} 
-		// 
-		echo $output;
-		//exit;
-	}*/
-	
-	/**
-	 * Echo the body segments
 	 * 
 	 * @return void
 	 */
@@ -51,24 +20,12 @@ class Typogento_Core_Controller_Response extends Mage_Core_Controller_Response_H
 	}
 	
 	/**
-	 * Send the response and exit
-	 */
-	/*public function sendResponse() {
-		
-		parent::sendResponse();
-		
-		if ($this->isRedirect()) {
-			//exit ();
-		}
-	}*/
-	
-	/**
 	 * Set Body
 	 *
 	 * @param string $content
 	 * @param string $name
-	 * 
 	 * @return $this
+	 * @todo Check if still necessary
 	 */
 	public function setBody($content, $name = null) {
 		// handle Checkout redirects
@@ -97,26 +54,12 @@ class Typogento_Core_Controller_Response extends Mage_Core_Controller_Response_H
 	 * @return Zend_Controller_Response_Abstract
 	 */
 	public function setRedirect($url, $code = 302) {
-		// set last URL for the _isUrlInternal workaround
-		if ($url == Mage::app()->getStore()->getBaseUrl() && $this->lastUrl){
-			$url = $this->lastUrl;
-		}
-		
-		$url = t3lib_div::locationHeaderUrl($url);
-		
+		$url = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($url);
 		return parent::setRedirect($url, $code);
-		
-		//$this->canSendHeaders(true);
-		//$this->setHeader ( 'Location', t3lib_div::locationHeaderUrl ( $url ), true )->setHttpResponseCode ( $code );
-		//$this->sendHeaders();
-		//$this->_isRedirect = true;
-		
-		//header('Location: ' . t3lib_div::locationHeaderUrl($url));
-		//exit;
 	}
 	
 	/**
-	 * Check if this is a Ajax response
+	 * Check if this is an Ajax response
 	 * 
 	 * @return bool True on an Ajax response otherwise false.
 	 */
@@ -137,7 +80,7 @@ class Typogento_Core_Controller_Response extends Mage_Core_Controller_Response_H
 	}
 	
 	/**
-	 * Check if this is HTTP 404 response
+	 * Check if this is a HTTP 404 response
 	 * 
 	 * @return boolean False on HTTP 404 otherwise true.
 	 */
