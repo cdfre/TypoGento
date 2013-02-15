@@ -59,24 +59,6 @@ class ConfigurationManager implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	protected $merges = array();
 	
-	/**
-	 * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
-	 */
-	protected $frontend = null;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $frontend The page frontend
-	 */
-	public function __construct(\TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $frontend = null) {
-		if ($frontend == null) {
-			$this->frontend = $GLOBALS['TSFE'];
-		} else {
-			$this->frontend = $frontend;
-		}
-	}
-	
 	public function has($path, $section = self::PAGE) {
 		$section = (int)$section;
 		$path = (string)$path;
@@ -198,48 +180,48 @@ class ConfigurationManager implements \TYPO3\CMS\Core\SingletonInterface {
 				$this->sections[$section] = &$configuration;
 				break;
 			case self::PAGE:
-				if (!isset($this->frontend->config)) {
+				if (!isset($GLOBALS['TSFE']->config)) {
 					throw new Exception('Unknown error.', 1356837083);
 				}
 				
-				if (!isset($this->frontend->config['config']['tx_typogento.'])) {
+				if (!isset($GLOBALS['TSFE']->config['config']['tx_typogento.'])) {
 					throw new Exception('Missing the page related configuration (config.tx_typogento) in the TypoScript frontend setup.', 1356837422);
 				}
 			
-				$this->sections[$section] = &$this->frontend->config['config']['tx_typogento.'];
+				$this->sections[$section] = &$GLOBALS['TSFE']->config['config']['tx_typogento.'];
 				break;
 			case self::PLUGIN:
-				if (!isset($this->frontend->tmpl->setup)) {
+				if (!isset($GLOBALS['TSFE']->tmpl->setup)) {
 					throw new Exception('The TypoScript frontend setup is not initialized.', 1356837053);
 				}
 			
-				if (!isset($this->frontend->tmpl->setup['plugin.']['tx_typogento.']['settings.'])) {
+				if (!isset($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_typogento.']['settings.'])) {
 					throw new Exception('Missing the plugin related configuration (plugin.tx_typogento.settings) in the TypoScript frontend setup.', 1356837022);
 				}
 			
-				$this->sections[$section] = &$this->frontend->tmpl->setup['plugin.']['tx_typogento.']['settings.'];
+				$this->sections[$section] = &$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_typogento.']['settings.'];
 				break;
 			case self::CACHE:
-				if (!isset($this->frontend->config)) {
+				if (!isset($GLOBALS['TSFE']->config)) {
 					throw new Exception('Unknown error.', 1356836494);
 				}
 				
-				if (!isset($this->frontend->config['tx_typogento_cache.'])) {
-					$this->frontend->config['tx_typogento_cache.'] = array();
+				if (!isset($GLOBALS['TSFE']->config['tx_typogento_cache.'])) {
+					$GLOBALS['TSFE']->config['tx_typogento_cache.'] = array();
 				}
 					
-				$this->sections[$section] = &$this->frontend->config['tx_typogento_cache.'];
+				$this->sections[$section] = &$GLOBALS['TSFE']->config['tx_typogento_cache.'];
 				break;
 			case self::SYSTEM:
-					if (!isset($this->frontend->config)) {
+					if (!isset($GLOBALS['TSFE']->config)) {
 						throw new Exception('Unknown error.', 1356836524);
 					}
 				
-					if (!isset($this->frontend->config['config'])) {
+					if (!isset($GLOBALS['TSFE']->config['config'])) {
 						throw new Exception('Missing the configuration (config) in the TypoScript frontend setup.', 1356836323);
 					}
 						
-					$this->sections[$section] = &$this->frontend->config['config'];
+					$this->sections[$section] = &$GLOBALS['TSFE']->config['config'];
 					break;
 		}
 		// vallidate
