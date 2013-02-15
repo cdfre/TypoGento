@@ -21,8 +21,8 @@ class WiziconHook {
 	function proc($items) {
 		$items['plugins_tx_typogento_pi1'] = array(
 			'icon' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('typogento').'Resources/Public/Icons/wizard.png',
-			'title' => LocalizationUtility::translate('pi1_title'),
-			'description' => LocalizationUtility::translate('pi1_description'),
+			'title' => LocalizationUtility::translate('pi1.title.default'),
+			'description' => LocalizationUtility::translate('pi1.description.default'),
 			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=typogento_pi1'
 		);
 

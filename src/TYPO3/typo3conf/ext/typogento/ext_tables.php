@@ -105,7 +105,7 @@ $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_pi1'] = 'pi_f
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
 	$_EXTKEY,
 	'Pi1',
-	'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:pi1_title'
+	'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:pi1.title.default'
 );
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(

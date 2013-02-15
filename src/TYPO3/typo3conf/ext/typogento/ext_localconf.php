@@ -140,7 +140,7 @@ if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento'
  */
 $TYPO3_CONF_VARS['SC_OPTIONS']['scheduler']['tasks']['Tx\\Typogento\\Task\\ClearSoapCacheTask'] = array(
 	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:lib_clear_soap_cache_task_name',
-	'description'      => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:lib_clear_soap_cache_task_description'
+	'title'            => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:task.title.clear_soap_cache',
+	'description'      => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:task.description.cear_soap_cache'
 );
 ?>

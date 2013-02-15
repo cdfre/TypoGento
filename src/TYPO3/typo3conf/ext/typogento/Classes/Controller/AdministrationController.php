@@ -74,7 +74,7 @@ class AdministrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionC
 		} catch(\Exception $e) {
 			// log error
 			$this->log(
-				'mod1_access_failed_title', 
+				'mod1.title.access_failed', 
 				$e->getMessage(),
 				FlashMessage::ERROR
 			);
@@ -91,8 +91,8 @@ class AdministrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionC
 			// force accounts exist
 			if (!isset($this->user) || !$this->user->getId()) {
 				$this->log(
-					'mod1_login_failed_title', 
-					'mod1_account_not_found_error',
+					'mod1.title.login_failed', 
+					'mod1.error.account_not_found',
 					FlashMessage::ERROR
 				);
 				return;
@@ -100,8 +100,8 @@ class AdministrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionC
 			// force session exist
 			if (!isset($this->session)) {
 				$this->log(
-					'mod1_login_failed_title', 
-					'mod1_initializing_session_failed_error',
+					'mod1.title.login_failed', 
+					'mod1.error.initializing_session_failed',
 					FlashMessage::ERROR
 				);
 				return;
@@ -111,8 +111,8 @@ class AdministrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionC
 			// force account roles equal
 			if ($this->user->getRole()->getId() != $data['tx_typogento_group']) {
 				$this->log(
-					'mod1_access_denied_title',
-					'mod1_account_group_not_set_error',
+					'mod1.title.access_denied',
+					'mod1.error.account_group_not_set',
 					FlashMessage::ERROR
 				);
 				return;
@@ -120,15 +120,15 @@ class AdministrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionC
 			// force magento account is active
 			if ($this->user->getIsActive() != '1') {
 				$this->log(
-					'mod1_access_denied_title', 
-					'mod1_account_not_active_error',
+					'mod1.title.access_denied', 
+					'mod1.error.account_not_active',
 					FlashMessage::ERROR);
 			}
 			// force magento account assigned to a role
 			if (!$this->user->hasAssigned2Role($this->user->getId())) {
 				$this->log(
-					'mod1_access_denied_title',
-					'mod1_account_role_not_set_error',
+					'mod1.title.access_denied',
+					'mod1.error.account_role_not_set',
 					FlashMessage::ERROR
 				);
 			}
@@ -166,7 +166,7 @@ class AdministrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionC
 			}
 			// log error
 			$this->log(
-				'mod1_login_failed_title', 
+				'mod1.title.login_failed', 
 				$e->getMessage(),
 				FlashMessage::ERROR
 			);
@@ -196,7 +196,7 @@ class AdministrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionC
 		} catch(\Exception $e) {
 			// log error
 			$this->log(
-				'mod1_redirect_failed_title', 
+				'mod1.title.redirect_failed', 
 				$e->getMessage(),
 				FlashMessage::ERROR
 			);
@@ -264,7 +264,7 @@ class AdministrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionC
 		} catch(\Exception $e) {
 			// log error
 			$this->log(
-				'mod1_initalizing_failed_title',
+				'mod1.title.initalizing_failed',
 				$e->getMessage(),
 				FlashMessage::ERROR
 			);
@@ -280,16 +280,16 @@ class AdministrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionC
 		// force typo3 account data are set
 		if (!isset($GLOBALS['BE_USER']->user)) {
 			$this->log(
-				'mod1_access_denied_title', 
-				'mod1_be_user_not_set_error',
+				'mod1.title.access_denied', 
+				'mod1.error.be_user_not_set',
 				FlashMessage::ERROR
 			);
 		}
 		// force magento group membership for the typo3 account is set
 		if (empty($GLOBALS['BE_USER']->user['tx_typogento_group'])) {
 			$this->log(
-				'mod1_access_denied_title', 
-				'mod1_account_membership_not_set_error',
+				'mod1.title.access_denied', 
+				'mod1.error.account_membership_not_set',
 				FlashMessage::ERROR
 			);
 		}
