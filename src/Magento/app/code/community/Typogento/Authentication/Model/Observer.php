@@ -15,10 +15,14 @@ class Typogento_Authentication_Model_Observer {
 	 * @param Varien_Event_Observer $observer
 	 */
 	public static function customerLogin($observer) {
-		//
+		// create helper
 		$helper = Mage::helper('typogento_core/typo3');
 		// return if typo3 frontend not active
 		if (!$helper->isFrontendActive()) {
+			return $this;
+		}
+		// check login status
+		if (isset($GLOBALS['TSFE']->fe_user->user['uid'])) {
 			return $this;
 		}
 		// get customer
@@ -42,10 +46,14 @@ class Typogento_Authentication_Model_Observer {
 	 * @param unknown_type $observer
 	 */
 	public static function customerLogout($observer) {
-		//
+		// create helper
 		$helper = Mage::helper('typogento_core/typo3');
 		// return if typo3 frontend not active
 		if (!$helper->isFrontendActive()) {
+			return $this;
+		}
+		// check login status
+		if (!isset($GLOBALS['TSFE']->fe_user->user['uid'])) {
 			return $this;
 		}
 		// get logoff hooks
