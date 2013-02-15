@@ -70,7 +70,7 @@ class Typogento_Replication_Model_Customer_Provider extends Typogento_Replicatio
 		$target = null;
 		
 		// create frontend user model
-		$target = Mage::getModel('typogento/typo3_frontend_user');
+		$target = Mage::getModel('typogento_replication/typo3_frontend_user');
 		// validate source repository
 		if ($target->findEmailDuplicates()) {
 			throw new Exception(Mage::helper('typogento_replication')->__('Duplicate email addresses exist in TYPO3 fe_users'));
