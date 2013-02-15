@@ -129,11 +129,11 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 			$target = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Environment');
 			// register variables
 			$target->register('_GET', $_GET);
-			//$target->register('postVars', $_POST);
+			$target->register('_POST', $_POST);
 			$target->register('QUERY_STRING', $_SERVER['QUERY_STRING']);
 			// overwrite variables
 			$target->set('_GET', ($_GET['tx_typogento'])?$_GET['tx_typogento']:array());
-			//$target->postVars = isset($_POST['tx_typogento'])?$_POST['tx_typogento']:array();
+			$target->set('_POST', isset($_POST['tx_typogento'])?$_POST['tx_typogento']:array());
 			$target->set('QUERY_STRING', \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $target->get('_GET'), '', false, true));
 			// lookup matching route
 			$route = $router->lookup(Router::ROUTE_SECTION_DISPATCH, null);
@@ -144,7 +144,8 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 				sprintf(
 					'Rewrite URL "%s" to "%s" using dispatch route "%s".', 
 					urldecode($_SERVER['QUERY_STRING']), urldecode($this->url), $route->getId()
-				)
+				), 
+				array_merge_recursive($_GET, $_POST)
 			);
 		} catch (\Exception $e) {
 			throw new Exception(sprintf('Unable to resolve the action URL: %s', $e->getMessage()), 1356845494, $e);
@@ -165,12 +166,12 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 		$environment = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Environment');
 		// register variables
 		$environment->register('_GET', $_GET);
-		//$environment->register('postVars', $_POST);
+		$environment->register('_POST', $_POST);
 		$environment->register('QUERY_STRING', $_SERVER['QUERY_STRING']);
 		$environment->register('REQUEST_URI', $_SERVER['REQUEST_URI']);
 		// overwrite variables
 		$environment->set('_GET', isset($query)?$query:array());
-		//$environment->postVars = isset($_POST['tx_typogento'])?$_POST['tx_typogento']:array();
+		$environment->set('_POST', isset($_POST['tx_typogento'])?$_POST['tx_typogento']:array());
 		$environment->set('QUERY_STRING', \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $environment->get('_GET'), '', false, true));
 		$environment->set('REQUEST_URI', $path.'?'.trim($environment->get('REQUEST_URI'), '&'));
 		// set result

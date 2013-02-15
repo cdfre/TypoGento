@@ -1,5 +1,0 @@
-config.tx_typogento {
-}
-
-plugin.tx_typogento_pi1.settings {
-}

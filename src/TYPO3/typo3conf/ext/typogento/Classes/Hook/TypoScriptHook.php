@@ -7,10 +7,9 @@ use \Tx\Typogento\ViewHelper\PageHeaderViewHelper;
 use \Tx\Typogento\Core\Bootstrap;
 
 /**
- * Frontend hooks
- * 
  * Observes TYPO3 frontend hooks.
  * 
+ * @todo Should be encapsulated in the appropriate controllers.
  * @author Artus Kolanowski <artus@ionoi.net>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
@@ -47,7 +46,7 @@ class TypoScriptHook implements \TYPO3\CMS\Core\SingletonInterface {
 	protected $logger = null;
 	
 	/**
-	 * Initializes the view helper.
+	 * Initializes the view helper for the Magento page header.
 	 * 
 	 * @throws Exception
 	 */
@@ -61,7 +60,7 @@ class TypoScriptHook implements \TYPO3\CMS\Core\SingletonInterface {
 			|| (bool)$this->configuration->get('disableAllHeaderCode', false, ConfigurationManager::SYSTEM)) {
 			return;
 		}
-		// interface
+		// dispatcher
 		if ($this->dispatcher == null) {
 			try {
 				// initialize
@@ -92,7 +91,7 @@ class TypoScriptHook implements \TYPO3\CMS\Core\SingletonInterface {
 	}
 	
 	/**
-	 * Initializes the configuration manager.
+	 * Initializes the configuration manager and the logger.
 	 */
 	public function __construct() {
 		$this->configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Configuration\\ConfigurationManager');
@@ -100,7 +99,7 @@ class TypoScriptHook implements \TYPO3\CMS\Core\SingletonInterface {
 	}
 	
 	/**
-	 * Renders the page header.
+	 * Renders the Magento page header and the JS rewriter.
 	 *
 	 * @param array $params
 	 * @param \TYPO3\CMS\Core\Page\PageRenderer $renderer
@@ -120,16 +119,16 @@ class TypoScriptHook implements \TYPO3\CMS\Core\SingletonInterface {
 			$compress = 0;
 			$import = 0;
 			// configuration
-			if ($configuration->get('header.compressJs', false)) {
+			if ($configuration->get('header.resources.js.compress', false)) {
 				$compress ^= PageHeaderViewHelper::COMPRESS_JS;
 			}
-			if ($configuration->get('header.compressCss', false)) {
+			if ($configuration->get('header.resources.css.compress', false)) {
 				$compress ^= PageHeaderViewHelper::COMPRESS_CSS;
 			}
-			if ($configuration->get('header.importJs', false)) {
+			if ($configuration->get('header.resources.js.import', false)) {
 				$import ^= PageHeaderViewHelper::IMPORT_JS;
 			}
-			if ($configuration->get('header.importCss', false)) {
+			if ($configuration->get('header.resources.css.import', false)) {
 				$import ^= PageHeaderViewHelper::IMPORT_CSS;
 			}
 			// render header
@@ -138,6 +137,13 @@ class TypoScriptHook implements \TYPO3\CMS\Core\SingletonInterface {
 			// re-throw exception
 			// @todo typoscript configuration
 			throw $e;
+		}
+		// include
+		if ($configuration->get('rewriter.enable', true)) {
+			$baseUri = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('typogento');
+			$renderer->addJsFile($baseUri.'Resources/Public/Js/uri.js');
+			$renderer->addJsFile($baseUri.'Resources/Public/Js/rewriter.js');
+			$renderer->addJsInlineCode('TypoGento Rewriter Bootstrap', $configuration->get('rewriter.bootstrap'));
 		}
 	}
 	
@@ -167,7 +173,7 @@ class TypoScriptHook implements \TYPO3\CMS\Core\SingletonInterface {
 	}
 	
 	/**
-	 * Prepares page configuration register.
+	 * Prepares TypoScript configuration registers.
 	 * 
 	 * @param array $params
 	 * @param \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $controller

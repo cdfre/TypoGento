@@ -115,8 +115,14 @@ $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_pi1'] = 'pi_f
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
 	$_EXTKEY,
-	'Configuration/TypoScript',
-	'TypoGento'
+	'Configuration/TypoScript/Base',
+	'TypoGento Base Setup'
+);
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+	$_EXTKEY,
+	'Configuration/TypoScript/Default',
+	'TypoGento Default Setup'
 );
 
 

@@ -1,0 +1,41 @@
+ # Page related stuff
+config.tx_typogento {
+}
+
+ # default plugin
+plugin.tx_typogento {
+	view {
+		templateRootPath = {$plugin.tx_typogento.view.templateRootPath}
+		partialRootPath  = {$plugin.tx_typogento.view.partialRootPath}
+		layoutRootPath   = {$plugin.tx_typogento.view.layoutRootPath}
+	}
+	settings {
+		mode  = block
+		block = content
+		cache = 1
+	}
+}
+
+ # default plugin widget
+plugin.tx_typogento.widgets {
+	defaultWidget = USER
+	defaultWidget {
+		
+		userFunc      = TYPO3\CMS\Extbase\Core\Bootstrap->run
+		pluginName    = Pi1
+		extensionName = Typogento
+		vendorName    = Tx
+		controller    = Block
+		action        = index
+ 
+		switchableControllerActions {
+			Block {
+				1 = index
+			}
+		}
+ 
+		settings    =< plugin.tx_typogento.settings
+		persistence =< plugin.tx_typogento.persistence
+		view        =< plugin.tx_typogento.view
+	}
+}

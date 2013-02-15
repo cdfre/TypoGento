@@ -1,0 +1,60 @@
+ # Includes the base constants
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:typogento/Configuration/TypoScript/Base/constants.txt">
+
+ # Constants for the default setup
+plugin.tx_typogento {
+
+	 # customsubcategory=header=LLL:EXT:typogento/Resources/Private/Language/locallang.xml:typoscript.constant.category.header
+	header {
+
+		 # Constants for the Magento resources
+		resources {
+
+			 # cat=plugin.typogento/header/a; type=boolean; label=Compress CSS and JS resources
+			compression = 1
+
+			 # cat=plugin.typogento/header/b; type=boolean; label=Import CSS and JS resources
+			import = 1
+		}
+
+		 # Constants for the TypoScript registers
+		register {
+
+			 # cat=plugin.typogento/header/c; type=boolean; label=Enable TypoScript registers
+			enable = 1
+
+			 # cat=plugin.typogento/header/d; type=string; label=TypoScript register fields
+			fields = title,description
+		}
+	}
+
+	 # customsubcategory=content=LLL:EXT:typogento/Resources/Private/Language/locallang.xml:typoscript.constant.category.content
+	content {
+		
+		 # cat=plugin.typogento/content/a; type=int+; label=Content element column
+		column = 0
+
+		 # cat=plugin.typogento/content/b; type=int+; label=Content element position
+		position = 0
+		
+		 # Constants for the TypoScript registers
+		register {
+
+			 # cat=plugin.typogento/content/c; type=boolean; label=Enable TypoScript registers
+			enable = 1
+
+			 # cat=plugin.typogento/content/d; type=string; label=TypoScript register fields
+			fields = id,route,controller,action,cache
+		}
+	}
+
+	 # customsubcategory=ajax=LLL:EXT:typogento/Resources/Private/Language/locallang.xml:typoscript.constant.category.ajax
+	ajax {
+		
+		 # cat=plugin.typogento/ajax/a; type=int+; label=Page type number
+		typeNumber = 1
+
+		 # cat=plugin.typogento/ajax/b; type=string; label=Page content type
+		contentType = Content-Type: application/json; charset=utf-8
+	}
+}

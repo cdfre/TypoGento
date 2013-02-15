@@ -75,6 +75,10 @@
 			<label index="lib_store_not_resolved_error">The store '%s' could not be resolved: %s</label>
 			<label index="lib_clear_soap_cache_task_name">Clear the Magento API cache</label>
 			<label index="lib_clear_soap_cache_task_description">Clears all cached responses of Magento API calls.</label>
+			
+			<label index="typoscript.constant.category.ajax">Ajax Requests</label>
+			<label index="typoscript.constant.category.header">Header Integration</label>
+			<label index="typoscript.constant.category.content">Content Plugin</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 		</languageKey>

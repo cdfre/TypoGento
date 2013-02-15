@@ -5,11 +5,9 @@ namespace Tx\Typogento\ViewHelper;
 use \Tx\Typogento\Configuration\ConfigurationManager;
 
 /**
- * Page header view helper
+ * Integrates the Magento html page header into the current TYPO3 page.
  * 
- * Integrate the Magento html page header into the current TYPO3 page.
- * 
- * @uses Mage, Mage_Page_Block_Html_Head, tslib_fe, \TYPO3\CMS\Core\Page\PageRenderer, tx_typogento_interface, tx_typogento_router, ConfigurationManager
+ * @author Artus Kolanowski <artus@ionoi.net>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
 class PageHeaderViewHelper {
@@ -47,11 +45,6 @@ class PageHeaderViewHelper {
 	 */
 	protected $dispatcher = null;
 	
-	/**
-	 * @var \Tx\Typogento\Configuration\ConfigurationManager
-	 */
-	protected $configuration = null;
-	
 	protected static $types = array(
 		'skin_js'  => array('skin', 'js'),
 		'skin_css' => array('skin', 'css'),
@@ -70,7 +63,6 @@ class PageHeaderViewHelper {
 		$name = (string)$name;
 		// get the interface
 		$this->dispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Typogento\\Core\\Dispatcher');
-		$this->dispatcher->dispatch();
 		// open the interface
 		$this->dispatcher->getEnvironment()->initialize();
 		// initialize
@@ -92,8 +84,7 @@ class PageHeaderViewHelper {
 			$this->block = \Mage::app()->getLayout()->getBlock($name);
 			// check the header block exists
 			if (!$this->block) {
-				throw new Exception(sprintf('The block "%s" was not rendered for the requested URL "%s".', $name, $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), 1356932029
-				);
+				throw new Exception(sprintf('The block "%s" was not rendered for the requested URL "%s".', $name, $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), 1356932029);
 			}
 			// check the header block type
 			if (!($this->block instanceof \Mage_Page_Block_Html_Head)) {

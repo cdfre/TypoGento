@@ -1,0 +1,313 @@
+ # Includes the base setup
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:typogento/Configuration/TypoScript/Base/setup.txt">
+
+ # Page header, runtime registers and routing
+config.tx_typogento {
+	
+	 # Integrates the Magento page header
+	header {
+	
+		 # Enables the integration
+		enable = 1
+		
+		 # Resource handling
+		resources {
+		
+			 # Magento CSS resources
+			css {
+			
+				 # Enables resource compression (see http://wiki.typo3.org/TSref/CONFIG)
+				compress = {$plugin.tx_typogento.header.resources.compression}
+				
+				 # Imports resources into TYPO3 cache directory (typo3temp)
+				import = {$plugin.tx_typogento.header.resources.import}
+			}
+			
+			 # Magento JS resources
+			js {
+			
+				 # Enables resource compression (see http://wiki.typo3.org/TSref/CONFIG)
+				compress = {$plugin.tx_typogento.header.resources.compression}
+				
+				 # Imports resources into TYPO3 cache directory (typo3temp)
+				import = {$plugin.tx_typogento.header.resources.import}
+			}
+		}
+		
+		 # TypoScript registers (e.g. register:tx_typogento.header.title)
+		register {
+		
+			 # Enables the registers
+			enable = 1
+			
+			 # Fields to provide
+			fields = {$plugin.tx_typogento.header.fields}
+		}
+	}
+	
+	 # Rewrites HTML forms and Ajax requests on client side
+	rewriter {
+		
+		 # Enables the rewriter
+		enable = 1
+		
+		 # Bootstrap code
+		bootstrap (
+			document.observe('dom:loaded', function() {
+				// rewrite ajax requests
+				Rewriter.inject();
+				// rewrite html forms
+				$$('.magento form').each(function(element) {
+					new Rewriter(element);
+				});
+			});
+		)
+	}
+	
+	 # Configures the TypoGento content plugin
+	content {
+		
+		 # Uses page column 'normal' for content plugins
+		column = {$plugin.tx_typogento.content.column}
+		
+		 # Uses first content plugin in column 'normal'
+		position = {$plugin.tx_typogento.content.position}
+		
+		 # TypoScript registers (e.g. register:tx_typogento.content.route)
+		register {
+		
+			 # Enables the registers
+			enable = {$plugin.tx_typogento.content.register.enable}
+			
+			 # Fields to provide
+			fields = {$plugin.tx_typogento.content.register.fields}
+		}
+	}
+	
+	 # Defines the TypoGento routes for dispatching and rendering
+	routes {
+		
+		 # Dispatch route for GET parameters
+		10 {
+			
+			 # True if GP:tx_typogento|route and GP:tx_typogento|controller are set
+			filter {
+				isFalse.cObject = COA
+				isFalse.cObject {
+					10 = TEXT
+					10.value = 1
+					10.if.isFalse.data = GP:tx_typogento|route
+					20 = TEXT
+					20.value = 1
+					20.if.isFalse.data = GP:tx_typogento|controller
+				}
+			}
+			
+			 # Use the GET parameters
+			target {
+				parameter.cObject = COA
+				parameter.cObject {
+					10 = TEXT
+					10 {
+						wrap = mage:/|/
+						data = GP:route
+					}
+					20 = TEXT
+					20 {
+						wrap = |/
+						data = GP:controller
+					}
+					30 = TEXT
+					30 {
+						wrap = |/
+						value = index
+						override.data = GP:action
+					}
+					40 = TEXT
+					40 {
+						wrap = id/|/
+						data = GP:id
+						if.isTrue.data = GP:id
+					}
+				}
+				
+				 # Excludes primary route parameters (see above)
+				addQueryString = 1
+				addQueryString.exclude = route,controller,action,id
+			}
+			
+			 # Dispatch route
+			section = dispatch
+			
+			 # Top priority
+			priority = 2
+		}
+		
+		 # Dispatch route for FlexForm parameters
+		20 {
+			
+			 # True if register:tx_typogento.content.route and register:tx_typogento.content.controller are set
+			filter {
+				isFalse.cObject = COA
+				isFalse.cObject {
+					10 = TEXT
+					10.value = 1
+					10.if.isFalse.data = register:tx_typogento.content.route
+					20 = TEXT
+					20.value = 1
+					20.if.isFalse.data = register:tx_typogento.content.controller
+				}
+			}
+			
+			 # Use the FlexForm parameters
+			target {
+				
+				parameter.cObject = COA
+				parameter.cObject {
+					10 = TEXT
+					10 {
+						wrap = mage:/|/
+						data = register:tx_typogento.content.route
+					}
+					20 = TEXT
+					20 {
+						wrap = |/
+						data = register:tx_typogento.content.controller
+					}
+					30 = TEXT
+					30 {
+						wrap = |/
+						value = index
+						override.data = register:tx_typogento.content.action
+					}
+					40 = TEXT
+					40 {
+						wrap = id/|/
+						data = register:tx_typogento.content.id
+						if.isTrue.data = register:tx_typogento.content.id
+					}
+				}
+				
+				 # Excludes primary route parameters (see above)
+				addQueryString = 1
+				addQueryString.exclude = route,controller,action,id
+			}
+			
+			 # Dispatch route
+			section = dispatch
+			
+			 # Second highest priority
+			priority = 1
+		}
+		
+		 # Fallback dispatch route
+		30 {
+			
+			 # Always true
+			filter {
+				isTrue = 1
+			}
+			
+			 # Use constant route
+			target {
+				parameter = mage:/cms/index/index
+				
+				 # Disable query string
+				addQueryString = 0
+			}
+			
+			 # Dispatch route
+			section = dispatch
+			
+			 # Lowest priority
+			priority = 0
+		}
+		
+		 # Generic render route
+		40 {
+			
+			 # Always true
+			filter.isTrue = 1
+			
+			 # Link to the current page including almost all query parameter
+			target {
+				
+				 # Targets the current page
+				parameter.data = TSFE:id
+				
+				 # Adds all query parameter except the SID
+				addQueryString = 1
+				addQueryString.exclude = tx_typogento[SID]
+		
+			}
+			
+			 # Sets the route section
+			section = render
+		}
+		
+		 # Render route for the Ajax action URLs
+		50 {
+			
+			 # See http://wiki.typo3.org/TSref/if
+			filter {
+			
+				 # Filters all Ajax actions
+				value = /checkout/onepage/saveMethod/,/checkout/onepage/progress/,/checkout/onepage/saveBilling/,/checkout/onepage/getAdditional/,/checkout/onepage/saveShipping/,/checkout/onepage/saveShippingMethod/,/checkout/onepage/savePayment/,/checkout/onepage/saveOrder/
+				isInList.dataWrap = /{GP:route}/{GP:controller}/{GP:action}/
+			}
+			
+			 # See http://wiki.typo3.org/TSref/typolink
+			target {
+				
+				 # Targets the current page
+				parameter.data = TSFE:id
+				
+				 # Adds all query parameter
+				addQueryString = 1
+				
+				 # Sets the type number for ajax
+				additionalParams.cObject = TEXT
+				additionalParams.cObject.value = &type={$plugin.tx_typogento.ajax.typeNumber}
+			}
+			
+			 # Sets the route section
+			section = render
+			
+			 # Sets the priority higher as default
+			priority = 1
+		}
+	}
+}
+
+ # Ajax page
+ajax = PAGE
+ajax {
+	
+	 # Page type number
+	typeNum = {$plugin.tx_typogento.ajax.typeNumber}
+	
+	 # Page configuration
+	config {
+		
+		 # Disable header code
+		disableAllHeaderCode = 1
+		
+		 # Set content type 
+		additionalHeaders = {$plugin.tx_typogento.ajax.contentType}
+	}
+	
+	 # TypoGento plugin as page output
+	10 < plugin.tx_typogento.widgets.defaultWidget
+	10 {
+		
+		 # TypoGento plugin settings
+		settings {
+			
+			 # Disable caching
+			cache = 0
+			
+			 # Enable full page output
+			mode = page
+		}
+	}
+}

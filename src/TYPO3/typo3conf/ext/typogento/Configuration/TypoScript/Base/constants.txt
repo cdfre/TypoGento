@@ -1,0 +1,13 @@
+ # Constants for the base setup
+plugin.tx_typogento {
+
+	 # Constants for the TypoGento plugin
+	view {
+		 # cat=plugin.typogento/file/a; type=string; label=Path to template root
+		templateRootPath = EXT:typogento/Resources/Private/Templates/
+		 # cat=plugin.typogento/file/b; type=string; label=Path to template partials
+		partialRootPath = EXT:typogento/Resources/Private/Partials/
+		 # cat=plugin.typogento/file/c; type=string; label=Path to template layouts
+		layoutRootPath = EXT:typogento/Resources/Private/Layouts/
+	}
+}
