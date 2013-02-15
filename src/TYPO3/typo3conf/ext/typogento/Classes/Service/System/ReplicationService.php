@@ -1,6 +1,6 @@
 <?php 
 
-namespace Tx\Typogento\Service\Frontend\User;
+namespace Tx\Typogento\Service\System;
 
 use \Tx\Typogento\Core\Bootstrap;
 
@@ -19,7 +19,9 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 	protected $logger = null;
 	
 	/**
-	 * Initialize service
+	 * Initializes service.
+	 * 
+	 * @return boolean
 	 */
 	public function init() {
 		// skip if parent init failed
@@ -35,11 +37,7 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			// init the application
 			\Mage::app();
 			// register post user lookup hook
-			if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp'])) {
-				$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp'] = array();
-			}
-			$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp'][__CLASS__] =
-				'Tx\\Typogento\\Service\\Frontend\\User\\ReplicationService->postUserLookUp';
+			
 		} catch (\Exception $e) {
 			$this->errorPush(T3_ERR_SV_GENERAL, $e->getMessage());
 			$this->logger->error($e->getMessage());
@@ -51,20 +49,22 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 	/**
 	 * Initialize authentication service
 	 *
-	 * @param	string		Subtype of the service which is used to call the service.
-	 * @param	array		Submitted login form data
-	 * @param	array		Information array. Holds submitted form data etc.
-	 * @param	object		Parent object
-	 * @return	void
+	 * @param string Subtype of the service which is used to call the service.
+	 * @param array Submitted login form data
+	 * @param array Information array. Holds submitted form data etc.
+	 * @param object Parent object
+	 * @return void
 	 */
 	public function initAuth($mode, $loginData, $authInfo, $pObj) {
 		// perform default init
 		parent::initAuth($mode, $loginData, $authInfo, $pObj);
 		// support only default frontend user data source
 		if ($this->db_user['table'] != 'fe_users') {
-			$e = new Exception(sprintf('The data source "%s" is not supported.', $this->db_user['table']), 1357261473);
-			$this->errorPush(T3_ERR_SV_GENERAL, $e->getMessage());
-			$this->logger->error($e->getMessage());
+			// log the exception
+			$exception = new Exception(sprintf('The data source "%s" is not supported.', $this->db_user['table']), 1357261473);
+			$this->logger->error($exception->getMessage());
+			// add the error
+			$this->errorPush(T3_ERR_SV_GENERAL, $exception->getMessage());
 		}
 	}
 
@@ -73,14 +73,16 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 	 *
 	 * Provides automatic synchronization with Magento customers.
 	 *
-	 * @return mixed user array or false
+	 * @return mixed The user data array or false
 	 */
 	public function getUser() {
 		try {
 			// get frontend user model
 			$user = \Mage::getModel('typogento_replication/typo3_frontend_user');
+			// retive frontend user email
+			$email = $this->login['uname'];
 			// load frontend user
-			$user->load($this->login['uname'], 'email');
+			$user->load($email, 'email');
 			// validate user
 			if (!$user->getId()) {
 				// discover possible customer
@@ -90,27 +92,18 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 				if (isset($customer) && $customer->getId()) {
 					// replicate customer
 					$manager->replicate($customer);
-					//
-					unset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp'][__CLASS__]);
+					// unregister hook
+					$this->unregisterHook();
 				}
 			} else {
+				// return user data
 				return $user->getData();
 			}
 		} catch (\Exception $e) {
 			$this->logger->error($e->getMessage());
 		}
-		// return data set
+		// replication failed
 		return false;
-	}
-
-	/**
-	 * Authenticate a user
-	 *
-	 * @param array Data of user.
-	 * @return boolean
-	 */
-	public function authUser($user) {
-		return 100;
 	}
 
 	/**
@@ -121,7 +114,7 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 	 */
 	 public function postUserLookUp($params, &$pObj) {
 		// unregister hook
-		unset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp'][__CLASS__]);
+		$this->unregisterHook();
 		// skip if login failed
 		if ($pObj->loginFailure
 			|| !$pObj->loginSessionStarted
@@ -141,6 +134,20 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		} catch (\Exception $e) {
 			$this->logger->error($e->getMessage());
 		}
+	}
+	
+	protected function registerHook() {
+		// register post user lookup hook
+		if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp'])) {
+			$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp'] = array();
+		}
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp'][__CLASS__] =
+			'Tx\\Typogento\\Service\\System\\ReplicationService->postUserLookUp';
+	}
+	
+	protected function unregisterHook() {
+		// unregister hook
+		unset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp'][__CLASS__]);
 	}
 }
 ?>

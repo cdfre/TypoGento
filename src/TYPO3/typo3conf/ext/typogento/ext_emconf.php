@@ -8,7 +8,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'version' => '0.6.0',
 	'dependencies' => 'sv,fluid,extbase',
 	'conflicts' => '',
-	'priority' => '',
+	'priority' => 'top',
 	'loadOrder' => '',
 	'module' => 'magento,administration',
 	'state' => 'beta',
@@ -24,9 +24,6 @@ $EM_CONF[$_EXTKEY] = array(
 	'constraints' => array(
 		'depends' => array(
 			'typo3' => '6.0.0-0.0.0'
-		),
-		'conflicts' => array(
-			'fb_magento' => ''
 		),
 		'suggests' => array(
 		),

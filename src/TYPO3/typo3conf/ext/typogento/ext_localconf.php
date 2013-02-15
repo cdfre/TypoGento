@@ -19,16 +19,6 @@ if (!defined ('TYPO3_MODE')) {
 );
 
 /**
- * Extend TypoScript from static template uid=43 to set up userdefined tag
- */
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
-	$_EXTKEY, 
-	'editorcfg', 
-	'tt_content.CSS_editor.ch.tx_typogento_pi1 = < plugin.tx_typogento_pi1.CSS_editor', 
-	43
-);
-
-/**
  * Adds default frontend user single sign-on service
  */
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
@@ -42,6 +32,27 @@ if (!defined ('TYPO3_MODE')) {
 		'available' => TRUE,
 		'priority' => 60,
 		'quality' => 50,
+		'os' => '',
+		'exec' => '',
+		'classFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'sv1/class.tx_typogento_sv1.php',
+		'className' => 'Tx\\Typogento\\Service\\System\\AuthenticationService'
+	)
+);
+
+/**
+ * Prevents RSA Authentication to start session before TypoGento
+ */
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+	$_EXTKEY,
+	'auth',
+	'tx_typogento_sv1',
+	array(
+		'title' => 'Magento customer session service',
+		'description' => 'Initializes the Magento customer session early.',
+		'subtype' => 'processLoginDataFE',
+		'available' => TRUE,
+		'priority' => 80,
+		'quality' => 65,
 		'os' => '',
 		'exec' => '',
 		'classFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'sv1/class.tx_typogento_sv1.php',
@@ -71,30 +82,43 @@ if (!defined ('TYPO3_MODE')) {
 );
 
 /**
- * Registers hooks
+ * Registers frontend hooks
  */
 if (TYPO3_MODE === 'FE') {
+	
 	/**
 	 * Adds frontend user single sign-off feature
 	 */
-	$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['logoff_pre_processing']['typogento'] =
-		'EXT:'.$_EXTKEY.'/Classes/Hook/AuthenticationHook.php:&Tx\Typogento\Hook\AuthenticationHook->logoffPreProcessing';
+	$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['logoff_pre_processing'][$_EXTKEY] =
+		'EXT:'.$_EXTKEY.'/Classes/Service/System/AuthenticationService.php:&Tx\Typogento\Service\System\AuthenticationService->logoffPreProcessing';
 	/**
-	 * Renders the Magento page header
+	 * Renders the Magento page header and JS rewriter
 	 */
-	$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['typogento'] =
+	$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess'][$_EXTKEY] =
 		'EXT:'.$_EXTKEY.'/Classes/Hook/TypoScriptHook.php:&Tx\Typogento\Hook\TypoScriptHook->renderPreProcess';
 	/**
 	 * Integrates TypoScript registers
 	 */
-	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc']['typogento'] =
+	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][$_EXTKEY] =
 		'EXT:'.$_EXTKEY.'/Classes/Hook/TypoScriptHook.php:&Tx\Typogento\Hook\TypoScriptHook->configArrayPostProc';
 	
 	/**
 	 * Invalidates cache on redirects
 	 */
-	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['insertPageIncache']['typogento'] = 
+	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['insertPageIncache'][$_EXTKEY] = 
 		'EXT:'.$_EXTKEY.'/Classes/Hook/TypoScriptHook.php:&Tx\Typogento\Hook\TypoScriptHook';
+	
+	/**
+	 * Provides auto login for Magento customer
+	 */
+	$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp'][$_EXTKEY] =
+		'EXT:'.$_EXTKEY.'/Classes/Service/System/AuthenticationService.php:&Tx\Typogento\Service\System\AuthenticationService->postUserLookUp';
+	
+	/**
+	 * Prevents RSA Authentication to start session before TypoGento
+	 */
+	$TYPO3_CONF_VARS['EXTCONF']['felogin']['loginFormOnSubmitFuncs'][$_EXTKEY] = 
+		'EXT:'.$_EXTKEY.'/Classes/Service/System/AuthenticationService.php:&Tx\Typogento\Service\System\AuthenticationService->loginFormHook';
 }
 
 /**
@@ -114,7 +138,7 @@ if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['typogento'
 /**
  * Adds SOAP cache cleaning task
  */
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx\\Typogento\\Task\\ClearSoapCacheTask'] = array(
+$TYPO3_CONF_VARS['SC_OPTIONS']['scheduler']['tasks']['Tx\\Typogento\\Task\\ClearSoapCacheTask'] = array(
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:lib_clear_soap_cache_task_name',
 	'description'      => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:lib_clear_soap_cache_task_description'
