@@ -9,24 +9,27 @@
 		<events>
 			<customer_login>
 				<observers>
-					<typogento_core>
+					<typogento_authentication>
 						<type>singleton</type>
 						<class>Typogento_Authentication_Model_Observer</class>
 						<method>customerLogin</method>
-					</typogento_core>
+					</typogento_authentication>
 				</observers>
 			</customer_login>
 			<customer_logout>
 				<observers>
-					<typogento_core>
+					<typogento_authentication>
 						<type>singleton</type>
 						<class>Typogento_Authentication_Model_Observer</class>
 						<method>customerLogout</method>
-					</typogento_core>
+					</typogento_authentication>
 				</observers>
 			</customer_logout>
 		</events>
 		<models>
+			<typogento_authentication>
+				<class>Typogento_Authentication_Model</class>
+			</typogento_authentication>
 			<typogento_replication>
 				<rewrite>
 					<typo3_frontend_user>Typogento_Authentication_Model_Typo3_Frontend_User</typo3_frontend_user>
