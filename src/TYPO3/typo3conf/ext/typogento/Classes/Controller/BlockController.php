@@ -88,7 +88,7 @@ class BlockController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 					$layout = $application->getLayout();
 					// render block
 					if ($this->configuration->get('mode', 'block', $this->section) == 'block'
-						&& !$response->isAjax()) {
+						&& !$response->isXmlHttpResponse()) {
 						// block name
 						$name = $this->configuration->get('block', 'content', $this->section);
 						// retrive block
