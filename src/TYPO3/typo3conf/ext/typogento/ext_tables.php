@@ -19,7 +19,9 @@ $TCA['tx_typogento_replication_links'] = array (
 		'cruser_id' => 'cruser_id',
 		'default_sortby' => 'ORDER BY tstamp',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY).'Resources/Private/Icons/replication.png',
-		'requestUpdate' => 'provider'
+		'requestUpdate' => 'provider',
+		'rootLevel' => 1,
+		'adminOnly' => 1
 	),
 	'interface' => array (
 		'maxDBListItems' => 60,
