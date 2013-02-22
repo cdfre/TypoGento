@@ -70,12 +70,11 @@ class Typogento_Replication_Model_Resource_Typo3_Frontend_User extends Typogento
 		$read = $this->_getReadAdapter();
 		
 		$select  = $read->select()
-			->from(array('main_table' => $this->getMainTable()), array('email', 'cnt' => 'COUNT(*)'))
+			->from(array('main_table' => $this->getMainTable()), array('email', 'number' => 'COUNT(*)'))
 			->where('deleted = 0')
 			->where('pid = ? ', Mage::helper('typogento_replication/typo3_frontend_user')->getPageId())
 			->group('email')
-			->order('cnt DESC')
-			->limit(1);
+			->order('number DESC');
 		
 		$lookup = $read->fetchRow($select);
 		
@@ -83,7 +82,7 @@ class Typogento_Replication_Model_Resource_Typo3_Frontend_User extends Typogento
 			return false;
 		}
 		
-		return $lookup['cnt'] > 1;
+		return $lookup['number'] > 1;
 	}
 }
 
