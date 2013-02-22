@@ -28,7 +28,7 @@ class Typogento_Replication_Model_Resource_Typo3_Frontend_User_Collection extend
 		parent::_initSelect();
 		$this->getSelect()
 			->where('deleted = 0')
-			->where('pid = ? ', Mage::getStoreConfig('typogento/typo3_fe/users_pid'));
+			->where('pid = ? ', Mage::helper('typogento_replication/typo3_frontend_user')->getPageId());
 		return $this;
 	}
 

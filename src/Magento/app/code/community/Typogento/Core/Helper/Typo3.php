@@ -15,21 +15,10 @@ class Typogento_Core_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	
 	const XML_PATH_BACKEND_BASE_URL                 = 'typo3/backend/base_url';
 	
-	const XML_PATH_FRONTEND_USERS_PAGE_ID           = 'typo3/frontend/users_pid';
-	const XML_PATH_FRONTEND_USERS_GROUP_ID          = 'typo3/frontend/group_uid';
-	
 	const REGISTRY_KEY_DATABASE_CONNECTION_IS_VALID = 'typo3_database_connection_is_valid';
 	
 	public function getBackendBaseUrl() {
 		return (string)Mage::getStoreConfig(self::XML_PATH_BACKEND_BASE_URL);
-	}
-	
-	public function getFrontendUsersPageId() {
-		return Mage::getStoreConfig(self::XML_PATH_FRONTEND_USERS_PAGE_ID, Mage::app()->getStore());
-	}
-	
-	public function getFrontendUsersGroupId() {
-		return Mage::getStoreConfig(self::XML_PATH_FRONTEND_USERS_GROUP_ID, Mage::app()->getStore());
 	}
 	
 	public function getDatabaseHost() {
@@ -54,7 +43,8 @@ class Typogento_Core_Helper_Typo3 extends Mage_Core_Helper_Abstract {
 	
 	/**
 	 * Validate the database connection
-	 *
+	 * 
+	 * @todo Remove usage of replication module
 	 * @return boolean
 	 */
 	public function validateDatabaseConnection() {

@@ -96,14 +96,16 @@ class StatusReport implements \TYPO3\CMS\Reports\StatusProviderInterface {
 					LocalizationUtility::translate('report.status.connector.invalid_database_connection'), 
 					FlashMessage::WARNING);
 			}
+			// get helper
+			$helper = Mage::helper('typogento_replication/typo3_frontend_user');
 			// validate frontend users system folder
-			if (!$select->checkRecord('pages', $helper->getFrontendUsersPageId(), true)) {
+			if (!$select->checkRecord('pages', $helper->getPageId(), true)) {
 				$message .= $this->renderFlashMessage(
 					LocalizationUtility::translate('report.status.connector.invalid_frontend_users_folder'),
 					FlashMessage::WARNING);
 			}
 			// validate frontend users group
-			if (!$select->checkRecord('fe_groups', $helper->getFrontendUsersGroupId())) {
+			if (!$select->checkRecord('fe_groups', $helper->getGroupId())) {
 				$message .= $this->renderFlashMessage(
 					LocalizationUtility::translate('report.status.connector.invalid_frontend_users_group'),
 					FlashMessage::WARNING);

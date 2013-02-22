@@ -24,7 +24,7 @@ class Typogento_Replication_Model_Resource_Typo3_Frontend_User extends Typogento
 			->from($this->getMainTable())
 			->where($field . ' = ?', $value)
 			->where('deleted = 0')
-			->where('pid = ? ', Mage::helper('typogento_core/typo3')->getFrontendUsersPageId());
+			->where('pid = ? ', Mage::helper('typogento_replication/typo3_frontend_user')->getPageId());
 		
 		return $select;
 	}
@@ -41,7 +41,7 @@ class Typogento_Replication_Model_Resource_Typo3_Frontend_User extends Typogento
 		
 		$bind    = array(
 			'uid' => (int)$frontendUserId,
-			'pid' => Mage::helper('typogento_core/typo3')->getFrontendUsersPageId()
+			'pid' => Mage::helper('typogento_replication/typo3_frontend_user')->getPageId()
 		);
 		
 		$select  = $adapter->select()
@@ -72,35 +72,8 @@ class Typogento_Replication_Model_Resource_Typo3_Frontend_User extends Typogento
 		$select  = $read->select()
 			->from(array('main_table' => $this->getMainTable()), array('email', 'cnt' => 'COUNT(*)'))
 			->where('deleted = 0')
-			->where('pid = ? ', Mage::helper('typogento_core/typo3')->getFrontendUsersPageId())
+			->where('pid = ? ', Mage::helper('typogento_replication/typo3_frontend_user')->getPageId())
 			->group('email')
-			->order('cnt DESC')
-			->limit(1);
-		
-		$lookup = $read->fetchRow($select);
-		
-		if (empty($lookup)) {
-			return false;
-		}
-		
-		return $lookup['cnt'] > 1;
-	}
-	
-	/**
-	 * Check whether there are email duplicates of TYPO3 frontend users in global scope
-	 *
-	 * @return bool
-	 */
-	public function findCustomerDuplicates() {
-		
-		$read = $this->_getReadAdapter();
-		
-		$select  = $read->select()
-			->from(array('main_table' => $this->getMainTable()), array('tx_typogento_customer', 'cnt' => 'COUNT(*)'))
-			->where('deleted = 0')
-			->where('pid = ? ', Mage::helper('typogento_core/typo3')->getFrontendUsersPageId())
-			->where('tx_typogento_customer <> 0')
-			->group('tx_typogento_customer')
 			->order('cnt DESC')
 			->limit(1);
 		

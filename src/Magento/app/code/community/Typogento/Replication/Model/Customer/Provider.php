@@ -87,7 +87,7 @@ class Typogento_Replication_Model_Customer_Provider extends Typogento_Replicatio
 				->from(array('t' => $table), array('id' => 'uid'))
 				->where('t.tx_typogento_customer = ?', $object->getId())
 				->where('t.deleted = 0')
-				->where('t.pid = ? ', Mage::getStoreConfig('typogento/typo3_fe/users_pid'))
+				->where('t.pid = ? ', Mage::helper('typogento_replication/typo3_frontend_user')->getPageId())
 				->limit(1);
 			
 			$record = $read->fetchRow($select);
@@ -102,7 +102,7 @@ class Typogento_Replication_Model_Customer_Provider extends Typogento_Replicatio
 				->from(array('t' => $table), array('id' => 'uid'))
 				->where('t.email = ?', $object->getData('email'))
 				->where('t.deleted = 0')
-				->where('t.pid = ? ', Mage::getStoreConfig('typogento/typo3_fe/users_pid'))
+				->where('t.pid = ? ', Mage::helper('typogento_replication/typo3_frontend_user')->getPageId())
 				->limit(1);
 				
 			$record = $read->fetchRow($select);
@@ -172,11 +172,10 @@ class Typogento_Replication_Model_Customer_Provider extends Typogento_Replicatio
 		}
 		// initialize default values
 		if (!$target->getId()) {
-			$data['usergroup'] = Mage::getStoreConfig('typogento/typo3_fe/group_uid');
-			$random = $source->getRandomPassword();
-			$data['password'] = md5($random);
-			$data['username'] = $data['email'];
-			$data['pid'] = Mage::getStoreConfig('typogento/typo3_fe/users_pid');
+			$data['usergroup'] = Mage::helper('typogento_replication/typo3_frontend_user')->getGroupId();
+			$data['password']  = md5($source->getRandomPassword());
+			$data['username']  = $data['email'];
+			$data['pid']       = Mage::helper('typogento_replication/typo3_frontend_user')->getPageId();
 		}
 		// set data
 		$target->addData($data);
