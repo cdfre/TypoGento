@@ -239,7 +239,7 @@ class AdministrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionC
 		// translate message
 		$message = \Tx\Typogento\Utility\LocalizationUtility::translate($message);
 		// create flash message
-		$message = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\\FlashMessage', $message, $title, $severity);
+		$message = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessage', $message, $title, $severity);
 		// add flash message to the queue
 		FlashMessageQueue::addMessage($message);
 	}
