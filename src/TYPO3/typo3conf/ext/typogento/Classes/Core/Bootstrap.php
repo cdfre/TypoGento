@@ -44,6 +44,13 @@ class Bootstrap implements \TYPO3\CMS\Core\SingletonInterface {
 			throw new Exception(sprintf('The document root "%s" is not valid', $path), 1356844194);
 		}
 		require_once $file;
+		// replace autloader
+		try {
+			spl_autoload_register(array(\Typogento_Core_Model_Autoload::instance(), 'autoload'));
+			spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
+		} catch (\Exception $exception) {
+			throw new Exception('The Magento autoloader could not be replaced.', 1356844194);
+		}
 		// restore error reporting
 		restore_error_handler();
 	}
