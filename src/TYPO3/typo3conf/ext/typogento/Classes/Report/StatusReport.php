@@ -3,6 +3,7 @@
 namespace Tx\Typogento\Report;
 
 use \Tx\Typogento\Utility\LocalizationUtility;
+use \Tx\Typogento\Core\Bootstrap;
 
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 use \TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -49,7 +50,7 @@ class StatusReport implements \TYPO3\CMS\Reports\StatusProviderInterface {
 		// check magento system
 		try {
 			// init the autoloader
-			GeneralUtility::makeInstance('tx_typogento_autoloader');
+			Bootstrap::initialize();
 			// init the application
 			Mage::app();
 		} catch (Exception $e) {
@@ -57,7 +58,8 @@ class StatusReport implements \TYPO3\CMS\Reports\StatusProviderInterface {
 		}
 		//
 		if (!empty($message)) {
-			$message  = "<p>{LocalizationUtility::translate('report.status.system.has_issues')}</p>{$message}";
+			$prologue = LocalizationUtility::translate('report.status.system.has_issues');
+			$message  = "<p>{$prologue}</p>{$message}";
 			$severity = Status::ERROR;
 			$value    = LocalizationUtility::translate('report.status.not_available');
 		}
@@ -115,7 +117,8 @@ class StatusReport implements \TYPO3\CMS\Reports\StatusProviderInterface {
 		}
 		//
 		if (!empty($message)) {
-			$message = "<p>{LocalizationUtility::translate('report.status.connector.has_issues')}</p>{$message}";
+			$prologue = LocalizationUtility::translate('report.status.connector.has_issues');
+			$message  = "<p>{$prologue}</p>{$message}";
 			$severity = Status::ERROR;
 			$value    = LocalizationUtility::translate('report.status.not_available');
 		}
@@ -159,7 +162,8 @@ class StatusReport implements \TYPO3\CMS\Reports\StatusProviderInterface {
 		}
 		//
 		if (!empty($message)) {
-			$message = "<p>{LocalizationUtility::translate('report.status.replication.has_issues')}</p>{$message}";
+			$prologue = LocalizationUtility::translate('report.status.replication.has_issues');
+			$message  = "<p>{$prologue}</p>{$message}";
 			$severity = Status::ERROR;
 			$value    = LocalizationUtility::translate('report.status.not_available');
 		}
@@ -181,13 +185,14 @@ class StatusReport implements \TYPO3\CMS\Reports\StatusProviderInterface {
 		// check magento api
 		try {
 			// check api is available
-			GeneralUtility::makeInstance('tx_typogento_soapinterface')->isAvailable();
+			GeneralUtility::makeInstance('Tx\\Typogento\\Service\\SoapService')->isAvailable();
 		} catch (Exception $e) {
 			$message = $this->renderFlashMessage($e->getMessage(), FlashMessage::WARNING);
 		}
 		//
 		if (!empty($message)) {
-			$message = "<p>{LocalizationUtility::translate('report.status.api.has_issues')}</p>{$message}";
+			$prologue = LocalizationUtility::translate('report.status.api.has_issues');
+			$message  = "<p>{$prologue}</p>{$message}";
 			$severity = Status::ERROR;
 			$value    = LocalizationUtility::translate('report.status.not_available');
 		}
@@ -201,10 +206,10 @@ class StatusReport implements \TYPO3\CMS\Reports\StatusProviderInterface {
 	 * Render a flash message.
 	 * 
 	 * @param string $message
-	 * @param unknown $severity
+	 * @param integer $severity
 	 */
-	protected function renderFlashMessage(string $message, $severity) {
-		return GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+	protected function renderFlashMessage($message, $severity) {
+		return GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessage', 
 			$message, '', $severity)->render();
 	}
 }
