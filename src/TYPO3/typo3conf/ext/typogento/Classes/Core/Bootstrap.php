@@ -45,11 +45,11 @@ class Bootstrap implements \TYPO3\CMS\Core\SingletonInterface {
 		}
 		require_once $file;
 		// replace autloader
-		try {
+		if (class_exists('Typogento_Core_Model_Autoload')) {
 			spl_autoload_register(array(\Typogento_Core_Model_Autoload::instance(), 'autoload'));
 			spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
-		} catch (\Exception $exception) {
-			throw new Exception('The Magento autoloader could not be replaced.', 1356844194);
+		} else {
+			throw new Exception('The Magento connector module is not installed.', 1389397885);
 		}
 		// restore error reporting
 		restore_error_handler();
