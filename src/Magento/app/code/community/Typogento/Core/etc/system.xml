@@ -91,6 +91,7 @@
 						</name>
 						<charset translate="label">
 							<label>Charset</label>
+							<comment>Character set of the database connection (e.g. 'utf8').</comment>
 							<frontend_type>text</frontend_type>
 							<sort_order>30</sort_order>
 							<show_in_default>1</show_in_default>
@@ -107,7 +108,7 @@
 						</user>
 						<password translate="label">
 							<label>Password</label>
-							<frontend_type>text</frontend_type>
+							<frontend_type>password</frontend_type>
 							<sort_order>50</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>0</show_in_website>
