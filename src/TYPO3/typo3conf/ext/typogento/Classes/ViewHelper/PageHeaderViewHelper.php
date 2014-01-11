@@ -112,7 +112,7 @@ class PageHeaderViewHelper {
 			// 
 			$block = $this->block;
 			// collect items
-			$items = &$block->getData('items');
+			$items = $block->getData('items');
 			// skip
 			if (!is_array($items)) {
 				return;
@@ -162,7 +162,7 @@ class PageHeaderViewHelper {
 				}
 			}
 			// render translator
-			$json = &$block->helper('core/js')->getTranslateJson();
+			$json = $block->helper('core/js')->getTranslateJson();
 			$script = 'var Translator = new Translate('.$json.');';
 			if ($import['js']) {
 				$script = \TYPO3\CMS\Frontend\Page\PageGenerator::inline2TempFile($script, 'js');
@@ -173,12 +173,12 @@ class PageHeaderViewHelper {
 				);
 			}
 			// render children
-			$html = &$block->getChildHtml();
+			$html = $block->getChildHtml();
 			if (!empty($html)) {
 				$renderer->addHeaderData($html);
 			}
 			// render includes
-			$html = &$block->getIncludes();
+			$html = $block->getIncludes();
 			if (!empty($html)) {
 				$renderer->addHeaderData($html);
 			}
