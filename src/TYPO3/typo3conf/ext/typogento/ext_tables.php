@@ -253,7 +253,7 @@ $columns = array (
 			'items' => array(
 				array('LLL:EXT:'.$_EXTKEY.'/Resources/Private/Language/locallang_db.xml:be_users.tx_typogento_group.0', '')
 			),
-			'itemsProcFunc' => 'Tx\\Typogento\\Hook\\ItemsProcFuncHook->getCustomerGroups',
+			'itemsProcFunc' => 'Tx\\Typogento\\Hook\\ItemsProcFuncHook->getAdministrationRoles',
 			'maxitems' => 1
 		)
 	)
