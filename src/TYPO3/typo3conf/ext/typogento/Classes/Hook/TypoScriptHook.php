@@ -140,7 +140,7 @@ class TypoScriptHook implements \TYPO3\CMS\Core\SingletonInterface {
 		}
 		// include
 		if ($configuration->get('rewriter.enable', true)) {
-			$baseUri = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('typogento');
+			$baseUri = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath('typogento');
 			$renderer->addJsFile($baseUri.'Resources/Public/Js/uri.js');
 			$renderer->addJsFile($baseUri.'Resources/Public/Js/rewriter.js');
 			$renderer->addJsInlineCode('TypoGento Rewriter Bootstrap', $configuration->get('rewriter.bootstrap'));
