@@ -115,34 +115,6 @@
 						</password>
 					</fields>
 				</database>
-				<frontend translate="label">
-					<label>Frontend</label>
-					<frontend_type>text</frontend_type>
-					<sort_order>30</sort_order>
-					<show_in_default>1</show_in_default>
-					<show_in_website>0</show_in_website>
-					<show_in_store>0</show_in_store>
-					<fields>
-						<users_pid translate="label comment">
-							<label>Users Folder</label>
-							<comment>System folder (pid) containing the TYPO3 frontend users.</comment>
-							<frontend_type>text</frontend_type>
-							<sort_order>10</sort_order>
-							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
-							<show_in_store>1</show_in_store>
-						</users_pid>
-						<group_uid translate="label comment">
-							<label>Users Group</label>
-							<comment>Default group (uid) of the TYPO3 frontend users.</comment>
-							<frontend_type>text</frontend_type>
-							<sort_order>20</sort_order>
-							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
-							<show_in_store>1</show_in_store>
-						</group_uid>
-					</fields>
-				</frontend>
 				<backend translate="label">
 					<label>Backend</label>
 					<frontend_type>text</frontend_type>
