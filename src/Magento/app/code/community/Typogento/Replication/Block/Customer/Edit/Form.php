@@ -5,7 +5,7 @@
  * 
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
  */
-class Typogento_Core_Block_Customer_Edit_Form extends Mage_Adminhtml_Block_Customer_Group_Edit_Form {
+class Typogento_Replication_Block_Customer_Edit_Form extends Mage_Adminhtml_Block_Customer_Group_Edit_Form {
 
 
 	/**
@@ -49,7 +49,7 @@ class Typogento_Core_Block_Customer_Edit_Form extends Mage_Adminhtml_Block_Custo
 			'label' => Mage::helper('customer')->__('TYPO3 Group'),
 			'title' => Mage::helper('customer')->__('TYPO3 Group'),
 			'required' => false,
-			'values' => array_merge(array('' => $this->__('none')), Mage::getResourceModel('typogento/typo3_frontend_group_collection')->addFieldToFilter('deleted', '0')->load()->toOptionArray())
+			'values' => array_merge(array('' => $this->__('none')), Mage::getResourceModel('typogento_replication/typo3_frontend_group_collection')->addFieldToFilter('deleted', '0')->load()->toOptionArray())
 		)
 		);
 

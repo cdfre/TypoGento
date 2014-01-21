@@ -69,6 +69,13 @@
 				</entities>
 			</typogento_replication_resource>
 		</models>
+		<blocks>
+			<adminhtml>
+				<rewrite>
+					<customer_group_edit_form>Typogento_Replication_Block_Customer_Edit_Form</customer_group_edit_form>
+				</rewrite>
+			</adminhtml>
+		</blocks>
 	</global>
 	<frontend>
 		<translate>

@@ -88,13 +88,6 @@
 				</connection>
 			</typogento_core_write>
 		</resources>
-		<blocks>
-			<adminhtml>
-				<rewrite>
-					<customer_group_edit_form>Typogento_Core_Block_Customer_Edit_Form</customer_group_edit_form>
-				</rewrite>
-			</adminhtml>
-		</blocks>
 	</global>
 	<adminhtml>
 		<translate>
