@@ -139,6 +139,10 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 	 * @return array The colltected data
 	 */
 	protected function _collectEnvironmentData() {
+		// value filter
+		$filter = function($value) {
+			return !is_object($value);
+		};
 		// collect route data
 		$data = array(
 			'route' => $this->getRouteName(),
@@ -149,13 +153,13 @@ class Typogento_Core_Model_Url extends Mage_Core_Model_Url {
 		$parameters = $this->getRouteParams();
 		// merge route parameters if set
 		if (is_array($parameters)) {
-			$parameters = array_filter($parameters);
+			$parameters = array_filter($parameters, $filter);
 			$data = array_merge($data, $parameters);
 		}
 		$parameters = $this->getQueryParams();
 		// merge query parameters if set
 		if (is_array($parameters)) {
-			$parameters = array_filter($parameters);
+			$parameters = array_filter($parameters, $filter);
 			$data = array_merge($data, $parameters);
 		}
 		// return result
