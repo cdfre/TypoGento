@@ -33,7 +33,7 @@ class Typogento_Replication_Model_Observer {
 	 * 
 	 * @param Varien_Event_Observer $observer
 	 */
-	public static function customerLogin($observer) {
+	public function customerLogin($observer) {
 		//
 		$helper = Mage::helper('typogento_core/typo3');
 		// return if typo3 frontend not active

@@ -14,7 +14,7 @@ class Typogento_Authentication_Model_Observer {
 	 * 
 	 * @param Varien_Event_Observer $observer
 	 */
-	public static function customerLogin($observer) {
+	public function customerLogin($observer) {
 		// create helper
 		$helper = Mage::helper('typogento_core/typo3');
 		// return if typo3 frontend not active
@@ -45,7 +45,7 @@ class Typogento_Authentication_Model_Observer {
 	 * 
 	 * @param unknown_type $observer
 	 */
-	public static function customerLogout($observer) {
+	public function customerLogout($observer) {
 		// create helper
 		$helper = Mage::helper('typogento_core/typo3');
 		// return if typo3 frontend not active
