@@ -10,13 +10,11 @@ The following features are introduced:
 * Integration of the Magento compiler
 * TYPO3 cache for Magento API requests (SOAP)
 * Magento page meta access through TypoScript
-* RealURL rewrites for Magento products
-* Dual master replication of Magento customers and TYPO3 users
+* Extbase and Fluid for the TYPO3 extension 
 
 Beside them, the following features have improved:
 
 * Autoloader for the Magento framework
-* Single sign-on to Magento and TYPO3
 * Integration of Magento HTML header
 * Routing between Magento URLs and TYPO3 URLs
 * Handling Magento Redirects and Ajax Responses
@@ -30,9 +28,8 @@ TypoGento is distributed as an extension package for Magento and TYPO3. As such,
 
 The minimum requirements for a installation are:
 
-* PHP 5.3+
-* Magento 1.6+
-* TYPO3 4.5+
+* Magento 1.7+
+* TYPO3 6.0+
 
 ## Installation
 
@@ -40,13 +37,13 @@ The installation of this fork is very similar to Flagbit's TypoGento (see [how t
 
 ### Download
 
-[Download](https://github.com/witrin/TypoGento/zipball/develop) the extension package from GitHub and unzip it. _Please notice that this is the latest development version; the first release will be coming soon._
+[Download](https://github.com/witrin/TypoGento/zipball/develop) the extension package from GitHub and unzip it. **Please notice that this is the latest development version, which is not ready for production use.**
 
 ### Magento module
 
 1. Place the content of [`src/Magento`](https://github.com/witrin/TypoGento/tree/develop/src/Magento) into the Magento root directory
 2. Clear the caches in `System > Cache Management` if enabled
-	* `Configuration`
+    * `Configuration`
 	* `EAV types and attributes`
 	* `Web Services Configuration` 
 3. Grant access to `TypoGento Settings` for the `Administrators` in `System > Permissions > Roles` if necessary
@@ -72,153 +69,20 @@ The installation of this fork is very similar to Flagbit's TypoGento (see [how t
 3. Check the installation in `Admin Tools > Reports > Status Report`
 4. Setup the Magento role for the TYPO3 backend users in `Edit > Extended > Magento Role`
 5. Add the scheduled task for clearing the Magento API cache in `Admin Tools > Scheduler`
-6. Setup the TypoGento routing system
+6. Add the default TypoGento template to your root template
 
 ## Usage
 
-The usage of this fork is currently also similar to Flagbit's TypoGento. This means you can put any [Magento block](http://www.magentocommerce.com/design_guide/articles/magento-design-terminologies4#term-blocks) on a TYPO3 page with the frontend plugin (`tx_typogento_pi1`). The only restriction is that all Magento blocks you use on one TYPO3 page must be available within the [Magento route path](http://www.magentocommerce.com/wiki/5_-_modules_and_development/reference/geturl_function_parameters) you choose for the TYPO3 page; what is in turn dependent from the [Magento layout](http://www.magentocommerce.com/design_guide/articles/intro-to-layouts).
+The usage of this fork is currently also similar to Flagbit's TypoGento. This means you can put any [Magento block](http://www.magentocommerce.com/design_guide/articles/magento-design-terminologies4#term-blocks) on a TYPO3 page with the frontend plugin. The only restriction is that all Magento blocks you use on one TYPO3 page must be available within the [Magento route path](http://www.magentocommerce.com/wiki/5_-_modules_and_development/reference/geturl_function_parameters) you choose for the TYPO3 page; what is in turn dependent from the [Magento layout](http://www.magentocommerce.com/design_guide/articles/intro-to-layouts).
 
 You should prefer using TypoScript to put Magento blocks beside `content` (i.e. `top.search`) on your TYPO3 pages:
 ```text
-temp.search < plugin.tx_typogento_pi1
+temp.search < plugin.tx_typogento.widgets.defaultWidget
 temp.search {
-	 # Render Magento block 'top.search'
-	block = top.search
-}
-```
-
-The Magento HTML header can be integrated easily as follows into a TYPO3 page using `config.tx_typogento.header`:
-
-```text
-config.tx_typogento {
-	
-	header {
-		
-		 # Enable page header integration
-		enable = 1
-		
-		 # Compress resources (see http://wiki.typo3.org/TSref/CONFIG)
-		compressJs = 1
-		compressCss = 1
-		
-		 # Import resources 
-		importJs = 1
-		importCss = 1
-		
-		 # Use register:tx_typogento.header.<field>
-		register {
-			enable = 1
-			fields = title,description
-		}
-	}
-}
-```
-
-## Routing
-
-Before you start putting Magento content on a TYPO3 page, you must to set up the routing system for it, so that TypoGento is able to send a TYPO3 URL to Magento and render later Magento URLs on the TYPO3 frontend. These settings are not bound by the content objects, but apply to the entire page, and are thus stored in `config.tx_typogento`.
-
-It might be helpful to configure the so-called content-plugin for the further use of its configuration (Flexform) in the routes section.
-
-```text
-config.tx_typogento {
-	
-	content {
-		
-		 # Page column 'normal'
-		column = 0
-	
-		 # First frontend plugin
-		position = 0
-	
-		 # Use register:tx_typogento.content.<field>
-		register {
-			enable = 1
-			fields = id,route,controller,action,cache
-		}
-	}
-}
-```
-
-### Dispatch
-The dispatch section transforms TYPO3 URLs into Magento URLs. Remark that the HTTP GET variables namespace will be transfered from `tx_typogento[<name>]` to `<name>` between `filter` and `target`:
-
-```text
-config.tx_typogento {
-	
-	routes {
-			
-		10 {
-			
-			 # Set the dispatch section
-			section = dispatch
-			
-			 # The default priority is 0
-			priority = 1
-		
-			 # The route will taken if the filter matches and the route has the 
-			 # highest priority (see http://wiki.typo3.org/TSref/if)
-			filter {
-				 # Match for a TYPO3 page with the id {$pid}
-				value.data = TSFE:id
-				equals = {$pid}
-			}
-		
-			 # The resulting URL of this external typolink will be dispatched 
-			 # to Magento (see http://wiki.typo3.org/TSref/typolink)
-			target {
-				 # The dispatch section requires always external links
-				parameter.cObject = TEXT
-				parameter.cObject {
-					 # Targets the Magento product view
-					wrap = mage:/catalog/product/view/id/|/
-					data = GP:id // register:tx_typogento.content.id
-					if.isTrue.data = GP:id // register:tx_typogento.content.id
-				}
-				 # Also available for external links
-				addQueryString = 1
-				addQueryString.exclude = route,controller,action
-			}
-		}
-	}
-}
-```
-
-### Render
-The render section transforms Magento URLs into TYPO3 URLs. Remark that the HTTP GET variables namespace will be transfered from `<name>` to `tx_typogento[<name>]` between `filter` and `target`:
-
-```text
-config.tx_typogento {
-	
-	routes {
-		
-		20 {
-			
-			 # Set the render section
-			section = render
-			
-			 # The default priority is 0
-			priority = 1
-			
-			 # The route will taken if the filter match and the route has the 
-			 # highest priority (see http://wiki.typo3.org/TSref/if)
-			filter {
-				 # Match for all Magento URLs starting with '/catalog/product/'
-				value.dataWrap = /{GP:route}/{GP:controller}/
-				equals = /catalog/product/
-			}
-			
-			 # The resulting URL of this internal typolink will be rendered 
-			 # on the TYPO3 frontend (see http://wiki.typo3.org/TSref/typolink)
-			target {
-				 # Targets a TYPO3 page with the id {$pid}
-				parameter = {$pid}
-				 # Remove route path from the URL
-				addQueryString = 1
-				addQueryString.exclude = tx_typogento[route],tx_typogento[controller],tx_typogento[action]
-				useCacheHash = 1
-			}
-		}
+	 # TypoGento plugin settings
+	settings {
+		 # Render Magento block 'top.search'
+		block = top.search
 	}
 }
 ```
@@ -228,10 +92,13 @@ config.tx_typogento {
 * Multible [Magento websites](http://www.magentocommerce.com/design_guide/articles/magento-design-terminologies4#term-website) are currently not supported, but one website with multiple Magento store views.
 * Magento session ids (SID) in TYPO3 frontend URLs are currently not supported.
 * The TypoScript interface for categories has not been adjusted, and is therefore not functional.
+* All aspects of integrating Magento customer accounts into TYPO3 and vice versa need to be refactored.
 
 ## Contributing
 
-Please report issues on the [GitHub issue tracker](https://github.com/witrin/TypoGento/issues). Personal emails are not appropriate for bug reports. Patches are preferred as GitHub pull requests. Please use the [develop branch](https://github.com/witrin/TypoGento/tree/develop) when sending pull requests.
+**Helping hands are very welcome to complete a first stable version of TypoGento 2.0, which is ready for production use. So [contact me](mailto:artus@ionoi.net) directly or use the [GitHub issue tracker](https://github.com/witrin/TypoGento/issues) to get involved.**
+
+Please report issues on the [GitHub issue tracker](https://github.com/witrin/TypoGento/issues). Patches are preferred as GitHub pull requests. Please use the [develop branch](https://github.com/witrin/TypoGento/tree/develop) when sending pull requests.
 
 ## License
 
