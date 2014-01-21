@@ -1,13 +1,5 @@
 <?php 
 
-/**
- * TypoGento autoloader
- *
- * Overrides the default autoloader.
- *
- * @see \Tx\Typogento\Core\Bootstrap
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
- */
 class Typogento_Core_Model_Autoload extends Varien_Autoload {
 	
 	static protected $_inheritance;
