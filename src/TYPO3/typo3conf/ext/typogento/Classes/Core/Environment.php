@@ -64,7 +64,7 @@ class Environment {
 	 */
 	public function &get($name, $section = self::ENVIRONMENT_SECTION_CURRENT) {
 		if (!isset($this->current[$name])) {
-			throw new Exception(sprintf('Variable "%s" is not registered.', $name), 1357694792);
+			throw new \Exception(sprintf('Variable "%s" is not registered.', $name), 1357694792);
 		}
 		switch ($section) {
 			case self::ENVIRONMENT_SECTION_CURRENT:
@@ -72,7 +72,7 @@ class Environment {
 			case self::ENVIRONMENT_SECTION_PRESERVED:
 				return $this->preserved[$name];
 			default:
-				throw new Exception(sprintf('Unknown section %s', $section), 1357693289);
+				throw new \Exception(sprintf('Unknown section %s', $section), 1357693289);
 		}
 	}
 	
@@ -86,7 +86,7 @@ class Environment {
 	 */
 	public function set($name, $value) {
 		if (!isset($this->current[$name])) {
-			throw new Exception(sprintf('Variable "%s" is not registered.', $name), 1357694806);
+			throw new \Exception(sprintf('Variable "%s" is not registered.', $name), 1357694806);
 		}
 		$this->current[$name] = $value;
 	}
@@ -101,7 +101,7 @@ class Environment {
 	 */
 	public function register($name, &$value) {
 		if (isset($this->current[$name])) {
-			throw new Exception(sprintf('Variable "%s" is already registered.', $name), 1357694657);
+			throw new \Exception(sprintf('Variable "%s" is already registered.', $name), 1357694657);
 		}
 		$this->references[$name] = &$value;
 		$this->current[$name] = $value;
@@ -140,7 +140,7 @@ class Environment {
 		}
 		// check order
 		if (end(self::$stack) !== $this) {
-			throw new Exception('Unknown error', 1356845919);
+			throw new \Exception('Unknown error', 1356845919);
 		}
 		// 
 		foreach ($this->preserved as $key => &$value) {

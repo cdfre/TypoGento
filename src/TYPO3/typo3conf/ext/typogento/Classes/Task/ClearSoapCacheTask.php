@@ -2,7 +2,7 @@
 
 namespace Tx\Typogento\Task;
 
-use \Tx\Typogento\Service\SoapService;
+use Tx\Typogento\Service\SoapService;
 
 /**
  * Clear the cache for Magento API calls (SOAP).

@@ -113,7 +113,7 @@ class GeneralUtility {
 			if (!isset($array[$key])) {
 				$array[$key] = array();
 			} else if (!is_array($array[$key])) {
-				throw new Exception(sprintf('The path "%s" is not valid.', $path), 1356930770);
+				throw new \Exception(sprintf('The path "%s" is not valid.', $path), 1356930770);
 			}
 			// next value
 			$array = &$array[$key];
@@ -206,7 +206,7 @@ class GeneralUtility {
 				// create cobj
 				return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 			} catch(Exception $e) {
-				throw new Exception(sprintf('The content object renderer could not be created for the requested URL "%s": %s', $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $e->getMessage()), 1356930991, $e);
+				throw new \Exception(sprintf('The content object renderer could not be created for the requested URL "%s": %s', $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $e->getMessage()), 1356930991, $e);
 			}
 		}
 	}

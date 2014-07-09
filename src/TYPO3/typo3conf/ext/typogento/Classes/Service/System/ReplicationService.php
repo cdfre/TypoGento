@@ -2,7 +2,7 @@
 
 namespace Tx\Typogento\Service\System;
 
-use \Tx\Typogento\Core\Bootstrap;
+use Tx\Typogento\Core\Bootstrap;
 
 
 /**
@@ -61,7 +61,7 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		// support only default frontend user data source
 		if ($this->db_user['table'] != 'fe_users') {
 			// log the exception
-			$exception = new Exception(sprintf('The data source "%s" is not supported.', $this->db_user['table']), 1357261473);
+			$exception = new \Exception(sprintf('The data source "%s" is not supported.', $this->db_user['table']), 1357261473);
 			$this->logger->error($exception->getMessage());
 			// add the error
 			$this->errorPush(T3_ERR_SV_GENERAL, $exception->getMessage());
@@ -124,7 +124,7 @@ class ReplicationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		try {
 			// init
 			if (!$this->init()) {
-				throw new Exception('Unknown error.', 1357261385);
+				throw new \Exception('Unknown error.', 1357261385);
 			}
 			// replicate frontend user
 			$manager = \Mage::getSingleton('typogento_replication/manager');

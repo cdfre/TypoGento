@@ -2,8 +2,8 @@
 
 namespace Tx\Typogento\Hook;
 
-use \Tx\Typogento\Utility\GeneralUtility;
-use \Tx\Typogento\Utility\PluginUtility;
+use Tx\Typogento\Utility\GeneralUtility;
+use Tx\Typogento\Utility\PluginUtility;
 
 /**
  * Backend service

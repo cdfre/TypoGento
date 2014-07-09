@@ -61,6 +61,48 @@ if (!defined ('TYPO3_MODE')) {
 );
 
 /**
+ * Registers frontend hooks
+ */
+if (TYPO3_MODE === 'FE') {
+
+    /**
+     * Adds frontend user single sign-off feature
+     */
+    $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['logoff_pre_processing'][$_EXTKEY] =
+        'EXT:'.$_EXTKEY.'/Classes/Service/System/AuthenticationService.php:&Tx\Typogento\Service\System\AuthenticationService->logoffPreProcessing';
+
+    /**
+     * Renders the Magento page header and JS rewriter
+     */
+    $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess'][$_EXTKEY] =
+        'EXT:'.$_EXTKEY.'/Classes/Hook/TypoScriptHook.php:&Tx\Typogento\Hook\TypoScriptHook->renderPreProcess';
+
+    /**
+     * Integrates TypoScript registers
+     */
+    $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][$_EXTKEY] =
+        'EXT:'.$_EXTKEY.'/Classes/Hook/TypoScriptHook.php:&Tx\Typogento\Hook\TypoScriptHook->configArrayPostProc';
+
+    /**
+     * Invalidates cache on redirects
+     */
+    $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['insertPageIncache'][$_EXTKEY] =
+        'EXT:'.$_EXTKEY.'/Classes/Hook/TypoScriptHook.php:&Tx\Typogento\Hook\TypoScriptHook';
+
+    /**
+     * Provides auto login for Magento customer
+     */
+    $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp'][$_EXTKEY] =
+        'EXT:'.$_EXTKEY.'/Classes/Service/System/AuthenticationService.php:&Tx\Typogento\Service\System\AuthenticationService->postUserLookUp';
+
+    /**
+     * Prevents RSA Authentication to start session before TypoGento
+     */
+    $TYPO3_CONF_VARS['EXTCONF']['felogin']['loginFormOnSubmitFuncs'][$_EXTKEY] =
+        'EXT:'.$_EXTKEY.'/Classes/Service/System/AuthenticationService.php:&Tx\Typogento\Service\System\AuthenticationService->loginFormHook';
+}
+
+/**
  * Adds default frontend user replication service
  */
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
@@ -81,45 +123,6 @@ if (!defined ('TYPO3_MODE')) {
 	)
 );
 
-/**
- * Registers frontend hooks
- */
-if (TYPO3_MODE === 'FE') {
-	
-	/**
-	 * Adds frontend user single sign-off feature
-	 */
-	$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['logoff_pre_processing'][$_EXTKEY] =
-		'EXT:'.$_EXTKEY.'/Classes/Service/System/AuthenticationService.php:&Tx\Typogento\Service\System\AuthenticationService->logoffPreProcessing';
-	/**
-	 * Renders the Magento page header and JS rewriter
-	 */
-	$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess'][$_EXTKEY] =
-		'EXT:'.$_EXTKEY.'/Classes/Hook/TypoScriptHook.php:&Tx\Typogento\Hook\TypoScriptHook->renderPreProcess';
-	/**
-	 * Integrates TypoScript registers
-	 */
-	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][$_EXTKEY] =
-		'EXT:'.$_EXTKEY.'/Classes/Hook/TypoScriptHook.php:&Tx\Typogento\Hook\TypoScriptHook->configArrayPostProc';
-	
-	/**
-	 * Invalidates cache on redirects
-	 */
-	$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['insertPageIncache'][$_EXTKEY] = 
-		'EXT:'.$_EXTKEY.'/Classes/Hook/TypoScriptHook.php:&Tx\Typogento\Hook\TypoScriptHook';
-	
-	/**
-	 * Provides auto login for Magento customer
-	 */
-	$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp'][$_EXTKEY] =
-		'EXT:'.$_EXTKEY.'/Classes/Service/System/AuthenticationService.php:&Tx\Typogento\Service\System\AuthenticationService->postUserLookUp';
-	
-	/**
-	 * Prevents RSA Authentication to start session before TypoGento
-	 */
-	$TYPO3_CONF_VARS['EXTCONF']['felogin']['loginFormOnSubmitFuncs'][$_EXTKEY] = 
-		'EXT:'.$_EXTKEY.'/Classes/Service/System/AuthenticationService.php:&Tx\Typogento\Service\System\AuthenticationService->loginFormHook';
-}
 
 /**
  * Registers cache

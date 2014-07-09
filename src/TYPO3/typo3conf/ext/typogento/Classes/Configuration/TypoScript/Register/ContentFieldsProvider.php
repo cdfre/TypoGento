@@ -2,9 +2,9 @@
 
 namespace Tx\Typogento\Configuration\TypoScript\Register;
 
-use \Tx\Typogento\Utility\GeneralUtility;
-use \Tx\Typogento\Utility\PluginUtility;
-use \Tx\Typogento\Configuration\ConfigurationManager;
+use Tx\Typogento\Utility\GeneralUtility;
+use Tx\Typogento\Utility\PluginUtility;
+use Tx\Typogento\Configuration\ConfigurationManager;
 
 /**
  * TypoScript frontend register provider for 'register:tx_typogento.content.<field>'.

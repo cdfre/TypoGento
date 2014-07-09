@@ -2,8 +2,8 @@
 
 namespace Tx\Typogento\Utility;
 
-use \Tx\Typogento\Configuration\Exception;
-use \Tx\Typogento\Configuration\ConfigurationManager;
+use Tx\Typogento\Configuration\Exception;
+use Tx\Typogento\Configuration\ConfigurationManager;
 
 /**
  * Configuration utility
@@ -34,7 +34,7 @@ class ConfigurationUtility {
 			$path = realpath($value);
 			
 			if ($path === false) {
-				throw new Exception(sprintf('The document root "%s" is not valid.', $value), 1356929671);
+				throw new \Exception(sprintf('The document root "%s" is not valid.', $value), 1356929671);
 			}
 			
 			self::$cache['document_root'] = $path;
@@ -53,7 +53,7 @@ class ConfigurationUtility {
 			$url = filter_var($value, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED);
 			//
 			if ($url === false) {
-				throw new Exception(sprintf('The base URL "%s" is not valid', $value), 1356929744);
+				throw new \Exception(sprintf('The base URL "%s" is not valid', $value), 1356929744);
 			}
 			//
 			$components = parse_url($url);

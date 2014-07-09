@@ -2,7 +2,7 @@
 
 namespace Tx\Typogento\Configuration\TypoScript\Register;
 
-use \Tx\Typogento\Configuration\ConfigurationManager;
+use Tx\Typogento\Configuration\ConfigurationManager;
 
 /**
  * Abstract TypoScript frontend register provider

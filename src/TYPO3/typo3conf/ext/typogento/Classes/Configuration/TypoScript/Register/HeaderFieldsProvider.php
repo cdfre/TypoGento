@@ -4,8 +4,8 @@ namespace Tx\Typogento\Configuration\TypoScript\Register;
 
 use Mage;
 
-use \Tx\Typogento\Utility\GeneralUtility;
-use \Tx\Typogento\Configuration\ConfigurationManager;
+use Tx\Typogento\Utility\GeneralUtility;
+use Tx\Typogento\Configuration\ConfigurationManager;
 
 /**
  * TypoScript frontend register provider for 'register:tx_typogento.header.<field>'
@@ -37,20 +37,19 @@ class HeaderFieldsProvider extends AbstractProvider {
 			return;
 		}
 		// header
-		$header = $configuration->get('header.block', 'head');
-		$header = Mage::app()->getLayout()->getBlock($header);
+        $header = Mage::app()->getLayout()->getBlock($configuration->get('header.block', 'head'));
+
 		// skip empty
-		if (!$header) {
-			return;
-		}
-		// collect
-		foreach ($fields as $field) {
-			if ($header->hasData($field)) {
-				$this->data[$field] = (string)$header->getData($field);
-			}
-		}
-		// flatten
-		$this->data = &GeneralUtility::getFlatArray($this->data, 'tx_typogento.header.');
+		if ($header) {
+            // collect
+            foreach ($fields as $field) {
+                if ($header->hasData($field)) {
+                    $this->data[$field] = (string)$header->getData($field);
+                }
+            }
+            // flatten
+            $this->data = &GeneralUtility::getFlatArray($this->data, 'tx_typogento.header.');
+        }
 	}
 	
 	/**

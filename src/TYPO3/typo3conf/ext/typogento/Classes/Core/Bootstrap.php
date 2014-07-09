@@ -2,7 +2,7 @@
 
 namespace Tx\Typogento\Core;
 
-use \Tx\Typogento\Utility\ConfigurationUtility;
+use Tx\Typogento\Utility\ConfigurationUtility;
 
 /**
  * Bootstrapper
@@ -41,7 +41,7 @@ class Bootstrap implements \TYPO3\CMS\Core\SingletonInterface {
 		$file = $path.'/app/Mage.php';
 		if (!file_exists($file)) {
 			restore_error_handler();
-			throw new Exception(sprintf('The document root "%s" is not valid', $path), 1356844194);
+			throw new \Exception(sprintf('The document root "%s" is not valid', $path), 1356844194);
 		}
 		require_once $file;
 		// replace autloader
@@ -49,7 +49,7 @@ class Bootstrap implements \TYPO3\CMS\Core\SingletonInterface {
 			spl_autoload_register(array(\Typogento_Core_Model_Autoload::instance(), 'autoload'));
 			spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
 		} else {
-			throw new Exception('The Magento connector module is not installed.', 1389397885);
+			throw new \Exception('The Magento connector module is not installed.', 1389397885);
 		}
 		// restore error reporting
 		restore_error_handler();

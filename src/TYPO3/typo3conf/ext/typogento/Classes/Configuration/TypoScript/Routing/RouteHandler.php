@@ -2,7 +2,7 @@
 
 namespace Tx\Typogento\Configuration\TypoScript\Routing;
 
-use \Tx\Typogento\Utility\GeneralUtility;
+use Tx\Typogento\Utility\GeneralUtility;
 
 /**
  * Default TypoScript route handler
@@ -111,7 +111,7 @@ class RouteHandler implements \Tx\Typogento\Core\Routing\RouteHandlerInterface {
 				\TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($hook, $params, $renderer);
 			}
 		} else {
-			throw new Exception(sprintf('Invalid URL "%s".', $params['linktxt']), 1356840730);
+			throw new \Exception(sprintf('Invalid URL "%s".', $params['linktxt']), 1356840730);
 		}
 	}
 

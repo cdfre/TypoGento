@@ -2,10 +2,10 @@
 
 namespace Tx\Typogento\Configuration\TypoScript\Routing;
 
-use \Tx\Typogento\Utility\GeneralUtility;
-use \Tx\Typogento\Core\Routing\RouteBuilderInterface;
-use \Tx\Typogento\Core\Routing\Router;
-use \Tx\Typogento\Core\Routing\Route;
+use Tx\Typogento\Utility\GeneralUtility;
+use Tx\Typogento\Core\Routing\RouteBuilderInterface;
+use Tx\Typogento\Core\Routing\Router;
+use Tx\Typogento\Core\Routing\Route;
 
 /**
  * Default TypoScript route builder
@@ -57,11 +57,11 @@ class RouteBuilder implements RouteBuilderInterface {
 	 */
 	protected function buildRoute($id, array &$typoscript) {
 		if (!isset($typoscript['filter.'])) {
-			throw new Exception(sprintf('Missing the route filter in "%s".', print_r($typoscript, true)), 1356838587);
+			throw new \Exception(sprintf('Missing the route filter in "%s".', print_r($typoscript, true)), 1356838587);
 		}
 
 		if (!isset($typoscript['target.'])) {
-			throw new Exception(sprintf('Missing the route target in "%s".', print_r($typoscript, true)), 1356838639);
+			throw new \Exception(sprintf('Missing the route target in "%s".', print_r($typoscript, true)), 1356838639);
 		}
 
 		$priority = $this->buildValue('priority', $typoscript, 0);

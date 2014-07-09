@@ -2,11 +2,11 @@
 
 namespace Tx\Typogento\Core;
 
-use \Tx\Typogento\Core\Routing\Route;
-use \Tx\Typogento\Core\Routing\Router;
-use \Tx\Typogento\Utility\GeneralUtility;
-use \Tx\Typogento\Utility\LogUtility;
-use \Tx\Typogento\Core\Bootstrap;
+use Tx\Typogento\Core\Routing\Route;
+use Tx\Typogento\Core\Routing\Router;
+use Tx\Typogento\Utility\GeneralUtility;
+use Tx\Typogento\Utility\LogUtility;
+use Tx\Typogento\Core\Bootstrap;
 
 /**
  * Dispatches the TYPO3 frontend request to Magento, by using the routing configuation.
@@ -83,7 +83,7 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 					$app->setCurrentStore($store);
 				} catch (\Exception $e) {
 					// rethrow the exception
-					throw new Exception(sprintf('The store "%s" could not be resolved: %s', $code, $e->getMessage()), 1356845586, $e);
+					throw new \Exception(sprintf('The store "%s" could not be resolved: %s', $code, $e->getMessage()), 1356845586, $e);
 				}
 				// initialize environment
 				$this->environment->initialize();
@@ -102,7 +102,7 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 			}
 		} catch (\Exception $e) {
 			// rethrow the exception
-			throw new Exception(sprintf('Processing the action URL "%s" has failed: %s', $this->url, $e->getMessage()), 1356845643, $e);
+			throw new \Exception(sprintf('Processing the action URL "%s" has failed: %s', $this->url, $e->getMessage()), 1356845643, $e);
 		}
 	}
 	
@@ -148,7 +148,7 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 				array_merge_recursive($_GET, $_POST)
 			);
 		} catch (\Exception $e) {
-			throw new Exception(sprintf('Unable to resolve the action URL: %s', $e->getMessage()), 1356845494, $e);
+			throw new \Exception(sprintf('Unable to resolve the action URL: %s', $e->getMessage()), 1356845494, $e);
 		}
 	}
 
@@ -215,7 +215,7 @@ class Dispatcher implements \TYPO3\CMS\Core\SingletonInterface {
 			// ...
 			$app->loadAreaPart(\Mage_Core_Model_App_Area::AREA_GLOBAL, \Mage_Core_Model_App_Area::PART_EVENTS);
 		} catch (\Exception $e) {
-			throw new Exception(sprintf('Initializing the application has failed: %s', $e->getMessage()), 1356845702, $e);
+			throw new \Exception(sprintf('Initializing the application has failed: %s', $e->getMessage()), 1356845702, $e);
 		}
 	}
 }

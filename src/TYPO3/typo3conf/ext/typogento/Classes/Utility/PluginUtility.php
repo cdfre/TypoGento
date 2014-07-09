@@ -60,7 +60,7 @@ class PluginUtility {
 				);
 				break;
 			default:
-				throw new Exception(sprintf('Unexpected view type "%s".', $type), 1357002849);
+				throw new \Exception(sprintf('Unexpected view type "%s".', $type), 1357002849);
 		}
 		// caching
 		$result['cache'] = !(bool)GeneralUtility::getFlexFormValue($flexform, self::FLEXFORM_FIELD_CACHE_DISABLE, self::FLEXFORM_SHEET_CACHE);

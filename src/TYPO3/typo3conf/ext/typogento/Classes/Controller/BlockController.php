@@ -2,8 +2,8 @@
 
 namespace Tx\Typogento\Controller;
 
-use \Tx\Typogento\Configuration\ConfigurationManager;
-use \Tx\Typogento\Utility\PluginUtility;
+use Tx\Typogento\Configuration\ConfigurationManager;
+use Tx\Typogento\Utility\PluginUtility;
 
 /**
  * The default frontend plugin.
@@ -95,9 +95,9 @@ class BlockController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 						$block = $layout->getBlock($name);
 						// check block
 						if (!$block) {
-							throw new Exception(sprintf('The block "%s" was not rendered for the requested URL "%s".', $name, $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), 1357002550);
+							throw new \Exception(sprintf('The block "%s" was not rendered for the requested URL "%s".', $name, $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), 1357002550);
 						} else if (!($block instanceof \Mage_Core_Block_Abstract)) {
-							throw new Exception(sprintf('The Block type "%s" is not supported.', get_class($name)), 1357002619);
+							throw new \Exception(sprintf('The Block type "%s" is not supported.', get_class($name)), 1357002619);
 						}
 						// render raw block
 						$this->view->assign('magento', array('block' => $block->toHtml()));

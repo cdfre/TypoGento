@@ -2,9 +2,9 @@
 
 namespace Tx\Typogento\Hook;
 
-use \Tx\Typogento\Configuration\ConfigurationManager;
-use \Tx\Typogento\ViewHelper\PageHeaderViewHelper;
-use \Tx\Typogento\Core\Bootstrap;
+use Tx\Typogento\Configuration\ConfigurationManager;
+use Tx\Typogento\ViewHelper\PageHeaderViewHelper;
+use Tx\Typogento\Core\Bootstrap;
 
 /**
  * Observes TYPO3 frontend hooks.

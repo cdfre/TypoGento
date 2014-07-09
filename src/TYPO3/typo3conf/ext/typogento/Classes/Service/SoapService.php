@@ -2,7 +2,7 @@
 
 namespace Tx\Typogento\Service;
 
-use \Tx\Typogento\Utility\ConfigurationUtility;
+use Tx\Typogento\Utility\ConfigurationUtility;
 
 /**
  * SOAP service
@@ -143,7 +143,7 @@ class SoapService implements \TYPO3\CMS\Core\SingletonInterface {
 				// release the lock
 				$this->releaseLock($lock);
 				// throw exception
-				throw new Exception(sprintf('The SOAP request has failed: %s', $e->getMessage()), 1356930394, $e);
+				throw new \Exception(sprintf('The SOAP request has failed: %s', $e->getMessage()), 1356930394, $e);
 			}
 			// release the lock
 			$this->releaseLock($lock);

@@ -2,9 +2,9 @@
 
 namespace Tx\Typogento\Core\Routing;
 
-use \Tx\Typogento\Utility\GeneralUtility;
-use \Tx\Typogento\Configuration\TypoScript\Routing\RouteBuilder;
-use \Tx\Typogento\Core\Environment;
+use Tx\Typogento\Utility\GeneralUtility;
+use Tx\Typogento\Configuration\TypoScript\Routing\RouteBuilder;
+use Tx\Typogento\Core\Environment;
 
 /**
  * Routes between TYPO3 Pages and Magento Route Paths.
@@ -56,7 +56,7 @@ class Router implements \TYPO3\CMS\Core\SingletonInterface {
 	public function lookup($section, Environment $filter = null) {
 		// assert section exists in route tree
 		if (!array_key_exists($section, $this->sections)) {
-			throw new Exception(sprintf('The route section "%s" is not valid', $section), 1356843514);
+			throw new \Exception(sprintf('The route section "%s" is not valid', $section), 1356843514);
 		}
 		// get priority slots from section
 		$slots = &$this->sections[$section];
@@ -83,7 +83,7 @@ class Router implements \TYPO3\CMS\Core\SingletonInterface {
 			$filter->deinitialize();
 		}
 		//
-		throw new Exception(sprintf('The route section "%s" has no matching entry', $section), 1356843144);
+		throw new \Exception(sprintf('The route section "%s" has no matching entry', $section), 1356843144);
 	}
 	
 	/**

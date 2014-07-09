@@ -2,7 +2,7 @@
 
 namespace Tx\Typogento\ViewHelper;
 
-use \Tx\Typogento\Configuration\ConfigurationManager;
+use Tx\Typogento\Configuration\ConfigurationManager;
 
 /**
  * Integrates the Magento html page header into the current TYPO3 page.
@@ -72,23 +72,23 @@ class PageHeaderViewHelper {
 				$this->path = \Mage::getBaseDir();
 				$this->url = \Mage::getBaseUrl();
 			} catch (\Exception $e) {
-				throw new Exception(sprintf('Unknown error: %s', $e->getMessage()), 1356932123, $e);
+				throw new \Exception(sprintf('Unknown error: %s', $e->getMessage()), 1356932123, $e);
 			}
 			// design package
 			try {
 				$this->design = \Mage::getDesign();
 			} catch (\Exception $e) {
-				throw new Exception(sprintf('Unknown error: %s', $e->getMessage()), 1356932107, $e);
+				throw new \Exception(sprintf('Unknown error: %s', $e->getMessage()), 1356932107, $e);
 			}
 			// header block
 			$this->block = \Mage::app()->getLayout()->getBlock($name);
 			// check the header block exists
 			if (!$this->block) {
-				throw new Exception(sprintf('The block "%s" was not rendered for the requested URL "%s".', $name, $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), 1356932029);
+				throw new \Exception(sprintf('The block "%s" was not rendered for the requested URL "%s".', $name, $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), 1356932029);
 			}
 			// check the header block type
 			if (!($this->block instanceof \Mage_Page_Block_Html_Head)) {
-				throw new Exception(sprintf('The Block type "%s" is not supported.', get_class($this->block)), 1356931933);
+				throw new \Exception(sprintf('The Block type "%s" is not supported.', get_class($this->block)), 1356931933);
 			}
 		} catch (\Exception $e) {
 			// close the interface
@@ -186,7 +186,7 @@ class PageHeaderViewHelper {
 			// close the interface
 			$this->dispatcher->getEnvironment()->deinitialize();
 			// re-throw exception
-			throw new Exception(sprintf('The requested URL "%s" could not be retrieved: %s', $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $e->getMessage()), 1356931794, $e);
+			throw new \Exception(sprintf('The requested URL "%s" could not be retrieved: %s', $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'], $e->getMessage()), 1356931794, $e);
 		}
 		// close the interface
 		$this->dispatcher->getEnvironment()->deinitialize();
@@ -278,7 +278,7 @@ class PageHeaderViewHelper {
 		$time = @filemtime($source);
 		//
 		if ($time === false) {
-			throw new Exception(sprintf('Can not access file "%s".', $item), 1356931609);
+			throw new \Exception(sprintf('Can not access file "%s".', $item), 1356931609);
 		}
 		//
 		$hash = $source . $time;
@@ -292,7 +292,7 @@ class PageHeaderViewHelper {
 				$temp = 'typo3temp/stylesheet_' . $hash . '.css';
 			break;
 			default:
-				throw new Exception('Unknown error.', 1356931436);
+				throw new \Exception('Unknown error.', 1356931436);
 		}
 		//
 		$target = PATH_site . $temp;
@@ -300,7 +300,7 @@ class PageHeaderViewHelper {
 		if (!@is_file($target)) {
 			//
 			if (!@copy($item, $target)) {
-				throw new Exception(sprintf('Can not access file "%s".', $item), 1356931527);
+				throw new \Exception(sprintf('Can not access file "%s".', $item), 1356931527);
 			}
 			\TYPO3\CMS\Core\Utility\GeneralUtility::fixPermissions($target);
 		}

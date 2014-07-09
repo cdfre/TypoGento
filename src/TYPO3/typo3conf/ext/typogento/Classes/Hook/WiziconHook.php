@@ -2,7 +2,7 @@
 
 namespace Tx\Typogento\Hook;
 
-use \Tx\Typogento\Utility\LocalizationUtility;
+use Tx\Typogento\Utility\LocalizationUtility;
 /**
  * Class that adds the wizard icon.
  *

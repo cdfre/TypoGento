@@ -2,7 +2,7 @@
 
 namespace Tx\Typogento\Service\System;
 
-use \Tx\Typogento\Core\Bootstrap;
+use Tx\Typogento\Core\Bootstrap;
 
 /**
  * Frontend user single sign-on service.
@@ -45,7 +45,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			\Mage::getSingleton('core/session', array('name' => 'frontend'));
 		} catch (\Exception $e) {
 			// create exception
-			$exception = new Exception(sprintf('Initializing failed: ', $e->getMessage()), 1360874540, $e);
+			$exception = new \Exception(sprintf('Initializing failed: ', $e->getMessage()), 1360874540, $e);
 			// log exception
 			$this->logger->error($exception->getMessage());
 			// push exception
@@ -70,7 +70,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		// support only default frontend user data source
 		if ($this->db_user['table'] != 'fe_users' && $mode != 'processLoginDataFE') {
 			// create exception
-			$exception = new Exception(
+			$exception = new \Exception(
 				sprintf('Initializing failed: Unsupported data source "%s".', $this->db_user['table']), 
 				1357260871
 			);
@@ -118,7 +118,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			}
 		} catch (\Exception $e) {
 			// create exception
-			$exception = new Exception(
+			$exception = new \Exception(
 				sprintf('Authentication failed for user "%s" (%s): %s', $user['email'], $user['uid'], $e->getMessage()), 
 				1360876296, $e
 			);
@@ -155,7 +155,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			}
 		} catch (\Exception $e) {
 			// create exception
-			$exception = new Exception(
+			$exception = new \Exception(
 				sprintf('Lookup failed for user "%s": %s', $this->login['uname'], $e->getMessage()), 
 				1360876504, $e
 			);
@@ -214,11 +214,11 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			if ($session->loginById($id)) {
 				$session->renewSession();
 			} else {
-				throw new Exception('Not found.', 1360877632);
+				throw new \Exception('Not found.', 1360877632);
 			}
 		} catch (\Exception $e) {
 			// create exception
-			$exception = new Exception(
+			$exception = new \Exception(
 				sprintf('Single sign-on failed for user "%s" (%s): %s', $pObj->user['email'], $pObj->user['uid'], $e->getMessage()), 
 				1357261148, $e
 			);
@@ -256,7 +256,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			$session->logout();
 		} catch (\Exception $e) {
 			// create exception
-			$exception = new Exception(
+			$exception = new \Exception(
 				sprintf('Single sign-off failed for user "%s" (%s): %s', $pObj->user['email'], $pObj->user['uid'], $e->getMessage()), 
 				1357261148, $e
 			);

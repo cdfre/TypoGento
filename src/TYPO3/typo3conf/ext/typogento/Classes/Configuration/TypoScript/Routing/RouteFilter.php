@@ -2,7 +2,7 @@
 
 namespace Tx\Typogento\Configuration\TypoScript\Routing;
 
-use \Tx\Typogento\Utility\GeneralUtility;
+use Tx\Typogento\Utility\GeneralUtility;
 
 /**
  * Default TypoScript route filter

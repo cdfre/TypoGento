@@ -2,17 +2,17 @@
 
 namespace Tx\Typogento\Report;
 
-use \Tx\Typogento\Utility\LocalizationUtility;
-use \Tx\Typogento\Core\Bootstrap;
+use Tx\Typogento\Utility\LocalizationUtility;
+use Tx\Typogento\Core\Bootstrap;
 
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-use \TYPO3\CMS\Core\Messaging\FlashMessage;
-use \TYPO3\CMS\Core\Messaging\FlashMessageQueue;
-use \TYPO3\CMS\Reports\Status;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
+use TYPO3\CMS\Reports\Status;
 
-use \Mage;
+use Mage;
 
-use \Exception;
+use Exception;
 
 /**
  * TypoGento status report.
@@ -83,11 +83,11 @@ class StatusReport implements \TYPO3\CMS\Reports\StatusProviderInterface {
 		try {
 			// validate system status
 			if ($this->getSystemStatus()->getSeverity() === Status::ERROR) {
-				throw new Exception(LocalizationUtility::translate('report.status.system.not_available'));
+				throw new \Exception(LocalizationUtility::translate('report.status.system.not_available'));
 			}
 			// validate connector is installed and enabled
 			if (Mage::helper('core')->isModuleEnabled('Typogento_Core') === false) {
-				throw new Exception(LocalizationUtility::translate('report.status.connector.not_installed_or_enabled'));
+				throw new \Exception(LocalizationUtility::translate('report.status.connector.not_installed_or_enabled'));
 			}
 			// get helpers
 			$helper = Mage::helper('typogento_core/typo3');
@@ -142,7 +142,7 @@ class StatusReport implements \TYPO3\CMS\Reports\StatusProviderInterface {
 		try {
 			// validate connector status
 			if ($this->getConnectorStatus()->getSeverity() === Status::ERROR) {
-				throw new Exception(LocalizationUtility::translate('report.status.connector.not_available'));
+				throw new \Exception(LocalizationUtility::translate('report.status.connector.not_available'));
 			}
 			// get frontend user model
 			$user = Mage::getModel('typogento_replication/typo3_frontend_user');
