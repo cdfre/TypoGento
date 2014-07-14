@@ -34,6 +34,15 @@ class BlockController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * @return void
 	 */
 	protected function initializeAction() {
+        if ($this->settings['content'] && is_array($this->settings['content'])) {
+            foreach ($this->settings['content'] as $key => $value) {
+                if (is_array($value)) {
+                    $value = $this->configurationManager->getContentObject()->stdWrap($value['_typoScriptNodeValue'] ?: 'TEXT', $value);
+                }
+                $GLOBALS['TSFE']->register['tx_typogento.content.' . $key] = $value;
+            }
+        }
+
 		// skip
 		if ($this->dispatcher != null) {
 			return;
